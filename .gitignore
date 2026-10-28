@@ -1,0 +1,25 @@
+# Secrets and personal/operator configuration
+.env
+.env.*
+!.env.example
+*.secret
+*.secrets
+*.pem
+*.key
+credentials*.json
+profile.private.*
+supabase/.temp/
+supabase/.branches/
+
+# Sensitive exports, local diagnostics and generated evidence
+backups/
+private/
+artifacts/
+*.dump
+*.log
+
+# Tool caches and OS files
+node_modules/
+.deno/
+.DS_Store
+Thumbs.db
