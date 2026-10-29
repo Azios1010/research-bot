@@ -1,0 +1,11 @@
+{
+  "original_url": "https://api2.openreview.net/invitations?id=ICLR.cc%2F2027%2FWorkshop_Proposals%2F-%2FSubmission&expired=true&limit=1",
+  "accessed_at": "2026-10-29",
+  "upstream_mdate": 1791448603689,
+  "observed_payload_bytes": 4850,
+  "parser_version": "openreview-invitation-v1",
+  "sha256_lf": "e00cc49d225ff725c82cb6da1ec6205b52bff97b41581607b1cea5751173bd5c",
+  "license": "CC0 public metadata under https://openreview.net/legal/terms; OpenReview / ICLR 2027 Workshop Proposals attribution retained",
+  "sanitization": "Retained id, cdate, mdate, duedate, expdate and public readership only. Removed instructions, code, contacts, notifications, edit templates and other unused configuration. No personal profiles, submissions, reviews or tokens fetched.",
+  "mutations": "Tests derive malformed/private/unknown-ID/missing-date/changed-date/extra-field variants in memory; these are synthetic and are not live records."
+}

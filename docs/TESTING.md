@@ -2,7 +2,7 @@
 
 ## Current executable check
 
-Phase 03 supplies the executable source-neutral core, offline unit/source-contract tasks and actual Supabase-js hosted integration. Current evidence is [Phase 03 verification](verification/phase03-pipeline.md): 35 unit, six contract and five guard tests; 100 hosted SQL assertions, ten query plans and 24 hosted pipeline assertions. Historical Phase 02 results below remain a separate baseline.
+The source-neutral core and real conference-source adapters have executable offline unit/contract tasks and actual Supabase-js hosted integration. Current [Phase 04 evidence](verification/phase04-conferences.md): 52 unit, 14 contract and five guard tests; 100 hosted SQL assertions, ten query plans, real concurrent clients, 52 hosted application assertions and three explicit live smokes. [Phase 03 evidence](verification/phase03-pipeline.md) and historical Phase 02 results below remain separate baselines.
 
 Phase 01 introduced documentation validation. Phase 02 adds the pinned `deno task check`, `db:plan`, `db:verify`, `db:types` and `secrets:scan` tooling described in [database workflow](DATABASE_WORKFLOW.md). Isolated hosted [verification](verification/phase02-database.md) passed: 70 SQL assertions, ten query-plan checks, concurrent clients, no-op reapply, cleanup and actual type generation. Hosted tasks still refuse absent or ambiguous targets; offline checks do not read `.env`. From the repository root, documentation validation remains:
 
@@ -78,6 +78,14 @@ Phase 09 freezes time around local midnight, DST changes, timezone/profile revis
 Verify collection completion advances its next due time once, including manual refresh, and outage recovery creates one current collection rather than historical bursts. Reminder tests use the profile's digest local time and do not backfill a missed offset on a late Save. Event tests keep an upcoming conference browsable after paper submission closes. Rebinding a delivery target cannot bypass profile-level notification schedule uniqueness.
 
 ## Validation by phase
+
+Phase 04 adds strict CCFDDL parser/transport/identity fixtures under `tests/fixtures/ccfddl/` and `tests/{unit,contract}/*ccfddl*`. Copied YAML is MIT with immutable commit and LF SHA256 checks; the second-source JSON is handwritten official factual evidence, not a live collector. Test mutations are explicitly synthetic. Pure suites have no network or environment permissions. The YAML runtime import uses the pinned environment-free browser build, integrity-locked in `deno.lock`.
+
+`test:integration` now runs the Phase 03 regression suite and then `tests/integration/conferences.ts` through the same verified target/receipt/lock gate. Conference fixtures exercise the actual adapter, bounded HTTP response handling, source-neutral pipeline and real Supabase-js RPCs. Operator SQL only creates/asserts/cleans scoped fixtures. Sixteen deadlines must fit without losing provenance; aggregate proposal overflow fails before commit. Live upstream smoke is a separate explicit command and never part of unit/contract runs.
+
+`tests/integration/conference_coverage.ts` additionally verifies HotOS and the scoped public OpenReview call through the same path, including observation-bound provenance, exact versus source-default deadlines, content revisions and replay. `test:conferences` runs only Phase 04 hosted fixtures. `sources:smoke --source ccfddl`, `--source ccfddl-hotos` and `--source openreview-workshop-call` are explicit separate opt-in commands; no missing/arbitrary slug is accepted. Every invocation checks isolated identity/empty inventory/schema/history/receipt and takes the verification lock, then removes test-owned rows and restores the collection pause. Private success receipts bind normalized repository inputs, upstream content revisions/counts and cleanup; tracked verification evidence contains no credentials.
+
+`sources:benchmark` is offline and cached-only. It measures complete copied YAML files (including the largest current upstream file) and openly labeled JSON padding at observed/maximum byte sizes. Live API full-response parsing timings are captured separately in smoke receipts. Process RSS/heap are memory proxies, not hosted peaks. Only Phase 10 can close the actual Edge CPU/memory/deployment gate.
 
 Run the active phase's commands from its specification. From Phase 03 onward, the default completion set is `check`, `test:unit`, `test:contract`, `db:verify`, `test:integration`, plus phase-specific checks. Source smoke tests are isolated from deterministic suites and bounded/authorized; a website outage is reported as a live-source limitation, not silently turned into a passing parser test.
 

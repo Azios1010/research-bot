@@ -9,6 +9,12 @@ import {
 } from "../../supabase/functions/_shared/application/ports.ts";
 import { FakeSourceAdapter } from "../../supabase/functions/_shared/adapters/sources/fake/adapter.ts";
 import type { Proposal } from "../../supabase/functions/_shared/domain/model.ts";
+import { CcfddlAdapter } from "../../supabase/functions/_shared/adapters/sources/ccfddl/adapter.ts";
+import { fixture as conferenceFixture } from "../ccfddl_support.ts";
+import type {
+  HttpClient,
+  SourceAdapter,
+} from "../../supabase/functions/_shared/application/ports.ts";
 
 const lease: Lease = {
   id: "task",
@@ -84,17 +90,63 @@ function setup(body: string, overrides: Partial<Repository> = {}) {
   };
   const deps = {
     repository,
-    adapters: new Map([["fake", new FakeSourceAdapter()]]),
+    adapters: new Map<string, SourceAdapter>([["fake", new FakeSourceAdapter()]]),
     clock: { now: () => "2031-01-01T00:00:00Z" },
     http: {
       request: () => {
         throw new Error("normal tests forbid network");
       },
-    },
+    } as HttpClient,
     logger: { log: () => {} },
   };
   return { context, repository, deps, proposals, finishes };
 }
+Deno.test("real sixteen-deadline edition fits generic proposal budget with complete provenance", async () => {
+  const test = setup("");
+  test.context.source.slug = "ccfddl";
+  test.context.source.parserVersion = "ccfddl-yaml-v1";
+  test.context.source.id = "00000000-0000-4000-8000-000000000001";
+  test.deps.adapters.set("ccfddl", new CcfddlAdapter());
+  const payload = await conferenceFixture();
+  test.deps.http = {
+    request: () =>
+      Promise.resolve({ status: 200, body: payload, contentType: "text/plain", headers: {} }),
+  };
+  const result = await collect(lease, test.deps, signal);
+  equals(result.inserted, 7);
+  equals(result.rejected, 0);
+  equals(test.proposals[0][6].canonical?.deadlines.length, 16);
+  const last = test.proposals[0][6];
+  assert(
+    last.canonical!.deadlines.every((d) =>
+      last.provenance![`deadline:${d.kind}:${d.roundKey}`]?.sourceSlug === "ccfddl"
+    ),
+  );
+});
+Deno.test("aggregate proposal budget fails before committing cursor rather than sending oversized RPC", async () => {
+  const items = Array.from({ length: 100 }, (_, i) => ({
+    id: `bounded-${i}`,
+    category: "conference",
+    heading: `Bounded conference ${i}`,
+    link: `https://example.invalid/${i}`,
+    edition: "2031",
+    track: "main",
+    calls: Array.from(
+      { length: 16 },
+      (_, j) => ({
+        kind: "submission",
+        round: `round-${j}`,
+        label: `Round ${j}`,
+        value: "2031-05-01",
+        zone: "AoE",
+        zone_basis: "source_default",
+      }),
+    ),
+  }));
+  const test = setup(JSON.stringify({ schema_version: 1, items }));
+  await rejects(() => collect(lease, test.deps, signal), "page_proposals_too_large");
+  equals(test.proposals.length, 0);
+});
 Deno.test("mixed page normalizes valid siblings and durably proposes one rejected sibling", async () => {
   const test = setup(await fixture("mixed.json"));
   const result = await collect(lease, test.deps, signal);

@@ -66,6 +66,7 @@ await run(Deno.execPath(), [
   "scripts/scan-secrets.ts",
   "scripts/db/main.ts",
   "scripts/db/guards_test.ts",
+  ...files("scripts/sources"),
   ...modules,
   ...files("tests"),
 ]);

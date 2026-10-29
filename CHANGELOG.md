@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-29 — Phase 04 conference sources
+
+- Reverified current CCFDDL schema/MIT rights/MCP alternatives and selected fixed bounded SIGMOD/HotOS YAML files. Added strict pure environment-free YAML parsing, reviewed manifests/registry, stable editions/semantic rounds, conservative default-time evidence and pinned licensed fixtures/checksums.
+- Closed genuine standalone-call coverage with one exact public OpenReview API 2 workshop-proposal invitation, retaining CC0 metadata/attribution and distinguishing API due time from expiry/event dates. Added no search crawler, private/authenticated source access or duplicate event/call rows.
+- Fixed a measured Phase 03 proposal-budget defect: 32 KiB per complete record plus a separate 1 MiB aggregate page guard preserve all sixteen deadline provenance entries under the existing SQL 2 MiB ceiling. Database schema/RPCs, SourceAdapter and domain rules remain unchanged.
+- Passed 52 unit, 14 contract, five guard, 100 hosted SQL, ten query-plan and 52 hosted application assertions with real concurrency/rollback/replay evidence. All three opted-in live smokes passed, persisting 12 scoped real opportunities / 49 deadlines then cleaning up. Offline realistic/upper-bound benchmarks and manual official-link disagreements are documented.
+- Recorded source permissions/coverage/resources, current tooling/workflow/operations and the full Phase 04 report/readiness. Phase 03 was already committed/pushed as `fda53e3` on clean main before this task. Phase 04 is complete with active phase none; Phase 05 stays pending. No commit, push, deployment, Telegram, Cron or LLM work.
+
 ## 2026-10-29 — Phase 03 core opportunity pipeline
 
 - Implemented source-neutral domain/ports, bounded page processing, deterministic normalization/temporal evidence, stable identity proposals, conservative reconciliation/provenance and versioned baseline assessment.

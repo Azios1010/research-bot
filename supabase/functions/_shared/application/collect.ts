@@ -198,7 +198,7 @@ export async function collect(
             : {}),
         },
       };
-      if (bytes(stable(json(next))) > 20000) {
+      if (bytes(stable(json(next))) > 32768) {
         records.push({
           ...proposal,
           disposition: "quarantined",
@@ -207,6 +207,11 @@ export async function collect(
           metadata: {},
         });
       } else records.push(next);
+    }
+    // A record can have many legitimate rounds/provenance entries. Bound the page separately
+    // rather than making a per-record budget implicitly assume 100 identical-size records.
+    if (bytes(stable(json(records))) > 1048576) {
+      throw new ProcessingError("page_proposals_too_large");
     }
     try {
       const result = await deps.repository.commit(renewed, context, page, records, signal);

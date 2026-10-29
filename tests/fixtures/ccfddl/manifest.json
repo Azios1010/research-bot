@@ -1,0 +1,31 @@
+{
+  "upstream": "https://github.com/ccfddl/ccf-deadlines",
+  "revision": "2e5a397ce3639e7464b7e7f5222c6d011517ad29",
+  "accessed_at": "2026-10-29",
+  "license": "MIT",
+  "notice": "LICENSE",
+  "parser_version": "ccfddl-yaml-v1",
+  "files": {
+    "hotos.yml": {
+      "path": "conference/SE/hotos.yml",
+      "sha256_lf": "827ffb57115bdec042c1e5544a33be7b796137a99865928feef44eedfae322b8",
+      "role": "unchanged upstream data; reviewed workshop path, same MIT notice"
+    },
+    "sigmod.yml": {
+      "path": "conference/DB/sigmod.yml",
+      "sha256_lf": "da3473c9ebbebd87bb19da099d12278e071ce8b3d3e240f80439c83dcf4b320f",
+      "role": "unchanged upstream data; primary reviewed live path"
+    },
+    "second-source.json": {
+      "path": "https://2027.sigmod.org/ and https://2027.sigmod.org/calls_papers_sigmod_research.shtml",
+      "sha256_lf": "374cb503506e189a954fd650eef2186a6247d40298b19991deff7de2bbb14b4b",
+      "role": "handwritten sanitized factual transcription for identity/authority tests; no official page HTML or article prose copied; fake transport only, not a live collector"
+    },
+    "vldb-upper-bound.yml": {
+      "path": "conference/DB/vldb.yml",
+      "sha256_lf": "faf71a3e8f4546a1a97d50710d3af5d88aae835702f162b022d1b1829ac38730",
+      "role": "unchanged upstream data; largest current conference file, benchmark only, not an enabled source"
+    }
+  },
+  "mutations": "Tests derive malformed siblings, unknown fields, missing timezone, Unicode and deadline changes from the licensed SIGMOD fixture in memory. Mutations are synthetic tests, not claims about live upstream data."
+}

@@ -310,8 +310,19 @@ async function generate(cli: string, projectRef: string): Promise<void> {
 }
 
 async function main() {
-  if (!["plan", "verify", "types", "integration"].includes(mode)) {
-    throw new GuardError("Expected plan, verify, types or integration mode.");
+  if (!["plan", "verify", "types", "integration", "conferences", "sources-smoke"].includes(mode)) {
+    throw new GuardError(
+      "Expected plan, verify, types, integration, conferences or sources-smoke mode.",
+    );
+  }
+  if (
+    mode === "sources-smoke" &&
+    (Deno.args.length !== 3 || Deno.args[1] !== "--source" ||
+      !["ccfddl", "ccfddl-hotos", "openreview-workshop-call"].includes(Deno.args[2]))
+  ) {
+    throw new GuardError(
+      "An explicit approved --source slug is required; no upstream or database writes ran.",
+    );
   }
   if (Deno.version.deno !== toolchain.deno) {
     throw new GuardError("Use the pinned Deno version in scripts/toolchain.json.");
@@ -503,7 +514,7 @@ async function main() {
         );
       }
     }
-    if (mode === "integration") {
+    if (["integration", "conferences", "sources-smoke"].includes(mode)) {
       stage = "Phase 03 hosted application integration";
       verificationLock = await sql.reserve();
       const [{ locked }] =
@@ -511,16 +522,50 @@ async function main() {
       if (!locked) {
         throw new GuardError("Another verifier owns this isolated target; no writes ran.");
       }
-      const suite = await import(
-        new URL("../../tests/integration/pipeline.ts", import.meta.url).href
-      ) as {
-        verifyPipeline: (
-          sql: postgres.Sql,
-          target: { projectRef: string },
-          token: string,
-        ) => Promise<void>;
-      };
-      await suite.verifyPipeline(sql, target, token);
+      if (mode === "integration") {
+        const suite = await import(
+          new URL("../../tests/integration/pipeline.ts", import.meta.url).href
+        ) as {
+          verifyPipeline: (
+            sql: postgres.Sql,
+            target: { projectRef: string },
+            token: string,
+          ) => Promise<void>;
+        };
+        await suite.verifyPipeline(sql, target, token);
+      }
+      stage = "Phase 04 hosted conference integration";
+      if (mode !== "sources-smoke" || Deno.args[2] === "ccfddl") {
+        const conferences = await import(
+          new URL("../../tests/integration/conferences.ts", import.meta.url).href
+        ) as {
+          verifyConferences: (
+            sql: postgres.Sql,
+            target: { projectRef: string },
+            token: string,
+            live?: boolean,
+          ) => Promise<void>;
+        };
+        await conferences.verifyConferences(sql, target, token, mode === "sources-smoke");
+      }
+      if (mode !== "sources-smoke" || Deno.args[2] !== "ccfddl") {
+        const coverage = await import(
+          new URL("../../tests/integration/conference_coverage.ts", import.meta.url).href
+        ) as {
+          verifyCoverageSources: (
+            sql: postgres.Sql,
+            target: { projectRef: string },
+            token: string,
+            liveSlug?: string,
+          ) => Promise<void>;
+        };
+        await coverage.verifyCoverageSources(
+          sql,
+          target,
+          token,
+          mode === "sources-smoke" ? Deno.args[2] : undefined,
+        );
+      }
       await inventory(sql, local);
       return;
     }

@@ -1,0 +1,20 @@
+export const openreviewManifest = {
+  slug: "openreview-workshop-call",
+  parserVersion: "openreview-invitation-v1",
+  invitationId: "ICLR.cc/2027/Workshop_Proposals/-/Submission",
+  endpoint:
+    "https://api2.openreview.net/invitations?id=ICLR.cc%2F2027%2FWorkshop_Proposals%2F-%2FSubmission&expired=true&limit=1",
+  officialUrl: "https://iclr.cc/Conferences/2027/CallForWorkshops",
+  title: "ICLR 2027 workshop proposal call",
+  cycleKey: "2027",
+  trackKey: "workshop-proposals",
+  maxBytes: 65536,
+  maxRecords: 1,
+  timeoutMs: 15000,
+  requestsPerRun: 1,
+  proposedCadenceMinutes: 1440,
+  permissionReviewedAt: "2026-10-29",
+  license: "CC0 metadata; attribution retained; configuration records CC BY 4.0",
+  evidence: "docs/sources/openreview-calls.md",
+  fixtures: "tests/fixtures/openreview/",
+} as const;

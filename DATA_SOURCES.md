@@ -2,7 +2,15 @@
 
 ## Evidence policy
 
-Reviewed on **2026-10-28** through public primary pages/repository files. No collector was executed, no authenticated account was accessed, and no source is approved for production ingestion yet. “Confirmed candidate” means evidence of a useful public format or opportunity page was observed. It does not mean permission, completeness, present freshness, an SLA, or parser stability has been proved. All reliability and difficulty ratings below are engineering estimates to validate.
+Phase 04 current re-evaluation (2026-10-29): [CCFDDL decision and evidence](docs/sources/ccfddl.md) and [OpenReview call evidence](docs/sources/openreview-calls.md) supersede historical conference-candidate estimates below for the three exact approved development paths. Direct bounded YAML was selected over the current documented CCFDDL MCP service. HotOS reuses that adapter to close workshop coverage. One scoped public OpenReview API invitation closes the distinct organizer-call gap. No production collection or scheduling is approved.
+
+| Approved development path | Category / format / access | Cadence / reliability / authentication / difficulty | Rights / duplicates / priority |
+| --- | --- | --- | --- |
+| [CCFDDL SIGMOD](https://raw.githubusercontent.com/ccfddl/ccf-deadlines/main/conference/DB/sigmod.yml), slug `ccfddl` | Conference and embedded paper deadlines; one bounded YAML GET | Proposed daily, not scheduled; community data has observed official-date disagreement; no auth; low transport, medium temporal/round mapping difficulty | MIT data, targeted raw reads; high joint-homepage/cross-aggregator duplicate risk, reviewed dedicated call identity only; P1 selected |
+| [CCFDDL HotOS](https://raw.githubusercontent.com/ccfddl/ccf-deadlines/main/conference/SE/hotos.yml), slug `ccfddl-hotos` | Explicit workshop, same YAML adapter/provider | Proposed daily, biennial editions; sampled dates agree with official page; no auth; low additional implementation difficulty | Same MIT evidence/notice, no new host; medium event/CFP duplication risk, do not duplicate workshop's paper call; P1 required coverage |
+| [OpenReview ICLR workshop-proposal invitation](https://api2.openreview.net/invitations?id=ICLR.cc%2F2027%2FWorkshop_Proposals%2F-%2FSubmission&expired=true&limit=1), slug `openreview-workshop-call` | Genuine standalone organizer call; one public JSON GET, exact ID, documented expired filter | Proposed daily, no SLA or broad discovery; no auth, private readership refused; low parsing complexity, medium semantics risk because API cutoff differs from official prose | CC0 public metadata, attribution retained; API robots allow this ID query; medium call/event overlap risk, distinct cycle/track and call type; P1 only to close measured gap |
+
+The foundation review on **2026-10-28** used public primary pages/repository files. No collector was executed or authenticated account accessed during that foundation review. No source is approved for production ingestion yet. “Confirmed candidate” in the historical tables below means a useful public format or opportunity page was observed, not permission, completeness, freshness or an SLA. The current approved paths and measured evidence above are narrower than whole-provider approval.
 
 Record the next review date, exact endpoint, response headers, terms/robots evidence, license and attribution requirements in each future source manifest. Do not invent an API because a page contains structured-looking content. Publisher article RSS is not automatically a feed of open calls.
 
@@ -70,7 +78,7 @@ These entries establish candidate locations, not claims that every collection is
 | AI Deadlines | YAML normalization edge cases and alternate conference coverage. | Verify maintenance first; reuse data/ideas with required notice, not the website stack. |
 | Institutional RSS and documented funding APIs | Stable IDs, pagination and public schemas. | Implement independent Research Radar adapters after rights/format review. No adapter code has been copied in this phase. |
 
-No third-party dependency or vendored dataset is installed yet. Future reused code/data gets exact upstream URL, version/commit, license, attribution file if needed, local path, modifications, and update responsibility recorded here.
+Phase 04 copies three small MIT CCFDDL data files under `tests/fixtures/ccfddl/`, with full LICENSE and checksum/provenance manifest: SIGMOD, HotOS and benchmark-only VLDB. A handwritten second-source JSON records minimal official facts for identity/authority tests. `tests/fixtures/openreview/` retains sanitized CC0 invitation metadata with endpoint/mdate/checksum and attribution. The safe YAML wrapper uses the ISC-licensed `yaml` 2.9.1 browser distribution, pinned to an exact CDN URL and lockfile hashes, with matching npm type declarations. Node/npm and JSR runtime entrypoints were rejected because debug environment reads violate pure parsing/minimal test permissions. The browser build has no such reads; fixture suites run without environment/network permission. No upstream application code or architecture is reused.
 
 ## Risks and prioritization
 
@@ -79,6 +87,16 @@ Primary risks are stale community deadlines, source defaults mistaken for offici
 Phase 04 starts with a bounded CCFDDL subset, then resolves workshop/standalone-call coverage without building a general crawler. Phase 05 first proves one structured institutional feed plus a relevant broad source, then closes the position/internship/grant/funding coverage matrix. Phase 06 proves one permitted publisher path for both journal types before adding a second. Stop adding sources once required coverage and utility are demonstrated. There is no requirement to integrate every candidate listed here.
 
 ## Source onboarding checklist
+
+### Phase 04 verified coverage (2026-10-29)
+
+| Type | Primary / gap-closing path | Real fixtures and live ingestion | Seasonal / discipline gaps | Confidence / further source need |
+| --- | --- | --- | --- | --- |
+| `conference` | CCFDDL SIGMOD | Seven editions, 43 deadlines, replay/cleanup pass | 2021–2027 database systems only; 2027 paper deadline elapsed while event upcoming | High mapping confidence; community accuracy limited; no extra provider needed for phase coverage |
+| `workshop` | Same CCFDDL provider, explicit HotOS path | Four biennial editions, five deadlines, replay/cleanup pass | Operating systems only; biennial/community update gaps | Explicit workshop and sampled dates verified; same-provider file closes gap |
+| `conference_cfp` | Event deadlines serve ordinary paper-call browsing; one OpenReview independent organizer call | One genuine call and exact API deadline, fixture/live/replay pass | ML organizer call already expired; new years need reviewed manifest, no broad discovery | High identity/cutoff fidelity, official/API agreement limited; second provider required and added, no further source required now |
+
+All live data was persisted only temporarily in the isolated development target and cleaned up; no production corpus or current open-call guarantee. SIGMOD and HotOS live replays returned 304; OpenReview's two 200 responses had different whole-payload hashes but unchanged canonical facts. [Full evidence and limitations](docs/verification/phase04-conferences.md).
 
 Phase 03 includes only the repository-authored `fake` adapter for deterministic verification, not an external source candidate. Its eleven-type synthetic JSON, parser version and LF-normalized fixture checksums live in `tests/fixtures/fake/manifest.json`. Collection reads bounded fixture pages from test-owned source configuration and performs no public HTTP. No external permission/freshness claim or real-source approval is implied. Real adapters still require every onboarding gate below.
 

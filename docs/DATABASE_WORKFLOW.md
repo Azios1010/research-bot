@@ -2,7 +2,7 @@
 
 ## Current state
 
-The three database migrations are applied and verified on the operator's isolated hosted development project. Seventy SQL assertions, ten representative query-plan assertions, real concurrent-client tests, no-op reapply and scoped cleanup passed; actual hosted persistence types are generated. See [verification evidence](verification/phase02-database.md) and PLANS.md for phase status. Phase 03 remains pending; no production resource was changed.
+Seven immutable migrations (three Phase 02, four Phase 03) are applied on the operator's isolated hosted development project. The current suite verifies 100 SQL assertions, ten representative query plans, real concurrent clients, no-op reapply, restrictive grants/RLS and scoped cleanup; actual hosted persistence types are generated. See [database evidence](verification/phase02-database.md), [pipeline evidence](verification/phase03-pipeline.md) and PLANS.md for phase status. No production resource was changed.
 
 Git baseline: `D:/projects/research-bot`, branch `main`, commit `7c9b40c` (`first commit`), origin `https://github.com/Azios1010/research-bot.git`. Nothing is committed/pushed by this task.
 
@@ -56,6 +56,8 @@ Separate clients test `SKIP LOCKED`, identity convergence/no orphan canonicals, 
 
 ## Actual generated types
 
+Phase 04 `test:conferences` and `sources:smoke --source <approved-slug>` reuse the exact target identity, no-valuable-data inventory, migration/schema/receipt and advisory-lock gates used by integration. Smoke accepts only the reviewed `ccfddl`, `ccfddl-hotos` or `openreview-workshop-call` slug and performs at most two public upstream requests for first collection/replay. It uses application Supabase-js RPCs for persistence, operator SQL for scoped fixture setup/assertions/cleanup, creates no profile/notification, and restores collection pause. A missing/unapproved slug fails before target or upstream IO. The API key is read into memory only, using the existing guarded flow. See [source evidence](sources/ccfddl.md) for current paths/permissions and resource limits.
+
 After verification the tool calls:
 
 ```text
@@ -66,4 +68,4 @@ Output goes to `supabase/functions/_shared/infrastructure/supabase/database.type
 
 ## Remaining gates and recovery
 
-For future runs, designate the isolated target and secure authentication; inventory actual data/backups/permissions and record limited plan visibility without guessing; review pending SQL; execute SQL/concurrent-client tests, reapply/cleanup and query plans; generate actual types and run final checks. The current target has zero backups/PITR disabled, and its scoped token cannot inspect organization entitlements. Production plan/pause/restore suitability remains a Phase 10 gate. Never reset a remote project. All seven applied migrations are immutable; fix forward. Interrupted fixtures require scoped review/cleanup. Production apply, real collectors, bot and Cron activation remain later-phase work.
+For future runs, designate the isolated target and secure authentication; inventory actual data/backups/permissions and record limited plan visibility without guessing; review pending SQL; execute SQL/concurrent-client tests, reapply/cleanup and query plans; generate actual types and run final checks. The current target has zero backups/PITR disabled, and its scoped token cannot inspect organization entitlements. Production plan/pause/restore suitability remains a Phase 10 gate. Never reset a remote project. All seven applied migrations are immutable; fix forward. Interrupted fixtures require scoped review/cleanup. Real conference-source adapters are now local code with isolated development validation; production apply/enablement, bot and Cron activation remain later-phase work.

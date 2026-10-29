@@ -6,9 +6,9 @@ The intended coverage includes research jobs and internships, conferences and wo
 
 ## Current status
 
-Phases 01-03 are complete; no phase is active and Phase 04 awaits explicit activation. The source-neutral core has domain policies, an eleven-type synthetic adapter, a bounded authenticated worker and real Supabase-js persistence. Validation passed 35 unit tests, six source contract tests, 100 hosted SQL assertions, ten query plans and 24 hosted pipeline assertions. No real collector, Telegram handler, configured schedule or production deployment exists. See [PLANS.md](PLANS.md), [Phase 03 evidence](docs/verification/phase03-pipeline.md) and [database workflow](docs/DATABASE_WORKFLOW.md).
+Phases 01-04 are complete; no phase is active and Phase 05 remains pending. Real bounded adapters read selected CCFDDL conference/workshop files and one public OpenReview workshop-proposal call through the source-neutral pipeline. Checks passed 52 unit tests, 14 contract tests, five guards, 100 hosted SQL assertions, ten query plans and 52 hosted application assertions. All three live smokes persisted twelve real development samples with 49 deadlines, verified replay and cleaned up. The authenticated worker is not deployed; there is no Telegram integration, recurring schedule or production operation. [PLANS.md](PLANS.md) is the phase authority; [Phase 04 evidence](docs/verification/phase04-conferences.md), [source decisions](docs/sources/ccfddl.md) and [database workflow](docs/DATABASE_WORKFLOW.md) explain the approved development scope.
 
-The repository is scoped to `D:/projects/research-bot`. Phase 02 is committed/pushed as `cb9e3a5` on `main`, now the GitHub default branch, following explicit user authorization. Phase 03 changes remain uncommitted. Phase 01's drive-level Git finding is historical.
+The repository is scoped to `D:/projects/research-bot`, branch/default branch `main`. Phase 03 was committed and pushed as `fda53e3` before this phase; Phase 04 entered with a clean worktree. This task does not commit, push or deploy. Phase 01's drive-level Git finding is historical.
 
 ## Intended architecture
 

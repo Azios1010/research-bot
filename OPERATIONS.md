@@ -101,6 +101,10 @@ For suspected duplicates, inspect source keys/strong identity evidence and candi
 
 ## Maintenance and release evidence
 
+Phase 04 manual source checks use `sources:smoke --source ccfddl`, `--source ccfddl-hotos` or `--source openreview-workshop-call` against the reverified isolated target. Each run collects once and replays once, then removes its own source/observations/canonicals/deadlines/tasks/runs and restores pause settings. These commands intentionally refuse valuable/application data; do not point them at production or use them as production maintenance. If interrupted, inspect the exact scoped IDs before cleanup; do not reset/truncate. Database migrations and reference types/settings survive.
+
+For real-source incidents, distinguish HTTP/timeout from malformed document/schema drift, record quarantine, valid explicit empty and 304. Disable the reviewed source row before changing endpoints/parser versions; never replace its URL through arbitrary config. CCFDDL date/default-timezone assumptions remain visible in evidence. For the scoped OpenReview call, retain the API submission cutoff separately from API expiry and official prose; the observed 61-minute discrepancy requires official confirmation before relying on that deadline. Future annual calls need a reviewed manifest and fresh rights/metadata checks. No recurring source jobs or deployed functions exist in this phase.
+
 Phase 09 implements bounded retention jobs: 90-day run/attempt detail, 30-day quarantine snapshot, seven-day Telegram action payload cleanup, preserving durable deduplication keys/outcomes and user decisions. Pruning must not make an old update/digest eligible again. Review index usage, table growth, source permissions, dependency updates and resource cost monthly.
 
 Initially redact expired details while retaining small referenced run/attempt headers, source identities and unresolved-send evidence. Do not physically delete FK targets to satisfy retention dates; archive/deletion strategy is deferred until measured volume requires it.

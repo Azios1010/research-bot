@@ -233,6 +233,12 @@ The HTTP port supports GET/HEAD, selected headers, timeout/abort, bounded respon
 
 Baseline `deterministic-v1` implements the documented exclusions/components and stores reasons/revisions. Date-only expiry derives end-of-day UTC-12 only for eligibility; it is never stored as a source deadline. Unknown/rolling/conflicted rounds prevent inferred closure. Publication-date-only evidence stays in attributes with null `published_at`. Phase 08 owns calibration/profile editing; no LLM SDK or reranker is implemented.
 
+## Phase 04 concrete source boundary
+
+The CCFDDL adapter uses two reviewed fixed raw-file endpoints (SIGMOD conference, HotOS workshop), with a pure strict YAML 1.2 parser and source-local temporal/round mapping. A second provider reads exactly one public OpenReview API 2 invitation for the separate ICLR workshop-organizer call. Its parser retains public metadata only. Permission, provenance, resource limits and current evidence are in [CCFDDL](docs/sources/ccfddl.md) and [OpenReview](docs/sources/openreview-calls.md) source decisions. No arbitrary official-page navigation or source-specific domain branches are introduced. The worker composes the reviewed registry; the fake adapter is test-only. Runtime registration does not deploy, enable database source rows or schedule collection.
+
+A measured SIGMOD edition contains sixteen deadline entries and requires over 20,000 bytes after canonical facts, observation evidence and field provenance are combined. The shared application therefore bounds each complete proposal at 32 KiB and the aggregate proposals at 1 MiB before commit. This preserves the SQL 2 MiB page ceiling and all existing observation/canonical limits. Oversized aggregate work fails without advancing the cursor; it is not silently truncated. This corrects an overly restrictive Phase 03 implementation budget; the database and SourceAdapter contracts are unchanged.
+
 ## Future extension points and explicit deferrals
 
 | Deferred work | Why | Resolution |

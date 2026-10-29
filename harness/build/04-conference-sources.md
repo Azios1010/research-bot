@@ -45,9 +45,16 @@ deno task test:contract
 deno task db:verify
 deno task test:integration
 deno task sources:smoke --source ccfddl
+deno task sources:smoke --source ccfddl-hotos
+deno task sources:smoke --source openreview-workshop-call
+deno task sources:benchmark
 ```
 
 Use the actual approved slug if CCFDDL was replaced and update this spec/register. Smoke is opt-in bounded public read and isolated persistence only, separate from deterministic suites. Document any additional coverage adapter's corresponding smoke command.
+
+Implemented scope: direct CCFDDL SIGMOD/HotOS files at fixed raw endpoints, rather than the current MCP service; one exact public OpenReview API 2 invitation closes the genuine standalone organizer-call gap. The latter is a second provider justified by the coverage matrix, not a broad conference crawler. Runtime registry contains only these three reviewed paths; the fake source remains test-only. See [CCFDDL evidence](../../docs/sources/ccfddl.md) and [OpenReview evidence](../../docs/sources/openreview-calls.md) for current rights, pinned fixtures, temporal assumptions and measurements. No schema/RPC/interface redesign was required; a measured multi-round proposal justified separate 32 KiB record / 1 MiB page application budgets under the existing 2 MiB SQL ceiling.
+
+`test:conferences` is an optional focused hosted rerun; it uses the same target/receipt/advisory-lock gates as `test:integration`. Source smoke requires an explicit approved slug before upstream or database IO, reuses all isolated-target gates, creates only scoped fixtures, and cleans them. A new dataset edition or host/path requires source review, not an unchecked config URL.
 
 ## Manual verification
 

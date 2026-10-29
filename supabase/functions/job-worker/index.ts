@@ -3,7 +3,7 @@ import { persistenceClient } from "../_shared/infrastructure/supabase/client.ts"
 import { SupabaseRepository } from "../_shared/infrastructure/supabase/repository.ts";
 import { BoundedHttpClient } from "../_shared/infrastructure/http/bounded.ts";
 import { StructuredLogger } from "../_shared/infrastructure/observability/logging.ts";
-import { FakeSourceAdapter } from "../_shared/adapters/sources/fake/adapter.ts";
+import { approvedEndpoints, approvedSources } from "../_shared/adapters/sources/registry.ts";
 import { runWorker } from "../_shared/application/worker.ts";
 
 // No privileged client is constructed until the request passes internal authentication.
@@ -16,12 +16,11 @@ Deno.serve(
         Deno.env.get("RADAR_SUPABASE_SECRET_KEY") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ??
           "",
       );
-      const fake = new FakeSourceAdapter();
       return await runWorker({
         repository: new SupabaseRepository(client),
-        adapters: new Map([[fake.slug, fake]]),
+        adapters: approvedSources(),
         clock: { now: () => new Date().toISOString() },
-        http: new BoundedHttpClient([]),
+        http: new BoundedHttpClient(approvedEndpoints),
         logger: new StructuredLogger(),
       }, { owner: crypto.randomUUID(), maxTasks, signal });
     },

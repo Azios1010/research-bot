@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "id": "reviewed-sigmod-2027",
+      "category": "conference",
+      "heading": "SIGMOD 2027",
+      "link": "https://2027.sigmod.org/calls_papers_sigmod_research.shtml",
+      "official_url": "https://2027.sigmod.org/",
+      "edition": "2027",
+      "track": "main",
+      "place": "Huntington Beach, CA, USA",
+      "countries": ["US"],
+      "event_start": "2027-06-13",
+      "event_end": "2027-06-18",
+      "reviewed_listing": true,
+      "calls": [
+        { "kind": "submission", "round": "round-4", "label": "submission round-4", "value": "2026-10-17", "zone": "AoE", "zone_basis": "source_default", "aoe_supported": true }
+      ]
+    }
+  ]
+}
