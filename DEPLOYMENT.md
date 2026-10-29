@@ -2,6 +2,8 @@
 
 ## Current state and target
 
+Phase 03 adds a local `job-worker` composition root and `[functions.job-worker] verify_jwt=false` declaration; neither deploys anything. The handler requires `X-Radar-Job-Secret` matching `RADAR_INTERNAL_JOB_SECRET` (32-256 characters) before constructing a privileged client. Future runtime inputs are `SUPABASE_URL` and `RADAR_SUPABASE_SECRET_KEY` or platform `SUPABASE_SERVICE_ROLE_KEY`; operator PAT/SQL URL are never runtime inputs. Missing configuration fails closed. Secrets belong in Supabase Secrets during an authorized deployment, never source config/migrations. No schedule/endpoint registration is authorized by these files.
+
 Phase 01 made no deployment or remote inspection. Phase 02 applied database migrations only to the operator's new isolated development project. No production schema deployment, bot, webhook or Cron job has been created. The target remains a real production deployment in Phase 10.
 
 Phase 02 has verified migrations, restrictive grants, 70 hosted SQL assertions, ten query-plan checks, concurrent-client tests, cleanup and actual generated types. See [database workflow](docs/DATABASE_WORKFLOW.md) and [verification evidence](docs/verification/phase02-database.md). The test target has zero backups/PITR disabled; billing-plan visibility is limited by the scoped token. Production plan, pausing and recovery suitability remain release gates. The parent Git-scope issue from Phase 01 is resolved at the Phase 02 baseline.

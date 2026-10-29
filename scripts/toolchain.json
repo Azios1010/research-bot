@@ -1,1 +1,1 @@
-{ "deno": "2.9.6", "supabase": "2.122.0", "postgres": "3.4.9" }
+{ "deno": "2.9.6", "supabase": "2.122.0", "postgres": "3.4.9", "supabaseJs": "2.118.0" }

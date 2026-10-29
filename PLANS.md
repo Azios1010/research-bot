@@ -1,10 +1,10 @@
 # Research Radar execution plan
 
-This file is the primary roadmap and execution source of truth. Read [AGENTS.md](AGENTS.md) and the active build specification before work. Phases 01 and 02 are complete; Phase 02 has isolated hosted SQL/concurrency/security/query-plan evidence and actual generated types. No application runtime or production deployment exists. Phase 03 awaits explicit activation.
+This file is the primary roadmap and execution source of truth. Read [AGENTS.md](AGENTS.md) and the active build specification before work. Phases 01-03 are complete with isolated hosted evidence and actual generated types. Phase 04 awaits explicit activation. No production deployment exists.
 
 Active phase: none
 
-Phase statuses: `pending`, `active`, `complete`. At most one phase is active. Once a phase is complete, set active phase to `none`; leave all successors pending until the user activates the next one. Do not roll directly into database implementation.
+Phase statuses: `pending`, `active`, `complete`. At most one phase is active. Once a phase is complete, set active phase to `none`; leave all successors pending until the user activates the next one. Do not roll directly into the next phase.
 
 ## Roadmap
 
@@ -12,7 +12,7 @@ Phase statuses: `pending`, `active`, `complete`. At most one phase is active. On
 | --- | --- | --- | --- | --- | --- |
 | 01-project-foundation | complete | Fix product, architecture, data model and execution contract. | Empty-project inspection and user requirements. | Ten root documents, ADRs/template, ten phase specs, testing contract, offline doc check. [Specification](harness/build/01-project-foundation.md). | Required content and cross-document audit pass; no application/deployment work. |
 | 02-supabase-database | complete | Establish namespaced schema, constraints, RPCs and hosted verification. | 01 complete; explicit activation; safe isolated hosted test target. | Migrations, grants/RLS, generated persistence types, Deno/SQL validation tooling, read-only target inventory. [Specification](harness/build/02-supabase-database.md). | Applied/reapplied on isolated hosted PostgreSQL 17.11; 70 SQL assertions, ten query-plan checks, concurrency/security/cleanup and actual type generation passed. [Evidence](docs/verification/phase02-database.md). Existing production project unchanged. |
-| 03-core-opportunity-pipeline | pending | Build source-neutral processing and durable bounded execution. | 02 complete. | Domain, ports, RPC adapters, fake source/HTTP fixtures, normalization, reconciliation, deduplication, baseline filter/score, task worker. [Specification](harness/build/03-core-opportunity-pipeline.md). | Replay/concurrency/partial-failure/lease tests pass; no real collector, Telegram or Cron. |
+| 03-core-opportunity-pipeline | complete | Build source-neutral processing and durable bounded execution. | 02 complete. | Domain, ports, Supabase-js RPC adapter, eleven-type fake source, deterministic assessment, authenticated bounded worker, four forward corrections. [Specification](harness/build/03-core-opportunity-pipeline.md). | 35 unit + 6 contract + 5 guard tests; 100 hosted SQL assertions, 10 query plans and 24 actual HTTP pipeline assertions pass, including replay/concurrency/rollback/fences, complete-snapshot validators and provenance CAS. [Evidence](docs/verification/phase03-pipeline.md). No real collector, Telegram or Cron. |
 | 04-conference-sources | pending | Prove evaluated conference/workshop/CFP ingestion. | 03 complete; source review. | Bounded CCFDDL adapter first, category gap checkpoint, fixtures, resource measurements and provenance. [Specification](harness/build/04-conference-sources.md). | All event/call coverage gates pass; uncertain times/rounds and cross-source identity handled; no production schedule. |
 | 05-research-job-sources | pending | Cover research positions, internships, grants and funding. | 03 and 04 complete; profile/source relevance decisions. | Structured institutional pilot, evaluated broad source, sequential position/funding checkpoints and coverage matrix. [Specification](harness/build/05-research-job-sources.md). | Four position types plus grant/research_funding have approved ingestion paths and fixtures; rights/eligibility/partial failure gates pass. |
 | 06-journal-cfp-sources | pending | Collect relevant journal calls and special issues. | 03-05 complete; publisher permission/access review. | One permitted publisher path, fixtures, journal metadata and updated source register. [Specification](harness/build/06-journal-cfp-sources.md). | Both journal types represented without duplicate call/issue rows; open calls distinguished from published collections. |
@@ -37,7 +37,7 @@ Dependencies are sequential for execution simplicity; shared infrastructure is a
 
 ## Phase 02 evidence — complete
 
-The initial blocked checkpoints below are historical. The later hosted-verification entries resolve them; current status is complete, with no active phase and Phase 03 pending.
+The initial blocked checkpoints below are historical. Later hosted-verification entries resolve them. At the Phase 02 handoff, status was complete with no active phase and Phase 03 pending; subsequent activation/completion is recorded separately.
 
 - 2026-10-28/29: user explicitly activated Phase 02. Required contracts were read in the requested order before implementation. Git root verified as `D:/projects/research-bot`, branch `main`, baseline `7c9b40c first commit`; origin `https://github.com/Azios1010/research-bot.git`; initial worktree clean. No initialization, parent metadata change, commit, push or history rewrite.
 - RTK remains unavailable; shell invocations use the documented process-local transparent passthrough. Deno/Supabase were absent on PATH. Actual pinned npm-cache tool invocations report Deno `2.9.6` (TypeScript `6.0.3`), Supabase CLI `2.122.0`, Node `v22.15.0`. Tool versions are in `scripts/toolchain.json`; Deno generated `deno.lock` for verification-only `postgres@3.4.9`.
@@ -60,19 +60,44 @@ The initial blocked checkpoints below are historical. The later hosted-verificat
 - Tooling corrections preserved the schema/architecture: official PostgREST metadata endpoint, exact Postgres.js environment allowlist, optional local CA trust, explicit generated-file formatting, clear no-op reporting and schema/history/test-suite receipt binding. Sanitized results, assumptions and the complete handoff are in [verification evidence](docs/verification/phase02-database.md). No commit, push, Edge deployment, webhook registration, Cron activation or Phase 03 work occurred.
 - Final `deno task check` passed with actual generated types and five offline guard tests; the independent documentation validator passed 31 Markdown files; credential-pattern scanning passed 52 project files; `git diff --check` passed and the staging area is empty. Final Git scope/branch/baseline remain `D:/projects/research-bot` / `main` / `7c9b40c`, with ten modified tracked and 22 new unstaged files. All required hosted exit criteria passed; Phase 02 is complete and active phase is none. Phase 03 stays pending.
 
-## Readiness checklist for Phase 03
+## Phase 03 entry checklist and Git baseline (completed)
+
+2026-10-29 activation: user explicitly activated Phase 03. The initial Git prerequisite was unresolved because Phase 02 remained unstaged. The user then explicitly authorized committing/pushing that baseline and making `main` the default branch. Phase 02 is now commit `cb9e3a5f0567aedabd0bf9aebc81b1e9b567db15`, pushed to `origin/main`; GitHub/default `origin/HEAD` both point to `main`. Phase 03 starts from a clean worktree. This authorization covered the Phase 02 baseline; Phase 03 changes remain uncommitted for review. Phase 04 stays pending.
 
 1. Completed: isolated hosted target identity/data/history/privilege review, reviewed migration application, no-op reapply, real SQL/concurrency/security/query-plan tests, cleanup, actual generated types and sanitized evidence.
-2. Completed: Phase 02 is complete; active phase is none and Phase 03 remains pending. Preserve the three immutable migration files and ignored credentials/target/CA/receipt.
-3. Required next: obtain explicit user activation of `03-core-opportunity-pipeline`. No implementation may start from phase completion alone.
-4. Before editing: read AGENTS.md, PLANS.md, the full Phase 03 specification, DATABASE/ARCHITECTURE/TESTING and applicable ADRs; inspect the actual generated types, persistence contracts, current code and tests.
+2. Completed: Phase 02 was complete before Phase 03 activation. Preserved its three immutable migration files and ignored credentials/target/CA/receipt.
+3. Completed: user explicitly activated `03-core-opportunity-pipeline`; activation did not follow automatically from completion.
+4. Completed before editing: read AGENTS.md, PLANS.md, the full Phase 03 specification, DATABASE/ARCHITECTURE/TESTING/workflow and applicable ADRs; inspected generated types, migrations/RPCs, current code and tests.
 5. Use the verified isolated target for future integration; recheck its identity and valuable-data status. Never turn the operator SQL test client into the application's persistence adapter or expose `radar`.
 6. Implement only the source-neutral domain/ports/pipeline and fake source/HTTP fixtures; create the Phase 03 unit/contract/integration tasks and run its exact validation set. Real collectors, Telegram, LLM and Cron remain later-phase work.
+
+## Phase 03 evidence — complete
+
+- 2026-10-29: activated explicitly after the authorized Phase 02 baseline push. Git root `D:/projects/research-bot`, branch/default `main`, baseline `cb9e3a5f0567aedabd0bf9aebc81b1e9b567db15`; initial Phase 03 tree clean. No history rewrite, Phase 03 commit/push, production deployment or Phase 04 activation.
+- Implemented shared types, pure normalization/temporal/identity/reconciliation/assessment policies, injected ports, eleven-type synthetic source, bounded page processing, fenced collector/assessment worker, safe HTTP transport, structured logs and authenticated composition root. Runtime persistence uses actual generated types and pinned `supabase-js@2.118.0`; operator Postgres.js is not used by application modules.
+- Re-inventoried the explicit isolated development project `research-bot` / `ihxoffjtrtyxgctcfgmy` before writes. Reviewed plans `57f849e7e22588e1ff5489c535a355743a0d960825ba8b19a47a8e47c0d2a3fd`, `96d4fde266048af3be51148290a2858c6398980b761e7c384dfdc9f4362d9bec`, `071951fc9cde8b0c598ab17c1f136d99b352310fe8cb66526aca467fecf0c5ea` and `0ed99102ad414f59181b8b59d71242c51084de454d47902ccd6c99c585c34364`, then applied four append-only corrections. All seven migration files are immutable.
+- ADR 0008 records three bounded fenced read RPCs, atomic assessment handoff, observation UUID provenance binding and source cancellation. ADR 0009 records a real HTTP failure: intentional 40001 optimistic errors timed out through the Data API while SQL tests passed; forward correction uses PT409/HTTP 409 with complete rollback and bounded application retry. No schema/platform/entity redesign or permissive grant was introduced.
+- Final review regressions proved validator reuse must require the latest fully processed snapshot plus matching config/parser versions; older snapshots cannot hide interrupted work. ADR 0010 adds opaque provenance CAS so changed authority invalidates stale proposals while content revisions stay stable. The actual HTTP race proves a weak worker re-reads and preserves stronger evidence, without adding a table/column or SQL ranking policy.
+- `deno task check`: passed formatting/lint/type/import boundaries, five guard tests, 35 unit tests, six contract tests, documentation and credential scan. Independent `test:unit`/`test:contract` commands also pass; normal tests have no network/environment permissions.
+- `deno task db:verify`: passed 73 grant/constraint + 13 context/handoff/provenance + 5 optimistic-conflict + 5 validator-scope + 4 evidence-CAS assertions (100 total), ten query plans, actual concurrent clients, no-op reapply, scoped cleanup and actual type generation. Receipt `2026-10-29T08:12:56.708Z`; schema fingerprint `f64c621637966fe7e60ae486662f6eb6cbff5e21f99687de29545410a968e7d1`.
+- `deno task test:integration`: passed 24 named actual Supabase-js HTTPS assertions, receipt `2026-10-29T08:15:58.482Z`, input hash `1f54869a775e192a1ffc441fbee4de620b5d3a65b3d1f82b43bb0649f1de3e31`. Proved all types, provenance/authority CAS, complete-snapshot validators, two-page continuation, malformed sibling quarantine, replay, true simultaneous identity/task claims, conservative candidates, strong conflicts, full transaction rollback/one re-read retry, crash recovery, expired fences, disable cancellation and source failure isolation. Cleanup restored pause; final inventory found no application data.
+- Manual handoff traced accepted/quarantined/merged/conflicted records and canonical/deadline/source/run/assessment relationships through the integration assertions; reviewed fingerprint inputs, source field precedence, import direction, private grants, bounded work/auth-before-client and redacted logs. Exact commands, files, limitations and Phase 04 entry requirements are in [Phase 03 verification](docs/verification/phase03-pipeline.md).
+- Exit criteria passed. All Phase 03 changes remain uncommitted for review; no active phase. Phase 04 remains pending. Production plan/restore readiness, endpoint DNS trust and real-source resource/permission review remain their documented future gates.
+
+## Readiness checklist for Phase 04
+
+1. Obtain explicit activation of `04-conference-sources`; completion of Phase 03 does not activate it.
+2. Review the uncommitted Phase 03 diff and its evidence; commit/push only when authorized. Recheck Git root/branch/history before changes.
+3. Read AGENTS.md, PLANS.md, the entire Phase 04 spec, source register, architecture/database/testing/workflow and ADRs 0008/0009/0010; inspect executable ports and actual types/RPCs.
+4. Preserve all seven applied migrations. Re-inventory the isolated hosted target and rerun required baseline checks before integration writes; credentials/target/CA/receipts stay ignored.
+5. Review current structured conference candidates' license/terms/robots, host/rate policy, fixed endpoint/DNS ownership and safe YAML feasibility. No source was approved or implemented by Phase 03.
+6. Select supplied research categories or a labeled nonpersonal test subset, bounded files/snapshot scope and explicit stable edition/track/round identities.
+7. Close Phase 04 checkpoints A/B/C in order, with realistic fixtures/checksums/upstream revision, local size/CPU measurements, isolated persistence/opt-in smoke and conference/workshop/standalone-CFP coverage. No production Cron, Telegram or LLM work.
 
 ## Readiness checklist for starting Phase 02
 
 1. Phase 01 is complete with a passing `scripts/validate-docs.ps1` result and final contradiction review.
-2. The user explicitly activated Phase 02 for this task; it has now completed with hosted evidence. This checklist preserves its entry requirements. Phase 03 is not activated.
+2. The user explicitly activated Phase 02; it completed with hosted evidence. This historical checklist preserves its entry requirements. Later Phase 03 activation/completion is recorded above.
 3. Git is now verified at `D:/projects/research-bot`, baseline `7c9b40c` on `main`. Recheck before future staging; no parent metadata or history changes are allowed.
 4. Read AGENTS.md, ARCHITECTURE.md, DATABASE.md, docs/TESTING.md, ADRs and the Phase 02 specification; inspect files and current tooling.
 5. Identify the existing Supabase project reference and permissions through safe local/operator configuration. Perform a read-only inventory of current schemas, migrations, exposed schemas, extensions, grants, version, plan, pause policy and backups. Do not assume the project is empty.

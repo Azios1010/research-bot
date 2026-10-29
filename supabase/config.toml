@@ -11,3 +11,8 @@ major_version = 15
 
 [db.seed]
 enabled = false
+
+# Custom internal secret is mandatory in the handler; JWT is not the authorization gate.
+# This declares future deployment behavior and does not deploy the function.
+[functions.job-worker]
+verify_jwt = false

@@ -80,6 +80,8 @@ Phase 04 starts with a bounded CCFDDL subset, then resolves workshop/standalone-
 
 ## Source onboarding checklist
 
+Phase 03 includes only the repository-authored `fake` adapter for deterministic verification, not an external source candidate. Its eleven-type synthetic JSON, parser version and LF-normalized fixture checksums live in `tests/fixtures/fake/manifest.json`. Collection reads bounded fixture pages from test-owned source configuration and performs no public HTTP. No external permission/freshness claim or real-source approval is implied. Real adapters still require every onboarding gate below.
+
 1. Record exact source identity, category/types, official/aggregator role, URLs, evidence date, owner, and expected researcher relevance.
 2. Inspect current documentation, terms, robots and license for every fetch host, including redirect/ATS/detail hosts. Record permission/attribution decision and review date. Unresolved access permission blocks enabling the source; choose an alternative or obtain permission explicitly.
 3. Verify actual response formats, public/authenticated access, limits, update behavior, pagination/completeness semantics, timestamps/timezones, stable IDs and canonical target links.

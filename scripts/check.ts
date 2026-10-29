@@ -12,22 +12,53 @@ const sql = migrations.map((entry) => Deno.readTextFileSync(`supabase/migrations
 if ((sql.match(/^create table radar\./gm) ?? []).length !== 18) {
   throw new Error("Expected all 18 contract tables.");
 }
-if ((sql.match(/^create function public\.rr_/gm) ?? []).length < 12) {
-  throw new Error("Expected twelve narrow backend RPCs.");
+if ((sql.match(/^create function public\.rr_/gm) ?? []).length !== 15) {
+  throw new Error("Expected fifteen narrow backend RPCs (Phase 02 plus fenced reads).");
 }
 if (/security\s+definer/i.test(sql) || /^\s*(drop|truncate)\s/im.test(sql)) {
   throw new Error("Unexpected privilege escalation/destructive migration statement.");
+}
+function files(directory: string): string[] {
+  return [...Deno.readDirSync(directory)].flatMap((entry) =>
+    entry.isDirectory
+      ? files(`${directory}/${entry.name}`)
+      : entry.name.endsWith(".ts")
+      ? [`${directory}/${entry.name}`]
+      : []
+  );
+}
+const modules = files("supabase/functions");
+for (const path of modules) {
+  if (path.endsWith("database.types.ts")) continue;
+  const body = Deno.readTextFileSync(path);
+  const imports = [...body.matchAll(/(?:from\s+|import\s*\()(["'])([^"']+)\1/g)].map((m) => m[2]);
+  if (
+    path.includes("/_shared/domain/") &&
+    (imports.some((p) => !p.startsWith("./")) || /\bDeno\b|\bfetch\s*\(/.test(body))
+  ) throw new Error(`Domain boundary violation: ${path}`);
+  if (
+    path.includes("/_shared/application/") &&
+    imports.some((p) => !p.startsWith("./") && !p.startsWith("../domain/"))
+  ) throw new Error(`Application boundary violation: ${path}`);
+  if (
+    !path.includes("/infrastructure/supabase/") && !path.includes("/job-worker/") &&
+    /database\.types|supabase-js/.test(body)
+  ) throw new Error(`Persistence DTO leaked: ${path}`);
+}
+for (const kind of ["unit", "contract"]) {
+  if (!files(`tests/${kind}`).some((p) => /_test\.ts$/.test(p))) {
+    throw new Error(`Empty ${kind} test discovery`);
+  }
 }
 await run(Deno.execPath(), [
   "fmt",
   "--check",
   "deno.json",
-  "scripts/check.ts",
-  "scripts/scan-secrets.ts",
-  "scripts/db",
-  "scripts/toolchain.json",
+  "scripts",
+  "supabase/functions",
+  "tests",
 ]);
-await run(Deno.execPath(), ["lint", "scripts/check.ts", "scripts/scan-secrets.ts", "scripts/db"]);
+await run(Deno.execPath(), ["lint", "scripts", "supabase/functions", "tests"]);
 await run(Deno.execPath(), [
   "check",
   "--frozen",
@@ -35,8 +66,12 @@ await run(Deno.execPath(), [
   "scripts/scan-secrets.ts",
   "scripts/db/main.ts",
   "scripts/db/guards_test.ts",
+  ...modules,
+  ...files("tests"),
 ]);
 await run(Deno.execPath(), ["test", "--frozen", "--cached-only", "scripts/db/guards_test.ts"]);
+await run(Deno.execPath(), ["task", "test:unit"]);
+await run(Deno.execPath(), ["task", "test:contract"]);
 const generated = "supabase/functions/_shared/infrastructure/supabase/database.types.ts";
 try {
   await Deno.stat(generated);

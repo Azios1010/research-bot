@@ -2,6 +2,8 @@
 
 ## Current executable check
 
+Phase 03 supplies the executable source-neutral core, offline unit/source-contract tasks and actual Supabase-js hosted integration. Current evidence is [Phase 03 verification](verification/phase03-pipeline.md): 35 unit, six contract and five guard tests; 100 hosted SQL assertions, ten query plans and 24 hosted pipeline assertions. Historical Phase 02 results below remain a separate baseline.
+
 Phase 01 introduced documentation validation. Phase 02 adds the pinned `deno task check`, `db:plan`, `db:verify`, `db:types` and `secrets:scan` tooling described in [database workflow](DATABASE_WORKFLOW.md). Isolated hosted [verification](verification/phase02-database.md) passed: 70 SQL assertions, ten query-plan checks, concurrent clients, no-op reapply, cleanup and actual type generation. Hosted tasks still refuse absent or ambiguous targets; offline checks do not read `.env`. From the repository root, documentation validation remains:
 
 ```powershell
@@ -10,9 +12,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/validate-docs.ps1
 
 Apply the host's `rtk` prefix when available. The validator is offline and read-only: required files/sections, phase order/status, ADR presence, local Markdown links, balanced fences and no accidental application/migration files in the foundation. A pass is structural evidence, not proof of architectural correctness; a senior handoff review is also required.
 
-## Future task interface
+## Task interface
 
-The Phase 02 tasks now exist with pinned Deno/CLI versions and a generated dependency lockfile. Tasks introduced in Phase 03 and later remain future contracts. Create them in their owning phases; no silently passing stub is allowed. Current `check` validates tooling/guard behavior, not SQL catalog binding or persistence correctness. Hosted tasks fail visibly when their required target/credentials are absent.
+Phase 02/03 tasks exist with pinned Deno/CLI/Supabase-js versions and an actual generated lockfile. Tasks introduced in Phase 04 and later remain future contracts. No silently passing stub is allowed. `check` validates formatting, lint, TypeScript, module imports, five guard tests, nonempty unit/contract discovery, unit/contract behavior, documentation and credential patterns. SQL catalog/persistence/concurrency evidence requires the separate hosted tasks, which fail without a verified isolated target.
 
 | Task | Introduced | Contract |
 | --- | --- | --- |
@@ -30,6 +32,14 @@ The Phase 02 tasks now exist with pinned Deno/CLI versions and a generated depen
 Scripts must support the Windows workspace and Deno without requiring Python, Docker or a local Postgres. Dependency fetching/bootstrap is separate from deterministic offline test execution. Pin exact versions/imports and cache dependencies before offline checks; do not allow network in unit/parser tests to hide missing fixtures.
 
 ## Test layers
+
+### Phase 03 executable suites
+
+`test:unit` discovers `tests/unit/*_test.ts`; `test:contract` discovers `tests/contract/*_test.ts`. Both use `--frozen --cached-only --allow-read=tests/fixtures`, without network/environment/run grants. Bootstrap pinned dependencies into the cache first; a missing dependency fails rather than calling a website. The synthetic producer has a provenance manifest and LF-normalized UTF-8 SHA-256 checksums. Parser tests perform no IO; transport tests inject fetch/clock without real HTTP requests.
+
+`test:integration` enters `scripts/db/main.ts integration` and reuses identity/isolation/empty-data/history/schema/receipt guards plus the verifier lock. It imports `tests/integration/pipeline.ts` only after those checks. Operator SQL creates/asserts/cleans UUID-scoped fixtures; the application uses actual Supabase-js HTTPS RPCs. The runner reads an existing backend API key from the verified project's Management API into memory only, never logging/storing/creating it or widening a PAT. Insufficient permission fails visibly. Operator credentials are not runtime credentials.
+
+Hosted cases cover eleven types, deadline corrections, atomic assessment handoff, provenance, replay, conditional not-modified, malformed siblings, simultaneous HTTP identity/task claims, ambiguous candidates, strong conflicts, fences, crash/retry, source disable and rollback. Intentional stale revisions must return PT409/HTTP 409, not enter the platform's 40001 retry loop. A receipt in ignored `private/phase03-verification.json` is written only after success. Tracked evidence records outcomes; mocks cannot substitute for hosted cases.
 
 ### Domain and application
 

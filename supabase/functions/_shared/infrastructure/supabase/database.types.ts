@@ -168,6 +168,23 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      rr_read_assessment_context: {
+        Args: { p_generation: number; p_owner: string; p_task: string };
+        Returns: Json;
+      };
+      rr_read_candidates: {
+        Args: {
+          p_generation: number;
+          p_owner: string;
+          p_records: Json;
+          p_task: string;
+        };
+        Returns: Json;
+      };
+      rr_read_collection_context: {
+        Args: { p_generation: number; p_owner: string; p_task: string };
+        Returns: Json;
+      };
       rr_renew_task: {
         Args: {
           p_generation: number;
@@ -1308,7 +1325,20 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      bind_pipeline_provenance: {
+        Args: {
+          p_key: string;
+          p_record: string;
+          p_source: string;
+          p_value: Json;
+        };
+        Returns: Json;
+      };
       cursor_digest: { Args: { p_cursor: Json }; Returns: string };
+      enqueue_page_assessments: {
+        Args: { p_keys: string[]; p_run: string; p_sequence: number };
+        Returns: undefined;
+      };
       finalize_run: {
         Args: { p_run: string; p_status: string };
         Returns: undefined;
@@ -1326,6 +1356,7 @@ export type Database = {
       object_ok: { Args: { p_limit?: number; p_value: Json }; Returns: boolean };
       parts_ok: { Args: { p_parts: Json; p_states: Json }; Returns: boolean };
       paused: { Args: { p_key: string }; Returns: boolean };
+      pipeline_opportunity: { Args: { p_id: string }; Returns: Json };
       refresh_notification: { Args: { p_id: string }; Returns: undefined };
       require_lease: {
         Args: {

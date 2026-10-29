@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "items": [
+    { "id": "valid-a", "category": "phd", "heading": "PhD in Applied Machine Learning", "provider": "Example University", "link": "https://positions.example.org/a", "subjects": ["Machine Learning"], "edition": "2031", "track": "", "state": "open" },
+    { "id": "malformed-b", "category": "phd", "heading": 42, "link": "https://positions.example.org/b" },
+    { "id": "valid-c", "category": "grant", "heading": "Grant for Open Research", "provider": "Example Foundation", "link": "https://funding.example.org/c", "subjects": ["Open Research"], "edition": "2031", "track": "", "state": "open", "unexpected_optional": { "ignored": true } },
+    { "id": "valid-a", "category": "phd", "heading": "PhD in Applied Machine Learning", "provider": "Example University", "link": "https://positions.example.org/a", "subjects": ["Machine Learning"], "edition": "2031", "track": "", "state": "open" }
+  ]
+}

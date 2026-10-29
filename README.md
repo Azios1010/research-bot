@@ -6,9 +6,9 @@ The intended coverage includes research jobs and internships, conferences and wo
 
 ## Current status
 
-Phases 01 and 02 are complete. Three database migrations, private persistence primitives and generated TypeScript types have passed isolated hosted SQL, concurrency, privilege, query-plan and cleanup checks. No phase is active; Phase 03 awaits explicit activation. No source collector, Telegram handler, configured schedule or production deployment exists. See [PLANS.md](PLANS.md), [verification evidence](docs/verification/phase02-database.md) and [database workflow](docs/DATABASE_WORKFLOW.md).
+Phases 01-03 are complete; no phase is active and Phase 04 awaits explicit activation. The source-neutral core has domain policies, an eleven-type synthetic adapter, a bounded authenticated worker and real Supabase-js persistence. Validation passed 35 unit tests, six source contract tests, 100 hosted SQL assertions, ten query plans and 24 hosted pipeline assertions. No real collector, Telegram handler, configured schedule or production deployment exists. See [PLANS.md](PLANS.md), [Phase 03 evidence](docs/verification/phase03-pipeline.md) and [database workflow](docs/DATABASE_WORKFLOW.md).
 
-The Phase 02 Git baseline is correctly scoped to `D:/projects/research-bot`, branch `main`, commit `7c9b40c`. Phase 01's drive-level Git finding is historical. No repository initialization, parent metadata change, commit or push is part of Phase 02.
+The repository is scoped to `D:/projects/research-bot`. Phase 02 is committed/pushed as `cb9e3a5` on `main`, now the GitHub default branch, following explicit user authorization. Phase 03 changes remain uncommitted. Phase 01's drive-level Git finding is historical.
 
 ## Intended architecture
 
@@ -45,7 +45,7 @@ Filtering is deterministic. An optional future LLM can reorder an already filter
 | [scripts/validate-docs.ps1](scripts/validate-docs.ps1) | Offline documentation consistency check |
 | [CHANGELOG.md](CHANGELOG.md) | Completed project changes |
 
-The future application layout is specified in ARCHITECTURE.md. Database files now live under `supabase/migrations/` and `supabase/tests/database/`; operator tooling lives in `scripts/db/`. Application modules are added by their owning phases.
+Application modules live in `supabase/functions/_shared/{domain,application,adapters,infrastructure}/`, with `job-worker/index.ts` as a thin composition root. Offline fixtures/tests live under `tests/`; database assertions live under `supabase/tests/database/`; migrations/operator tooling live in `supabase/migrations/` and `scripts/db/`.
 
 ## Development process
 
@@ -57,4 +57,4 @@ Repository-side checks are available as `deno task check` using pinned tooling. 
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/validate-docs.ps1
 ```
 
-Use the host's RTK prefix where available. Copy [.env.example](.env.example) to ignored `.env` and fill credentials locally; database tasks load that file automatically. `deno task db:plan` and `deno task db:verify` fail closed until an isolated target and secure environment configuration exist. Pinned npm-cache bootstrap instructions are in the database workflow. Application/source and production deployment tasks remain later-phase work.
+Use the host's RTK prefix where available. `deno task test:unit` and `deno task test:contract` run without network or credential access. Copy [.env.example](.env.example) to ignored `.env` and fill operator credentials locally for hosted tasks. `db:plan`, `db:verify` and `test:integration` fail closed without an explicitly verified isolated hosted target. Pinned bootstrap/type-regeneration instructions are in the database workflow. No deployment is needed to verify the core.

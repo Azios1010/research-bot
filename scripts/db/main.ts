@@ -146,6 +146,9 @@ async function inventory(sql: postgres.Sql, local: Migration[]): Promise<History
       "rr_begin_notification_attempt",
       "rr_finish_notification_attempt",
       "rr_store_assessments",
+      "rr_read_collection_context",
+      "rr_read_candidates",
+      "rr_read_assessment_context",
     ]}))`;
     if (functions.length) {
       throw new GuardError("Target has unrelated public routines; refusing automatic mutation.");
@@ -307,8 +310,8 @@ async function generate(cli: string, projectRef: string): Promise<void> {
 }
 
 async function main() {
-  if (!["plan", "verify", "types"].includes(mode)) {
-    throw new GuardError("Expected plan, verify or types mode.");
+  if (!["plan", "verify", "types", "integration"].includes(mode)) {
+    throw new GuardError("Expected plan, verify, types or integration mode.");
   }
   if (Deno.version.deno !== toolchain.deno) {
     throw new GuardError("Use the pinned Deno version in scripts/toolchain.json.");
@@ -457,7 +460,17 @@ async function main() {
           }
           throw new RollbackPassed();
         }).catch((error) => {
-          if (!(error instanceof RollbackPassed)) throw error;
+          if (error instanceof RollbackPassed) return;
+          // Only fixture-authored assertion labels, never SQL/values/server details.
+          if (
+            error?.code === "P0001" && typeof error.message === "string" &&
+            /^(assertion_failed|unexpected_sqlstate):[A-Za-z0-9 _]+(:[A-Z0-9]{5})?$/.test(
+              error.message,
+            )
+          ) {
+            throw new GuardError(`Hosted fixture ${entry.name}: ${error.message}`);
+          }
+          throw error;
         });
         console.log(`PASS: hosted SQL ${entry.name} (test transaction rolled back)`);
       }
@@ -489,6 +502,27 @@ async function main() {
           "Types require successful hosted verification for this exact schema/ref/migration set.",
         );
       }
+    }
+    if (mode === "integration") {
+      stage = "Phase 03 hosted application integration";
+      verificationLock = await sql.reserve();
+      const [{ locked }] =
+        await verificationLock`select pg_try_advisory_lock(hashtextextended('research-radar:verification',0)) as locked`;
+      if (!locked) {
+        throw new GuardError("Another verifier owns this isolated target; no writes ran.");
+      }
+      const suite = await import(
+        new URL("../../tests/integration/pipeline.ts", import.meta.url).href
+      ) as {
+        verifyPipeline: (
+          sql: postgres.Sql,
+          target: { projectRef: string },
+          token: string,
+        ) => Promise<void>;
+      };
+      await suite.verifyPipeline(sql, target, token);
+      await inventory(sql, local);
+      return;
     }
     stage = "actual hosted persistence type generation";
     await generate(cli, target.projectRef);

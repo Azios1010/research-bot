@@ -2,6 +2,12 @@
 
 ## Status and ownership
 
+The Phase 03 worker exists locally and is tested with an isolated hosted database; no function/schedule is deployed. It handles only collection pages and baseline assessment batches. Fixed log events cover task start, page counts, assessment count, sanitized failure, lost lease and invocation completion. Correlate source/run/task IDs and page sequence; payloads, URLs, keys and profile contents are excluded.
+
+For failed verification, inspect the named assertion or sanitized code. Cleanup removes only fixture UUIDs and restores collection pause in `finally`; interruption can leave fixtures, causing the next target inventory to refuse writes. Review those IDs for scoped cleanup; never reset/truncate or bypass the guard. `source_disabled` cancels collection, `lease_stale` stops writes, and `reconciliation_stale` permits one bounded re-read before durable retry. PT409 business conflicts replace the original 40001 choice to avoid a platform retry loop; SDK retries are disabled. Partial pages with durable good siblings are degraded successful source checks, distinct from transport/document failure.
+
+Repeated PT409 can indicate competing provenance updates as well as changed facts; do not bypass evidence tokens or blindly resubmit old proposals. Conditional validators must not be manually copied across configuration/parser revisions or interrupted snapshots. Current read RPCs enforce these bounds; preserve that behavior when adding a source.
+
 This is the future runbook for a single operator/researcher. Commands and status queries below describe use cases, not tooling already installed. Phase 09 makes the checks executable; Phase 10 exercises them on the verified deployment. During Phase 01, do not connect, rotate anything, register a webhook, or configure Cron.
 
 Phase 02 database planning/verification tools and their isolated hosted [evidence](docs/verification/phase02-database.md) exist as described in [database workflow](docs/DATABASE_WORKFLOW.md). Migrations, SQL/concurrency/query-plan checks and scoped cleanup ran only on the development target; collection/delivery remain paused. Production collection, scheduling, Telegram operations and uncertain-send resolution remain later-phase work. Local `.env`, target config, optional CA and verification receipt stay ignored by Git.

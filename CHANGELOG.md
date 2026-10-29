@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-29 — Phase 03 core opportunity pipeline
+
+- Implemented source-neutral domain/ports, bounded page processing, deterministic normalization/temporal evidence, stable identity proposals, conservative reconciliation/provenance and versioned baseline assessment.
+- Added an eleven-type synthetic source, realistic owned fixtures/checksums, bounded injected HTTP, structured logging, real generated-type Supabase-js RPC adapter and internally authenticated collector/assessment worker. No real source, Telegram, LLM, schedule or function deployment.
+- Added four immutable forward migrations for fenced context reads, atomic assessment handoff, provenance binding/source cancellation (ADR 0008), HTTP-compatible optimistic conflicts (ADR 0009), complete-snapshot validator scope and independent provenance CAS (ADR 0010). These fix actual platform retry and stale evidence/cache hazards while retaining full rollback and content-revision semantics.
+- Passed 35 unit, six contract and five guard tests; 100 hosted SQL assertions, ten query plans, real concurrent clients and 24 actual Supabase-js pipeline assertions, with cleanup and actual type generation. Recorded evidence/readiness; Phase 03 complete, active phase none, Phase 04 pending.
+- On explicit user instruction, committed/pushed the previously completed Phase 02 baseline as `cb9e3a5` and changed the GitHub default branch to `main`. Phase 03 changes remain uncommitted/unpushed.
+
 ## 2026-10-29 — Phase 02 database foundation
 
 - Applied three immutable migrations to the isolated development project, defining the 18 private entities, constraints/indexes, 12 backend RPCs, fenced transactions and explicit RLS/grants.

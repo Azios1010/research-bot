@@ -1,0 +1,16 @@
+{
+  "slug": "fake",
+  "parser_version": "fake-json-v1",
+  "created_at": "2026-10-29",
+  "original_url": null,
+  "retrieved_at": null,
+  "provenance": "Authored synthetic examples; no external website or personal data. Example domains are never fetched.",
+  "permission": "Repository-authored deterministic test data; no third-party dataset reused.",
+  "files": ["all-types.json", "mixed.json", "empty.json"],
+  "checksum_method": "sha256-utf8-lf",
+  "checksums": {
+    "all-types.json": "54f440184ca38e3d2e7bbdfaab4637fe040af2953f04624317cedc0371ebf96f",
+    "mixed.json": "09fd43cf55f5f0f811683436df29f3964e92b91c9c2ced0530086862b964384e",
+    "empty.json": "7ad703025aa8c8d4662a3fb85850acdc6a2f66a2b830ac84313e5a87c04f4d17"
+  }
+}
