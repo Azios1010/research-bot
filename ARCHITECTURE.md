@@ -4,7 +4,7 @@
 
 Research Radar is a single-researcher system with shared opportunity data and profile-scoped personalization. Supabase is the only backend platform. TypeScript runs in Deno-compatible Edge Functions. PostgreSQL holds durable application state; `supabase-js` calls narrow RPCs. Telegram and external sources are adapters. No persistent worker process or local production-equivalent database is part of the design.
 
-Accepted decisions are in [docs/adr/](docs/adr/). [DATABASE.md](DATABASE.md) defines persistence contracts; [PRODUCT_SPEC.md](PRODUCT_SPEC.md) defines behavior. This document fixes boundaries and algorithms, not an implementation already present.
+Accepted decisions are in [docs/adr/](docs/adr/). [DATABASE.md](DATABASE.md) defines persistence contracts; [PRODUCT_SPEC.md](PRODUCT_SPEC.md) defines behavior. The Phase 02 persistence layer has isolated hosted [verification evidence](docs/verification/phase02-database.md); application pipelines, source adapters, Telegram and automation remain later-phase work.
 
 ## High-level architecture
 
@@ -120,6 +120,8 @@ A date without time/zone stays a calendar date; it is not silently set to 23:59 
 
 PostgreSQL owns foreign keys, unique identities, transaction boundaries, versions, current feedback state, inbox/outbox, task claims, and scheduling keys. It does not fetch websites, parse HTML, score using external APIs, or call Telegram inside an opportunity transaction. Keep all application tables in private `radar`; expose only reviewed `public.rr_*` RPCs callable by the backend role. SQL functions default to `SECURITY INVOKER`; exceptions require review and a fixed empty search path with qualified references.
 
+Phase 02 authors these tables and twelve persistence RPCs, with exact contexts and cursor serialization in DATABASE.md and [ADR 0007](docs/adr/0007-database-primitives-and-hosted-verification.md). Short canonical/assessment writes share a transaction advisory lock; external collection remains independent. The [remote-first verification workflow](docs/DATABASE_WORKFLOW.md) uses a tooling-only direct SQL client, not an application adapter. Hosted SQL/type/security/concurrency verification and actual generated types remain pending until an isolated target is supplied.
+
 Transactions are required for source-record upsert/deduplication, page commit and continuation, feedback/state update, webhook receipt/task enqueue, task claim/complete, and notification preparation/item claims. Avoid a sequence of independent REST writes that can lose state between requests. DATABASE.md specifies keys and fencing.
 
 ## Deduplication and reconciliation
@@ -213,7 +215,7 @@ Supabase documents hosted [Edge limits](https://supabase.com/docs/guides/functio
 
 | Deferred work | Why | Resolution |
 | --- | --- | --- |
-| Exact SQL DDL and RPC signatures | Need executable constraints and hosted database verification, not speculative SQL in Phase 01. | Phase 02 |
+| Exact SQL DDL and RPC signatures | Resolved by immutable migrations, actual generated types and isolated hosted verification; see DATABASE.md. | Completed in Phase 02 |
 | Concrete source approval, rate limits, rights, parser feasibility | Public availability is not proof of stable permitted ingestion. | Phases 04-06, rechecked in 10 |
 | Researcher profile, timezone, eligibility and thresholds | Personal facts have not been supplied. | Basic setup in 07; personalization in 08; confirmed in 10 |
 | Measured resource budgets and paid-plan need | Existing Supabase project and plan are unknown. | Baseline in 02; benchmark in 04; release gate in 10 |

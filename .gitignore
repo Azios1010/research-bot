@@ -21,5 +21,6 @@ artifacts/
 # Tool caches and OS files
 node_modules/
 .deno/
+.tools/
 .DS_Store
 Thumbs.db

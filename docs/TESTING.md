@@ -2,7 +2,7 @@
 
 ## Current executable check
 
-Phase 01 provides only documentation validation. From the repository root:
+Phase 01 introduced documentation validation. Phase 02 adds the pinned `deno task check`, `db:plan`, `db:verify`, `db:types` and `secrets:scan` tooling described in [database workflow](DATABASE_WORKFLOW.md). Isolated hosted [verification](verification/phase02-database.md) passed: 70 SQL assertions, ten query-plan checks, concurrent clients, no-op reapply, cleanup and actual type generation. Hosted tasks still refuse absent or ambiguous targets; offline checks do not read `.env`. From the repository root, documentation validation remains:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/validate-docs.ps1
@@ -12,13 +12,14 @@ Apply the host's `rtk` prefix when available. The validator is offline and read-
 
 ## Future task interface
 
-These are **required future task names**, not commands available in Phase 01. Phase 02 introduces `deno.json`, a lockfile, supported tool versions and task runners. Create later tasks in the phase that owns their implementation; a not-yet-owned task is not a silently passing stub. Existing tasks fail on missing required inputs or unexpected zero-test discovery.
+The Phase 02 tasks now exist with pinned Deno/CLI versions and a generated dependency lockfile. Tasks introduced in Phase 03 and later remain future contracts. Create them in their owning phases; no silently passing stub is allowed. Current `check` validates tooling/guard behavior, not SQL catalog binding or persistence correctness. Hosted tasks fail visibly when their required target/credentials are absent.
 
 | Task | Introduced | Contract |
 | --- | --- | --- |
 | `deno task check` | 02 | Formatting, lint, type check of existing code, documentation validation or portable equivalent, and dependency/architectural import checks as modules appear. No runtime service dependency. |
 | `deno task db:plan` | 02 | Read-only migration inventory/diff for an explicitly supplied target; no apply/reset/secret output. |
 | `deno task db:verify` | 02 | Apply/verify migrations and SQL assertions only on an explicitly verified isolated hosted target; fail closed if absent/mismatched. Tests key constraints, privileges and atomic primitives, then cleans only its test-owned data. |
+| `deno task db:types` | 02 | Generate from the actual hosted schema only after matching verification receipt, migration history and schema fingerprint. No handwritten substitute. |
 | `deno task test:unit` | 03 | Pure domain/use-case/renderer/parser tests, injected clock/HTTP and sanitized fixtures; no external website, credential or database. |
 | `deno task test:contract` | 03 | Shared source contract tests against fake adapter first, every real adapter later; stable keys, per-record failures and bounded outputs. No live network. |
 | `deno task test:integration` | 03 | Hosted persistence/concurrency pipelines with fake external HTTP and fake delivery. Explicit isolated target required; no production target or website. |

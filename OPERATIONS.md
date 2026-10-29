@@ -4,6 +4,8 @@
 
 This is the future runbook for a single operator/researcher. Commands and status queries below describe use cases, not tooling already installed. Phase 09 makes the checks executable; Phase 10 exercises them on the verified deployment. During Phase 01, do not connect, rotate anything, register a webhook, or configure Cron.
 
+Phase 02 database planning/verification tools and their isolated hosted [evidence](docs/verification/phase02-database.md) exist as described in [database workflow](docs/DATABASE_WORKFLOW.md). Migrations, SQL/concurrency/query-plan checks and scoped cleanup ran only on the development target; collection/delivery remain paused. Production collection, scheduling, Telegram operations and uncertain-send resolution remain later-phase work. Local `.env`, target config, optional CA and verification receipt stay ignored by Git.
+
 The operator uses `/status` plus Supabase database, Edge Logs, Cron and function dashboards. Telegram cannot report an outage of its own channel; check Supabase monitoring independently. Initial routine: inspect freshness/backlog daily and review source quality/permissions and costs monthly. Final cadence is confirmed in Phase 10.
 
 ## Health signals

@@ -2,7 +2,7 @@
 
 ## Status and ownership
 
-This is a conceptual schema, not a migration. Phase 02 turns these decisions into SQL, generated persistence types, transaction RPCs, and hosted isolation tests. Use Supabase PostgreSQL as the durable store; there is no required local database. PostgreSQL features and extensions must be checked on the existing project before use.
+This contract has three migrations applied and verified on an isolated hosted development project, with actual generated persistence types. Hosted evidence covers 70 SQL assertions, ten query-plan assertions, concurrency, privileges, no-op reapply and cleanup. Supabase PostgreSQL remains the durable store, with no required local database. See [verification evidence](docs/verification/phase02-database.md), [database workflow](docs/DATABASE_WORKFLOW.md) and [ADR 0007](docs/adr/0007-database-primitives-and-hosted-verification.md). No production migration occurred.
 
 All application tables live in private schema `radar`, excluded from exposed Data API schemas. Backend-only `public.rr_*` RPCs provide a narrow API for `supabase-js`. Use UUID primary keys except stable type codes and natural settings keys. Timestamps are `timestamptz` in UTC; calendar dates remain `date`. Foreign keys default to restrict deletion for records with history. Do not cascade-delete opportunities, profiles, or sources during routine cleanup.
 
@@ -82,7 +82,7 @@ Precision checks: `instant` requires `due_at`, a timezone/explicit offset, and n
 
 ### `opportunity_identities`
 
-`id`, `opportunity_id FK`, `kind`, `key_version`, `value text`, `source_record_id FK?`, `created_at`; globally unique `(kind, key_version, value)` for strong identity claims only. Examples: a listing-specific normalized URL qualified by cycle/track, or a reviewed natural key including type family, normalized organization, title, cycle, and track.
+`id`, `opportunity_id FK`, `kind`, `key_version`, `value text`, `source_record_id FK?`, `evidence jsonb`, `created_at`; globally unique `(kind, key_version, value)` for strong identity claims only. Examples: a listing-specific normalized URL qualified by cycle/track, or a reviewed natural key including type family, normalized organization, title, cycle, and track. Indexed values/source-record keys are bounded to 2,000 UTF-8 bytes; longer identity inputs use a versioned strong digest with normalized components in `evidence` (at most 8 KiB). This concretizes the existing evidence requirement without moving core facts into JSONB.
 
 Candidate fingerprints belong on `opportunities` and are not unique here. Hashes use a versioned canonical serialization and a strong hash; store normalized components in bounded evidence to diagnose a collision. Changing normalization versions requires an explicit backfill/conflict audit, never silently creating a second identity namespace that loses existing matches.
 
@@ -162,7 +162,7 @@ Claims remain active for sent/uncertain parts, including those in a partially de
 
 ### `notification_attempts`
 
-`id`, `notification_id FK`, `part_index`, `attempt_number`, `task_id FK?`, `lease_generation`, `state` (`sending`, `sent`, `retryable_failure`, `permanent_failure`, `uncertain`, `resolved_delivered`, `resolved_abandoned`), `started_at`, `finished_at?`, `telegram_message_id text?`, `error_class?`, `retry_after_seconds?`, `resolution jsonb?`.
+`id`, `notification_id FK`, `part_index`, `attempt_number`, `task_id FK`, `lease_generation`, `state` (`sending`, `sent`, `retryable_failure`, `permanent_failure`, `uncertain`, `resolved_delivered`, `resolved_abandoned`), `started_at`, `finished_at?`, `telegram_message_id text?`, `error_class?`, `retry_after_seconds?`, `resolution jsonb?`. Phase 02 resolves the optional task link to required: every send attempt must be attributable to a fenced task/generation.
 
 Unique `(notification_id, part_index, attempt_number)`. Only one unresolved sending attempt per part, enforced by partial uniqueness/checking RPC. Record the attempt before external send. Every uncertain resolution records operator action, time, and reason. A controlled resend creates a new attempt after the safe resolution window, never rewrites the old outcome. Outgoing HTTP has a fixed short timeout; lease expiry alone is not proof no message was sent.
 
@@ -237,3 +237,32 @@ Before touching the existing project, inventory its schemas, migrations, extensi
 Initial retention policy, confirmed against measured volume in Phase 09: run/attempt details 90 days, sanitized quarantine snapshots 30 days, Telegram action payloads 7 days. Retain minimal update ID tombstones, active work, source identities, canonical opportunities, user state/feedback, notification schedule keys, item claims, and sent/uncertain outcomes indefinitely for the initial single user. Cleanup must not remove deduplication keys and thereby enable duplicate delivery. Closed opportunities remain visible through saved/history views. Profile deletion/privacy export and archival compaction are deferred beyond Phase 10 unless requested; no automatic deletion of personal decisions is planned.
 
 Implement initial retention by redacting expired payload/error detail while preserving small run/attempt headers and referenced rows. Do not delete FK targets, active work, unresolved attempts or their resolution evidence. Expiring a quarantine snapshot clears bounded evidence, not the stable source-record identity. Physical archival/deletion can be designed later from measured volume.
+
+## Phase 02 executable details
+
+Applied migrations are `20261028000100_radar_schema.sql`, `20261028000200_radar_rpc.sql`, and `20261028000300_radar_guards_and_grants.sql`. They require PostgreSQL 15+ and no new extension; verification ran on PostgreSQL 17.11. These three files are immutable after their hosted application. Future corrections use forward migrations. See [evidence](docs/verification/phase02-database.md).
+
+| Public RPC | Transactional responsibility |
+| --- | --- |
+| `rr_create_collection_run` | Coalesce a source request, create run/first page task atomically. |
+| `rr_enqueue_task` | Idempotent creation of fixed non-collector task kinds with bounded validated payloads. |
+| `rr_claim_task` | `SKIP LOCKED` ownership, generation/attempt advancement, expired-work recovery and send ambiguity quarantine. |
+| `rr_renew_task` | Renew a current lease, bounded to 90 seconds. |
+| `rr_finish_task` | Checked completion/failure/retry and matching run/inbox disposition. |
+| `rr_commit_source_page` | Fenced cursor CAS, source/identity/canonical/deadline reconciliation, counts, task completion and continuation. |
+| `rr_store_assessments` | Persist caller-computed revision-checked results and finish the complete assessment batch; no scoring algorithm. |
+| `rr_accept_telegram_update` | Deduplicated receipt plus one command task; no Telegram handler/API call. |
+| `rr_apply_feedback` | Fenced, profile-bound idempotent event/current-state mutation. |
+| `rr_prepare_notification` | Fenced, profile/kind/date-bound snapshot/item claims plus outgoing tasks; no scheduling or sending algorithm. |
+| `rr_begin_notification_attempt` | Revalidate eligibility, persist sending marker, return a message plan or safe cancellation. |
+| `rr_finish_notification_attempt` | Record definite/uncertain result, retain claims and transition the matching task atomically. |
+
+Worker RPCs require the current task UUID, owner UUID and lease generation. Feedback/notification preparation have appended context arguments; their SQL default null values fail closed rather than permit an unfenced call. Preparation binds to the corresponding `prepare_digest`, `prepare_reminders` or `telegram_command` profile context. Acceptance/enqueue/run creation are idempotent request primitives, not writes by an already leased worker. Operator uncertain-send resolution is intentionally a Phase 09 tool, with no automatic resend RPC now.
+
+Cursor hashes are SHA-256 over PostgreSQL's `coalesce(cursor,'null'::jsonb)::text` UTF-8 representation; applications use the returned token, not a differently serialized JavaScript hash. Page sequence starts at zero. Canonical/assessment writes share a short transaction advisory lock; external fetch/parse does not. Reconciliation proposals for changed existing facts require the observed content revision; stale proposals abort with SQLSTATE `40001` for bounded re-read/retry. Conflicting strong identities or known type/cycle/track changes quarantine the observation. No fingerprints are globally unique.
+
+Runtime privileges are SELECT/INSERT/UPDATE, not DELETE/TRUNCATE/schema CREATE. Type lookup is read-only. Private helper functions are not exposed Data API RPCs. Each wrapper's introducing migration revokes default public execution before commit; only backend `service_role` receives deliberate execution grants. No global defaults for unrelated public functions are changed. All helpers/wrappers are invokers with empty search paths and qualified object references.
+
+Run error samples keep at most 20 bounded keys/codes (keys truncated to 80 characters); aggregate reason counts use bounded code keys and an overflow bucket. Malformed missing/oversized record keys use a run/page/ordinal rejection namespace. Fully completed partial runs with bad siblings are degraded successful source checks; failed continuations with committed pages retain partial run status and failure health.
+
+SQL callers must use `SELECT * FROM public.rr_function(...)` or one scalar/composite assignment. Do not expand a mutating call as `(rr_function(...)).*`, which may evaluate it repeatedly. `supabase-js` will call these through its RPC boundary. Generated persistence types must come from the actual applied/verified catalog; none are fabricated while hosted access is unavailable.

@@ -2,7 +2,9 @@
 
 ## Current state and target
 
-Nothing has been deployed by Phase 01. No Supabase project credentials, schemas, plan or existing resources have been inspected. No bot, webhook or Cron job has been created. The target is a real deployment to the user's existing remote Supabase project in Phase 10.
+Phase 01 made no deployment or remote inspection. Phase 02 applied database migrations only to the operator's new isolated development project. No production schema deployment, bot, webhook or Cron job has been created. The target remains a real production deployment in Phase 10.
+
+Phase 02 has verified migrations, restrictive grants, 70 hosted SQL assertions, ten query-plan checks, concurrent-client tests, cleanup and actual generated types. See [database workflow](docs/DATABASE_WORKFLOW.md) and [verification evidence](docs/verification/phase02-database.md). The test target has zero backups/PITR disabled; billing-plan visibility is limited by the scoped token. Production plan, pausing and recovery suitability remain release gates. The parent Git-scope issue from Phase 01 is resolved at the Phase 02 baseline.
 
 ```mermaid
 flowchart LR

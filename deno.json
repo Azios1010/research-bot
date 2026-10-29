@@ -1,0 +1,17 @@
+{
+  "lock": "deno.lock",
+  "nodeModulesDir": "none",
+  "imports": {
+    "postgres": "npm:postgres@3.4.9"
+  },
+  "compilerOptions": { "strict": true },
+  "fmt": { "lineWidth": 100, "exclude": ["supabase", "docs", "harness", "*.md"] },
+  "lint": { "exclude": ["supabase/functions/_shared/infrastructure/supabase/database.types.ts"] },
+  "tasks": {
+    "check": "deno run --frozen --allow-read=. --allow-run scripts/check.ts",
+    "secrets:scan": "deno run --frozen --allow-read=. --allow-run=git scripts/scan-secrets.ts",
+    "db:plan": "deno run --frozen --env-file=.env --allow-read=. --allow-env=RADAR_DB_TARGET_FILE,RADAR_DB_URL,SUPABASE_ACCESS_TOKEN,RADAR_SUPABASE_CLI,PATH,PGHOST,PGPORT,PGDATABASE,PGUSERNAME,PGUSER,PGPASSWORD,PGSSLMODE,PGAPPNAME,PGCONNECT_TIMEOUT,PGTARGETSESSIONATTRS,PGSSLNEGOTIATION,PGMAX_LIFETIME,PGMAX_PIPELINE,PGBACKOFF,PGKEEP_ALIVE,PGFETCH_TYPES,PGPUBLICATIONS,PGTARGET_SESSION_ATTRS --allow-net --allow-run scripts/db/main.ts plan",
+    "db:verify": "deno run --frozen --env-file=.env --allow-read=. --allow-write=private,supabase/functions/_shared/infrastructure/supabase --allow-env=RADAR_DB_PLAN_SHA256,RADAR_DB_TARGET_FILE,RADAR_DB_URL,SUPABASE_ACCESS_TOKEN,RADAR_SUPABASE_CLI,PATH,PGHOST,PGPORT,PGDATABASE,PGUSERNAME,PGUSER,PGPASSWORD,PGSSLMODE,PGAPPNAME,PGCONNECT_TIMEOUT,PGTARGETSESSIONATTRS,PGSSLNEGOTIATION,PGMAX_LIFETIME,PGMAX_PIPELINE,PGBACKOFF,PGKEEP_ALIVE,PGFETCH_TYPES,PGPUBLICATIONS,PGTARGET_SESSION_ATTRS --allow-net --allow-run scripts/db/main.ts verify",
+    "db:types": "deno run --frozen --env-file=.env --allow-read=. --allow-write=private,supabase/functions/_shared/infrastructure/supabase --allow-env=RADAR_DB_TARGET_FILE,RADAR_DB_URL,SUPABASE_ACCESS_TOKEN,RADAR_SUPABASE_CLI,PATH,PGHOST,PGPORT,PGDATABASE,PGUSERNAME,PGUSER,PGPASSWORD,PGSSLMODE,PGAPPNAME,PGCONNECT_TIMEOUT,PGTARGETSESSIONATTRS,PGSSLNEGOTIATION,PGMAX_LIFETIME,PGMAX_PIPELINE,PGBACKOFF,PGKEEP_ALIVE,PGFETCH_TYPES,PGPUBLICATIONS,PGTARGET_SESSION_ATTRS --allow-net --allow-run scripts/db/main.ts types"
+  }
+}

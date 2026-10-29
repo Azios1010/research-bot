@@ -47,7 +47,7 @@ Read that file when present. Its command-prefix policy is to use `rtk` for shell
 - Private database schema and restrictive RPC grants are defaults. Any public endpoint, exposed schema or privilege expansion requires explicit design and tests.
 - Treat source data as hostile: parameterize SQL, escape Telegram text, validate safe URLs, restrict HTTP destinations/redirects, disable unsafe XML/YAML features, and bound inputs. Do not log credentials, tokens, headers, raw messages or full personal preferences.
 - Source onboarding requires current terms/robots/license evidence and fixture provenance. Public readability is not automated reuse permission. No login/CAPTCHA bypass or private API assumptions.
-- Git operations must stay inside the intended repository. Inspection found the Git root at `D:/`; verify/correct project isolation before staging, without altering the unrelated parent repository. No commit, push, GitHub resource, deployment, webhook registration or Cron activation is authorized by Phase 01.
+- Git operations must stay inside the intended repository. Phase 02 verified the root as `D:/projects/research-bot`, branch `main`, baseline `7c9b40c`; the drive-level root noted in Phase 01 is historical. Recheck scope before staging; never alter parent repository metadata. No commit, push, GitHub resource, production deployment, webhook registration or Cron activation is authorized by Phase 02.
 - Later phases follow their stated environment gates. Reversible local code/doc/test work needs no extra approval. External writes need session authorization and the correct verified target; complete the concrete reviewable work first. Do not add approval flows for routine implementation choices.
 
 ## Tests, documentation, and handoff
@@ -56,6 +56,7 @@ Read that file when present. Its command-prefix policy is to use `rtk` for shell
 - Follow [docs/TESTING.md](docs/TESTING.md). Use the phase's exact validation commands. Test meaningful behavior and failure boundaries; do not add tests that merely duplicate implementation or widen test runs without a reason.
 - Database uniqueness, concurrency, grants and lease behavior require isolated hosted integration evidence. Live source/Telegram smoke checks are explicit, separate tasks with recorded target and bounded effects.
 - Pin dependencies, use lockfiles, preserve Deno compatibility, and record minimum supported tool versions when tooling is introduced. Avoid broad test permissions.
+- Generate persistence types from an actually applied and verified hosted schema. Never hand-write a replacement for missing generated types. The verification-only PostgreSQL client in `scripts/db` must not become the application's persistence adapter.
 - Update relevant documentation, source register and changelog when behavior/architecture changes. ADRs are historical records: supersede decisions explicitly rather than rewrite their history.
 - At phase end, record commands/results, manual evidence, limitations and any unresolved questions in PLANS.md. Mark complete only after every exit criterion passes; then set active phase to none and stop.
 - Never commit or push unless the user explicitly asks. Never deploy merely because tests pass. Final product completion requires the real deployed end-to-end evidence in Phase 10.

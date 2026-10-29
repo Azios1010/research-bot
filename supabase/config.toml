@@ -1,0 +1,13 @@
+# Remote-first project configuration. This is a local name, never a hosted ref.
+project_id = "research-radar"
+
+[api]
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+major_version = 15
+
+[db.seed]
+enabled = false
