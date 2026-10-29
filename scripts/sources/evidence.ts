@@ -7,7 +7,9 @@ export async function conferenceInputHash(): Promise<string> {
     for await (const entry of Deno.readDir(new URL(path, root))) {
       const next = `${path}${entry.name}`;
       if (entry.isDirectory) await walk(`${next}/`);
-      else if (/\.(ts|json|sql|yml)$/.test(next) || entry.name === "LICENSE") paths.push(next);
+      else if (/\.(ts|json|sql|yml|xml|html)$/.test(next) || entry.name === "LICENSE") {
+        paths.push(next);
+      }
     }
   }
   for (

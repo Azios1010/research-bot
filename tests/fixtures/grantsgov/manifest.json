@@ -1,0 +1,34 @@
+{
+  "provenance": "Selected public factual fields from actual NSF 363764/20-558 (G) and 363481/26-513 (CA), with exact API instrument/category/applicant/date/eligibility values. Tokens, contacts, attachments, full descriptions and unrelated fields removed. Search totals observed 113/4. HHS forecast 364150 is a real outside-scope negative/schema fixture; positive NSF forecast variants, changed dates/cycles, missing/rolling/closed/malformed fields are explicitly synthetic tests, never live records.",
+  "source": "HHS Grants.gov public API; NSF ST research subset",
+  "parser_version": "grants-json-v1",
+  "original_urls": [
+    "https://www.grants.gov/api/common/search2",
+    "https://www.grants.gov/api/common/fetchopportunity",
+    "https://www.grants.gov/api/terms-conditions"
+  ],
+  "files": [
+    {
+      "path": "search-G.json",
+      "sha256_canonical_string": "20c467be36959a1e6bb55429340a6bd1e8442202d0b93a9efa5259289d8c57aa"
+    },
+    {
+      "path": "search-CA.json",
+      "sha256_canonical_string": "ef74259c40df2275b3a853e2b0859d8dc42ef7ddb0edd4aacef45e88dfcda4eb"
+    },
+    {
+      "path": "detail-G.json",
+      "sha256_canonical_string": "917f9cd627994bfb1b34aab5e6d84888a0547dcf2a9e55ebedae66c9574a255f"
+    },
+    {
+      "path": "detail-CA.json",
+      "sha256_canonical_string": "b0a29edd25def2838cc041037e9ce4120ae8644bce6be796dda93dc02ad4cde4"
+    },
+    {
+      "path": "forecast-outside-scope.json",
+      "sha256_canonical_string": "4249ba46478cefb0a48c8ca31963cecb06365c1100d9cdf4cedd3de980afe48c"
+    }
+  ],
+  "rights": "API terms permit retrieval/analysis/display with attribution and no false representation; official records remain linked. No third-party content relicensing claimed.",
+  "accessed_at": "2026-10-29"
+}

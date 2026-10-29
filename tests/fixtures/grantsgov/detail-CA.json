@@ -1,0 +1,44 @@
+{
+    "data":  {
+                 "id":  363481,
+                 "revision":  4,
+                 "opportunityNumber":  "26-513",
+                 "opportunityTitle":  "U.S. National Science Foundation State and Regional Artificial Intelligence Infrastructure Hubs:",
+                 "owningAgencyCode":  "NSF",
+                 "docType":  "synopsis",
+                 "opportunityCategory":  {
+                                             "category":  "D",
+                                             "description":  "Discretionary"
+                                         },
+                 "synopsis":  {
+                                  "agencyCode":  "NSF",
+                                  "agencyName":  "U.S. National Science Foundation",
+                                  "postingDateStr":  "2026-08-06-00-00-00",
+                                  "responseDate":  "Nov 04, 2026 12:00:00 AM EST",
+                                  "responseDateStr":  "2026-11-04-00-00-00",
+                                  "applicantTypes":  [
+                                                         {
+                                                             "id":  "25",
+                                                             "description":  "Others (see text field entitled \"Additional Information on Eligibility\" for clarification)"
+                                                         }
+                                                     ],
+                                  "fundingInstruments":  [
+                                                             {
+                                                                 "id":  "CA",
+                                                                 "description":  "Cooperative Agreement"
+                                                             }
+                                                         ],
+                                  "fundingActivityCategories":  [
+                                                                    {
+                                                                        "id":  "ST",
+                                                                        "description":  "Science and Technology and other Research and Development"
+                                                                    }
+                                                                ],
+                                  "applicantEligibilityDesc":  "*Who May Submit Proposals: Proposals may only be submitted by the following:\n  -Non-profit, non-academic organizations: Independent museums, observatories, research laboratories, professional societies and similar organizations located in the U.S. that are directly associated with educational or research activities.\n  -Institutions of Higher Education (IHEs): Two- and four-year IHEs (including community colleges) accredited in, and having a campus located in the US, acting on behalf of their faculty members. Special Instructions for International Branch Campuses of US IHEs: If the proposal includes funding to be provided to an international branch campus of a US institution of higher education (including through use of sub-awards and consultant arrangements), the proposer must explain the benefit(s) to the project of performance at the international branch campus, and justify why the project activities cannot be performed at the US campus.",
+                                  "version":  5,
+                                  "archiveDate":  "Dec 04, 2026 12:00:00 AM EST",
+                                  "archiveDateStr":  "2026-12-04-00-00-00"
+                              }
+             },
+    "errorcode":  0
+}

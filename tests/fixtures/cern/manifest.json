@@ -1,0 +1,22 @@
+{
+    "provenance":  "Handwritten factual/structural transcriptions. STAG reference, publication date, eligibility and closing facts observed live. Doctoral programme title/edition/funded research placement observed on official archived posting; absent from current RSS after 16 October closure. Doctoral and accountant CMS IDs and doctoral URL wrapper are synthetic in the observed RSS structure, not captured historical XML or live claims. HTML rewrites factual requirements within observed class structure.",
+    "source":  "CERN official Job offers RSS and fixed STAG article",
+    "parser_version":  "cern-rss-v1",
+    "original_urls":  [
+                          "https://careers.cern/jobs/feed/",
+                          "https://careers.cern/jobs/short-term-internship/",
+                          "https://jobs.smartrecruiters.com/CERN/744000141910971-doctoral-student-programme-2027-1"
+                      ],
+    "files":  [
+                  {
+                      "path":  "students.xml",
+                      "sha256_canonical_string":  "18ad762df7e50e83e0ba9c4e4cc6f8e446e7521854fb2d68af3b01d2667762d8"
+                  },
+                  {
+                      "path":  "internship.html",
+                      "sha256_canonical_string":  "4f2961e4c0573f2f2bc2babab1694a63ef3fcc126b259f823e35952c1c99f40f"
+                  }
+              ],
+    "rights":  "Narrow personal factual RSS use; CERN copyright retained; no advert prose or media redistribution",
+    "accessed_at":  "2026-10-29"
+}

@@ -6,9 +6,11 @@ The intended coverage includes research jobs and internships, conferences and wo
 
 ## Current status
 
-Phases 01-04 are complete; no phase is active and Phase 05 remains pending. Real bounded adapters read selected CCFDDL conference/workshop files and one public OpenReview workshop-proposal call through the source-neutral pipeline. Checks passed 52 unit tests, 14 contract tests, five guards, 100 hosted SQL assertions, ten query plans and 52 hosted application assertions. All three live smokes persisted twelve real development samples with 49 deadlines, verified replay and cleaned up. The authenticated worker is not deployed; there is no Telegram integration, recurring schedule or production operation. [PLANS.md](PLANS.md) is the phase authority; [Phase 04 evidence](docs/verification/phase04-conferences.md), [source decisions](docs/sources/ccfddl.md) and [database workflow](docs/DATABASE_WORKFLOW.md) explain the approved development scope.
+Phases 01-05 are complete; active phase is none and Phase 06 remains pending. Bounded adapters cover selected conference/workshop/call paths, Bath research vacancies, CERN student programmes and a narrow NSF research-funding subset through the same source-neutral pipeline. Phase 05 passed 73 unit, 25 contract, five guard, 100 hosted SQL, ten query-plan and 99 hosted application assertions; three live smokes verified eight real opportunities/eight deadlines, replay and cleanup. All six position/funding types have approved paths and realistic fixtures, with seasonal absences disclosed. See [PLANS.md](PLANS.md) and the [Phase 05 report](docs/verification/phase05-research-sources.md). The authenticated worker is not deployed; Telegram, recurring schedules and production operation remain future phases. The [database workflow](docs/DATABASE_WORKFLOW.md) explains the isolated development target and reproducible validation gates.
 
-The repository is scoped to `D:/projects/research-bot`, branch/default branch `main`. Phase 03 was committed and pushed as `fda53e3` before this phase; Phase 04 entered with a clean worktree. This task does not commit, push or deploy. Phase 01's drive-level Git finding is historical.
+The repository is scoped to `D:/projects/research-bot`, branch/default branch `main`. Phase 04 was committed and pushed as `b09b303` before Phase 05 entered with a clean worktree. This task does not commit, push or deploy. Phase 01's drive-level Git finding is historical.
+
+This product uses the Grants.gov API but is not endorsed or certified by the U.S. Department of Health and Human Services.
 
 ## Intended architecture
 

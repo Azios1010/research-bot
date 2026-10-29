@@ -1,0 +1,23 @@
+{
+    "data":  {
+                 "oppHits":  [
+                                 {
+                                     "id":  "363764",
+                                     "number":  "20-558",
+                                     "title":  "PFE: Research Initiation in Engineering Formation (PFE: RIEF)",
+                                     "agencyCode":  "NSF",
+                                     "agency":  "U.S. National Science Foundation",
+                                     "openDate":  "09/01/2026",
+                                     "closeDate":  "11/10/2026",
+                                     "oppStatus":  "posted",
+                                     "docType":  "synopsis",
+                                     "cfdaList":  [
+                                                      "47.041"
+                                                  ]
+                                 }
+                             ],
+                 "hitCount":  113,
+                 "startRecord":  0
+             },
+    "errorcode":  0
+}

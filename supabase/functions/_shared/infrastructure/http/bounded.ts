@@ -43,7 +43,12 @@ export class BoundedHttpClient implements HttpClient {
   private active = new Set<{ host: string; done: Promise<void>; release: () => void }>();
   private waiting = 0;
   private allowed: Set<string>;
-  constructor(endpoints: readonly string[], private readonly transport: typeof fetch = fetch) {
+  private readOnlyPosts: Set<string>;
+  constructor(
+    endpoints: readonly string[],
+    private readonly transport: typeof fetch = fetch,
+    readOnlyPostEndpoints: readonly string[] = [],
+  ) {
     this.allowed = new Set(endpoints.map((url) => {
       const safe = safeUrl(url);
       if (!safe.startsWith("https://") || new URL(safe).port) {
@@ -51,11 +56,33 @@ export class BoundedHttpClient implements HttpClient {
       }
       return safe;
     }));
+    this.readOnlyPosts = new Set(readOnlyPostEndpoints.map((url) => {
+      const safe = safeUrl(url);
+      if (!this.allowed.has(safe)) throw new ProcessingError("fetch_endpoint_invalid");
+      return safe;
+    }));
   }
   async request(input: HttpRequest): Promise<HttpResponse> {
     const url = safeUrl(input.url), host = new URL(url).hostname;
     if (!this.allowed.has(url)) throw new ProcessingError("fetch_destination_denied");
-    if (!["GET", "HEAD"].includes(input.method)) throw new ProcessingError("fetch_method_denied");
+    if (
+      !["GET", "HEAD"].includes(input.method) &&
+      !(input.method === "POST" && this.readOnlyPosts.has(url))
+    ) throw new ProcessingError("fetch_method_denied");
+    if (input.method === "POST") {
+      if (
+        typeof input.body !== "string" || new TextEncoder().encode(input.body).byteLength > 4096
+      ) throw new ProcessingError("request_body_invalid");
+      let body: unknown;
+      try {
+        body = JSON.parse(input.body);
+      } catch {
+        throw new ProcessingError("request_body_invalid");
+      }
+      if (!body || typeof body !== "object" || Array.isArray(body)) {
+        throw new ProcessingError("request_body_invalid");
+      }
+    } else if (input.body !== undefined) throw new ProcessingError("request_body_denied");
     const timeout = input.timeoutMs ?? 15000, maxBytes = input.maxBytes ?? 2097152;
     if (
       !Number.isInteger(timeout) || timeout < 1 || timeout > 15000 || !Number.isInteger(maxBytes) ||
@@ -103,8 +130,10 @@ export class BoundedHttpClient implements HttpClient {
         ) throw new ProcessingError("request_header_denied");
         headers.set(name, value);
       }
+      if (input.method === "POST") headers.set("content-type", "application/json");
       const response = await this.transport(url, {
         method: input.method,
+        ...(input.body !== undefined ? { body: input.body } : {}),
         headers,
         redirect: "manual",
         signal,

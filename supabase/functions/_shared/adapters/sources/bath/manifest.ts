@@ -1,0 +1,25 @@
+export const bathManifest = {
+  slug: "bath-research",
+  parserVersion: "bath-rss-v1",
+  supportedTypes: ["research_assistant", "postdoc"],
+  endpoint: "https://www.bath.ac.uk/jobs/rss/rss.aspx?cat=391",
+  approvedHosts: ["www.bath.ac.uk"],
+  approvedPaths: ["/jobs/rss/rss.aspx"],
+  approvedQuery: "cat=391",
+  maxBytes: 524288,
+  maxRecords: 40,
+  maxItemBytes: 65536,
+  timeoutMs: 15000,
+  requestsPerRun: 1,
+  maxPages: 1,
+  detailRequests: 0,
+  proposedCadenceMinutes: 1440,
+  permissionReviewedAt: "2026-10-29",
+  permission:
+    "Advertised RSS for personal noncommercial prospective-applicant use; no advert redistribution license",
+  rightsUrl: "https://www.bath.ac.uk/jobs/display.aspx?id=322&pid=84",
+  evidence: "docs/sources/bath-jobs.md",
+  fixtures: "tests/fixtures/bath/",
+  classificationPolicy:
+    "Education & Research + supported role title; associate requires explicit postdoctoral or qualification evidence; no generic research-word rule",
+} as const;

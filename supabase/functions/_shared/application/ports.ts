@@ -27,7 +27,8 @@ export interface Lease {
 }
 export interface HttpRequest {
   url: string;
-  method: "GET" | "HEAD";
+  method: "GET" | "HEAD" | "POST";
+  body?: string;
   timeoutMs?: number;
   maxBytes?: number;
   headers?: Readonly<Record<string, string>>;

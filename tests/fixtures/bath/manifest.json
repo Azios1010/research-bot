@@ -1,0 +1,13 @@
+{
+ "source":"University of Bath jobs RSS, Education & Research",
+ "original_url":"https://www.bath.ac.uk/jobs/rss/rss.aspx?cat=391",
+ "accessed_at":"2026-10-29",
+ "parser_version":"bath-rss-v1",
+ "fixture":"research.xml",
+ "sha256_lf":"78a2840a7776c49ebcd6b89e4bec89863e96052359d8b9b38ab7c2872c4405f7",
+ "rights":"Personal noncommercial feed use per advertised RSS and jobs Terms. No open redistribution license for advert prose is claimed.",
+ "provenance":"Handwritten factual transcription in observed RSS structure. SS14039/SS13981 and excluded live-role references were observed 2026-10-29. SS13911 is a historical assistant reference/closing date from an earlier official vacancies-list result and is absent from the current feed. Dates/titles/IDs only; all descriptions are rewritten factual test summaries. No source advert prose, contact data or full feed copied.",
+ "synthetic_cases":"Technical category, altered deadlines/reposts, missing GUID, rolling/missing dates, location/work-mode additions, optional fields and hostile XML are declared synthetic mutations. They are not live vacancy claims.",
+ "observed_live_bytes":220190,
+ "observed_live_items":19
+}

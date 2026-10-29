@@ -1,0 +1,44 @@
+{
+    "data":  {
+                 "id":  363764,
+                 "revision":  3,
+                 "opportunityNumber":  "20-558",
+                 "opportunityTitle":  "PFE: Research Initiation in Engineering Formation (PFE: RIEF)",
+                 "owningAgencyCode":  "NSF",
+                 "docType":  "synopsis",
+                 "opportunityCategory":  {
+                                             "category":  "D",
+                                             "description":  "Discretionary"
+                                         },
+                 "synopsis":  {
+                                  "agencyCode":  "NSF",
+                                  "agencyName":  "U.S. National Science Foundation",
+                                  "postingDateStr":  "2026-09-01-00-00-00",
+                                  "responseDate":  "Nov 10, 2026 12:00:00 AM EST",
+                                  "responseDateStr":  "2026-11-10-00-00-00",
+                                  "applicantTypes":  [
+                                                         {
+                                                             "id":  "25",
+                                                             "description":  "Others (see text field entitled \"Additional Information on Eligibility\" for clarification)"
+                                                         }
+                                                     ],
+                                  "fundingInstruments":  [
+                                                             {
+                                                                 "id":  "G",
+                                                                 "description":  "Grant"
+                                                             }
+                                                         ],
+                                  "fundingActivityCategories":  [
+                                                                    {
+                                                                        "id":  "ST",
+                                                                        "description":  "Science and Technology and other Research and Development"
+                                                                    }
+                                                                ],
+                                  "applicantEligibilityDesc":  "*Who May Serve as PI:\nThe PFE: RIEF program is designed to expand the community of engineering faculty equipped to conduct research in professional formation of engineers. At least one (co) PI must be a member of an engineering department AND not have received engineering education or professional formation funding through EEC in the last three years.\u0026amp;nbsp;Submissions from faculty with active disciplinary research programs, or faculty seeking a shift in their research focus, are especially encouraged. The program is not intended to create an additional funding channel for researchers with expertise in social science or education research; such researchers should apply to the Research in the Formation of Engineers program (https://www.nsf.gov/funding/opportunities/rfe-research-formation-engineers), or other related NSF opportunities.",
+                                  "version":  4,
+                                  "archiveDate":  "Dec 10, 2026 12:00:00 AM EST",
+                                  "archiveDateStr":  "2026-12-10-00-00-00"
+                              }
+             },
+    "errorcode":  0
+}

@@ -44,13 +44,17 @@ Chosen `_shared/adapters/sources/<slug>/` modules/manifests; realistic RSS/XML/H
 deno task check
 deno task test:unit
 deno task test:contract
+deno task db:plan
 deno task db:verify
 deno task test:integration
-deno task sources:smoke --source <approved-position-slug>
-deno task sources:smoke --source <approved-funding-slug>
+deno task sources:smoke --source bath-research
+deno task sources:smoke --source cern-students
+deno task sources:smoke --source grants-gov-research
+deno task sources:jobs-benchmark
+deno task sources:funding-benchmark
 ```
 
-Replace angle-bracket arguments with the selected manifest slugs and record exact commands in PLANS; run additional smoke only for adapters required by the coverage matrix. All persisted smoke data is test-only. Baseline tasks must not call websites.
+These selected slugs close the six-type matrix with three adapters. Record exact results in PLANS and the phase report. `db:plan` is read-only; all persisted smoke data is test-only. `test:positions`/`test:funding` are focused hosted diagnostics; the full integration task includes both. Baseline tasks and offline benchmarks must not call websites. Also run the documentation validator, credential scan and `git diff --check`.
 
 ## Manual verification
 
@@ -63,3 +67,14 @@ Unverified EURAXESS API/read rights, stale/truncated feeds, employer ATS redirec
 ## Exit criteria
 
 All three checkpoints and six-type coverage gates pass with fixture/live isolated evidence, required commands green and source register current. Mark 05 complete, active phase none; stop before journals. A missing funding/internship path keeps this phase incomplete rather than silently deferring it to production.
+
+## Verified exit evidence — 2026-10-29
+
+- [x] A: official bounded Bath RSS, explicit role/qualification filtering, realistic fixtures, current terms/robots, resource benchmark, hosted persistence/live/replay/cleanup.
+- [x] B: Bath/CERN cover four position codes; historical/seasonal PhD and assistant absence disclosed; real internship mapped with assignment/eligibility restrictions, dates/reposts/cross-source identities and partial detail failure tested.
+- [x] C: official Grants.gov documented read API; NSF/ST research G and CA calls prove distinct grant/research_funding paths, cycle/amendment/status/eligibility evidence, four-request cap and resource measurements.
+- [x] Five guard, 73 unit, 25 contract, 100 hosted SQL, ten plan and 99 hosted application assertions pass. All three final live smokes pass (7/7/9 assertions); eight real opportunities/eight deadlines verified and cleaned. Two earlier Bath transport timeouts remained visible and bounded, followed by a successful final invocation.
+- [x] Hosted three-family failures and disable/re-enable preserve unrelated work, existing canonicals and deterministic identity; cleanup/empty inventory pass. Seven migrations/types/schema/RPCs unchanged.
+- [x] Rights/register/manifests/checksums/manual comparisons, exact validation/evidence, documentation/credential/diff checks and readiness are recorded in [the Phase 05 report](../../docs/verification/phase05-research-sources.md). The only material boundary extension is [ADR 0011](../../docs/adr/0011-bounded-read-only-json-post.md), default-denied exact read-only JSON POST.
+
+Technical source coverage uses a disclosed nonpersonal test subset; actual researcher interests, host and personal eligibility are not fabricated. Later profile/release work must validate fit before delivery. Phase 05 is complete. Phase 06 remains pending and requires separate activation.

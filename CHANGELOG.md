@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-29 — Phase 05 research positions and funding
+
+- Added reviewed bounded Bath research RSS, CERN student RSS/fixed internship detail and Grants.gov NSF/ST research JSON adapters through the existing source-neutral pipeline. All four position codes plus grant/research_funding have realistic fixtures and approved paths; seasonal PhD/assistant absence and personal eligibility uncertainty remain explicit.
+- Preserved factual eligibility, calendar-only dates, exact Geneva cutoff, cycle-aware source identities, stable application rounds, provenance and deterministic role/instrument exclusions. Added safe XML preflight with pinned dependencies and bounded factual fixtures/checksums; no full advert, API response token or contact dump.
+- Added default-denied exact-URL read-only JSON POST for the documented funding API ([ADR 0011](docs/adr/0011-bounded-read-only-json-post.md)), focused hosted suites, three-family failure/disable checks, two offline resource benchmarks and explicit isolated smoke routes. No schema, migration, RPC, generated type or domain-rule changes.
+- Passed 73 unit, 25 contract, five guard, 100 hosted SQL, ten query-plan and 99 hosted application assertions. Final three live smokes verified 53 observations, eight real opportunities/eight deadlines and replay, then cleaned all scoped data/restored pause. Earlier Bath transport timeouts were bounded and documented; final read/replay passed.
+- Updated source register, rights/manual/resource/coverage evidence, testing/operations/product/architecture, roadmap and [full 35-item report](docs/verification/phase05-research-sources.md). Phase 05 complete, active phase none, Phase 06 pending. No commit, push, Telegram, Cron, LLM, CV processing or production deployment.
+
 ## 2026-10-29 — Phase 04 conference sources
 
 - Reverified current CCFDDL schema/MIT rights/MCP alternatives and selected fixed bounded SIGMOD/HotOS YAML files. Added strict pure environment-free YAML parsing, reviewed manifests/registry, stable editions/semantic rounds, conservative default-time evidence and pinned licensed fixtures/checksums.

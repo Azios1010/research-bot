@@ -28,6 +28,8 @@ Stable initial codes are `phd`, `postdoc`, `research_assistant`, `research_inter
 
 A conference edition may carry submission deadlines and appear under conferences and CFP browsing without creating a second opportunity. A standalone track call can be `conference_cfp` with an optional parent conference. A special issue with a call is one `journal_special_issue`, shown in journal/CFP views. General research funding excludes records already classified as a specific grant. Do not duplicate an item merely to satisfy type counts.
 
+Phase 05 makes two mappings concrete. A paid doctoral research placement contributing to an enrolled student's PhD is `phd` when programme/edition evidence is explicit; generic admission information or a scholarship alone is not a job. A legal Grant instrument is `grant`; research support through a Cooperative Agreement is `research_funding`. A call offering both remains one grant with both instruments preserved. These are source-evidenced categories, never claims that the researcher qualifies. A forecast is labeled separately from an accepting call; estimated dates and institutional applicant restrictions must remain visible in future browsing/notification decisions.
+
 Coverage ownership: Phase 04 handles conferences, workshops, and standalone conference CFPs; Phase 05 handles all four position types plus grants and research funding; Phase 06 handles journals. Each source phase has sequential checkpoints so missing coverage cannot be silently pushed outside the ten-phase plan.
 
 ## Core user journeys

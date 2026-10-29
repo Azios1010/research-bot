@@ -3,6 +3,8 @@
   "nodeModulesDir": "none",
   "imports": {
     "postgres": "npm:postgres@3.4.9",
+    "fast-xml-parser": "npm:fast-xml-parser@5.11.2",
+    "entities": "npm:entities@8.1.0",
     "yaml": "https://cdn.jsdelivr.net/npm/yaml@2.9.1/browser/index.js",
     "@supabase/supabase-js": "npm:@supabase/supabase-js@2.118.0"
   },
@@ -35,6 +37,10 @@
     "db:types": "deno run --frozen --env-file=.env --allow-read=. --allow-write=private,supabase/functions/_shared/infrastructure/supabase --allow-env=RADAR_DB_TARGET_FILE,RADAR_DB_URL,SUPABASE_ACCESS_TOKEN,RADAR_SUPABASE_CLI,PATH,PGHOST,PGPORT,PGDATABASE,PGUSERNAME,PGUSER,PGPASSWORD,PGSSLMODE,PGAPPNAME,PGCONNECT_TIMEOUT,PGTARGETSESSIONATTRS,PGSSLNEGOTIATION,PGMAX_LIFETIME,PGMAX_PIPELINE,PGBACKOFF,PGKEEP_ALIVE,PGFETCH_TYPES,PGPUBLICATIONS,PGTARGET_SESSION_ATTRS --allow-net --allow-run scripts/db/main.ts types",
     "test:conferences": "deno run --frozen --env-file=.env --allow-read=. --allow-write=private --allow-env=RADAR_DB_TARGET_FILE,RADAR_DB_URL,SUPABASE_ACCESS_TOKEN,RADAR_SUPABASE_CLI,PATH,PGHOST,PGPORT,PGDATABASE,PGUSERNAME,PGUSER,PGPASSWORD,PGSSLMODE,PGAPPNAME,PGCONNECT_TIMEOUT,PGTARGETSESSIONATTRS,PGSSLNEGOTIATION,PGMAX_LIFETIME,PGMAX_PIPELINE,PGBACKOFF,PGKEEP_ALIVE,PGFETCH_TYPES,PGPUBLICATIONS,PGTARGET_SESSION_ATTRS --allow-net --allow-run scripts/db/main.ts conferences",
     "sources:smoke": "deno run --frozen --env-file=.env --allow-read=. --allow-write=private --allow-env=RADAR_DB_TARGET_FILE,RADAR_DB_URL,SUPABASE_ACCESS_TOKEN,RADAR_SUPABASE_CLI,PATH,PGHOST,PGPORT,PGDATABASE,PGUSERNAME,PGUSER,PGPASSWORD,PGSSLMODE,PGAPPNAME,PGCONNECT_TIMEOUT,PGTARGETSESSIONATTRS,PGSSLNEGOTIATION,PGMAX_LIFETIME,PGMAX_PIPELINE,PGBACKOFF,PGKEEP_ALIVE,PGFETCH_TYPES,PGPUBLICATIONS,PGTARGET_SESSION_ATTRS --allow-net --allow-run scripts/db/main.ts sources-smoke",
-    "sources:benchmark": "deno run --frozen --cached-only --allow-read=tests/fixtures scripts/sources/benchmark.ts"
+    "sources:benchmark": "deno run --frozen --cached-only --allow-read=tests/fixtures scripts/sources/benchmark.ts",
+    "test:positions": "deno run --frozen --env-file=.env --allow-read=. --allow-write=private --allow-env=RADAR_DB_TARGET_FILE,RADAR_DB_URL,SUPABASE_ACCESS_TOKEN,RADAR_SUPABASE_CLI,PATH,PGHOST,PGPORT,PGDATABASE,PGUSERNAME,PGUSER,PGPASSWORD,PGSSLMODE,PGAPPNAME,PGCONNECT_TIMEOUT,PGTARGETSESSIONATTRS,PGSSLNEGOTIATION,PGMAX_LIFETIME,PGMAX_PIPELINE,PGBACKOFF,PGKEEP_ALIVE,PGFETCH_TYPES,PGPUBLICATIONS,PGTARGET_SESSION_ATTRS --allow-net --allow-run scripts/db/main.ts positions",
+    "sources:jobs-benchmark": "deno run --frozen --cached-only --allow-read=tests/fixtures scripts/sources/jobs-benchmark.ts",
+    "test:funding": "deno run --frozen --env-file=.env --allow-read=. --allow-write=private --allow-env=RADAR_DB_TARGET_FILE,RADAR_DB_URL,SUPABASE_ACCESS_TOKEN,RADAR_SUPABASE_CLI,PATH,PGHOST,PGPORT,PGDATABASE,PGUSERNAME,PGUSER,PGPASSWORD,PGSSLMODE,PGAPPNAME,PGCONNECT_TIMEOUT,PGTARGETSESSIONATTRS,PGSSLNEGOTIATION,PGMAX_LIFETIME,PGMAX_PIPELINE,PGBACKOFF,PGKEEP_ALIVE,PGFETCH_TYPES,PGPUBLICATIONS,PGTARGET_SESSION_ATTRS --allow-net --allow-run scripts/db/main.ts funding",
+    "sources:funding-benchmark": "deno run --frozen --cached-only --allow-read=tests/fixtures scripts/sources/funding-benchmark.ts"
   }
 }

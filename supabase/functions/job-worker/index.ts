@@ -3,7 +3,11 @@ import { persistenceClient } from "../_shared/infrastructure/supabase/client.ts"
 import { SupabaseRepository } from "../_shared/infrastructure/supabase/repository.ts";
 import { BoundedHttpClient } from "../_shared/infrastructure/http/bounded.ts";
 import { StructuredLogger } from "../_shared/infrastructure/observability/logging.ts";
-import { approvedEndpoints, approvedSources } from "../_shared/adapters/sources/registry.ts";
+import {
+  approvedEndpoints,
+  approvedReadPostEndpoints,
+  approvedSources,
+} from "../_shared/adapters/sources/registry.ts";
 import { runWorker } from "../_shared/application/worker.ts";
 
 // No privileged client is constructed until the request passes internal authentication.
@@ -20,7 +24,7 @@ Deno.serve(
         repository: new SupabaseRepository(client),
         adapters: approvedSources(),
         clock: { now: () => new Date().toISOString() },
-        http: new BoundedHttpClient(approvedEndpoints),
+        http: new BoundedHttpClient(approvedEndpoints, fetch, approvedReadPostEndpoints),
         logger: new StructuredLogger(),
       }, { owner: crypto.randomUUID(), maxTasks, signal });
     },

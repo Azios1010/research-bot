@@ -2,6 +2,24 @@
 
 ## Evidence policy
 
+Phase 05 current evaluation (2026-10-29) supersedes older job/funding candidate estimates below. A closed with Bath, B with CERN, and C closed with the official Grants.gov NSF/ST research subset. All required hosted/live gates passed with cleanup. Actual personal eligibility remains unconfigured; the selected scope is a disclosed nonpersonal technical subset, not a recommendation or an enabled production catalogue. [Phase 05 verification](docs/verification/phase05-research-sources.md) is the evidence ledger.
+
+| Selected path / official owner | Types / format / structured IDs | Access, bounds, detail cost and Edge compatibility | Cadence / reliability / rights / eligibility fit |
+| --- | --- | --- | --- |
+| `bath-research`, University of Bath | postdoc, research assistant; RSS/XML; vacancy reference | Official category 391 feed, one GET, 512 KiB/40 records, no detail requests; bounded XML preflight/pure mapping | Daily proposed, no SLA/full-feed guarantee; no auth; explicit RSS syndication, personal noncommercial applicant use, copyright retained; research level requires title plus qualification evidence. [Rights/robots/fixtures](docs/sources/bath-jobs.md) |
+| `cern-students`, CERN | PhD research placement, research internship; RSS + one fixed HTML detail; programme edition/STAG reference | Up to six 64 KiB ten-item feeds, at most one 256 KiB fixed detail per page; max twelve requests/run; bounded Deno parsing, no ATS API | Daily proposed, no SLA; no auth; offered RSS, factual personal reading, no open-content license; student/country restrictions retained. Mixed scientific/technical/admin internship assignment is not guaranteed research. [Evidence](docs/sources/cern-students.md) |
+| `grants-gov-research`, HHS Grants.gov / NSF announcements | grant, research_funding; JSON; portal ID + opportunity number | Documented read POST search2/fetchOpportunity; latest one G and one CA in NSF/ST/research; two searches + max two details, 128/256 KiB, shared 15 seconds, one page; explicitly partial scope. Exact POST allowlist, no auth | Daily proposed, no SLA/quantified quota found; API terms permit read/analyze/display with attribution; robots endpoint 403 unresolved, explicit API permission used. Institution/PI restrictions retained; US-host/personal fit unconfirmed. [Rights, manual comparison, fixtures](docs/sources/grants-gov.md) |
+
+### Funding alternatives reviewed for Checkpoint C
+
+| Candidate / official owner | Access / identifiers / cost / cadence | Rights/auth/Edge/eligibility assessment | Decision |
+| --- | --- | --- | --- |
+| Grants.gov NSF/ST research | Official JSON API, stable portal ID/number, bounded rows=1 G/CA plus detail; observed 58,680 decoded bytes/four requests; daily proposed | No auth; documented API terms with attribution; Deno-compatible. Engineering research grant and AI infrastructure cooperative agreement are genuine research calls; eligibility is conditional on explicit PI/host facts | **Selected** smallest one funding adapter proving two distinct legal instruments, not two copies of one call |
+| Grants.gov NIH/HL research | Same documented API, sampled G 361380/RFA-EB-28-004 and CA 362954/RFA-AI-28-012; two searches/details possible | No auth and same portal terms; biomedical restrictions would select an unconfirmed discipline, some eligibility refers to the full announcement | **Evaluated, not selected**; no better personal-fit evidence and no unique type gap |
+| UKRI, UK Research and Innovation | [Official funding opportunities](https://www.ukri.org/opportunity/?lang=en-gb) exposes RSS and funding type filters; candidate IDs/feed bounds/update SLA not onboarded | Official owner, but sampled eligibility depends on UK organisations; per-feed rights/resource review incomplete | **Evaluated, not selected**, no established alignment advantage over current technical subset; not an approved adapter |
+
+No generic funder/ATS scraping, credentialed access, internal EURAXESS JSON API or browser automation is approved. All selected manifests/fixtures retain source-specific classification and permission evidence. Record/call membership in these technical sources is not a hard personal-eligibility filter. Known incompatible degree rules can use the existing deterministic assessment only when the profile explicitly supplies the corresponding fact; unknown facts stay unknown.
+
 Phase 04 current re-evaluation (2026-10-29): [CCFDDL decision and evidence](docs/sources/ccfddl.md) and [OpenReview call evidence](docs/sources/openreview-calls.md) supersede historical conference-candidate estimates below for the three exact approved development paths. Direct bounded YAML was selected over the current documented CCFDDL MCP service. HotOS reuses that adapter to close workshop coverage. One scoped public OpenReview API invitation closes the distinct organizer-call gap. No production collection or scheduling is approved.
 
 | Approved development path | Category / format / access | Cadence / reliability / authentication / difficulty | Rights / duplicates / priority |
@@ -18,7 +36,15 @@ Record the next review date, exact endpoint, response headers, terms/robots evid
 
 Prefer maintained public structured datasets, documented stable APIs, RSS/Atom, public JSON/YAML, then stable HTML. Browser automation is last resort and has no approved runtime in this architecture; choose another source unless an ADR and explicit later scope change justify it.
 
-Hard gates: permitted access/reuse, usable relevance, stable logical identity, bounded Edge-runtime feasibility, and fixture-backed parsing. If a gate fails, the source is not production-enabled regardless of score. For gated candidates, score each 0-2 on structure, freshness evidence, field completeness, provenance/authority, maintenance stability, and operational cost (maximum 12). Rank by measured score within required category coverage. Unknown evidence earns 0 pending investigation, not an optimistic score. Numerical scores are deferred to onboarding because normal fetch/parser measurements do not exist yet.
+Hard gates: permitted access/reuse, usable relevance, stable logical identity, bounded Edge-runtime feasibility, and fixture-backed parsing. If a gate fails, the source is not production-enabled regardless of score. For gated candidates, score each 0-2 on structure, freshness evidence, field completeness, provenance/authority, maintenance stability, and operational cost (maximum 12). Rank by measured score within required category coverage. Unknown evidence earns 0 pending investigation, not an optimistic score. Phase 05's qualitative ratings below use actual format/fetch/parser/manual evidence, not a claimed uptime/completeness measurement; failed/unresolved rights/access candidates receive no onboarding approval or comparative total.
+
+| Phase 05 scoped path | Structure | Freshness evidence | Field completeness | Provenance | Maintenance stability | Operational cost | Total / 12 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Bath category RSS | 2 | 1 | 1 | 2 | 1 | 2 | 9 |
+| CERN offered RSS + fixed detail | 2 | 1 | 1 | 2 | 1 | 1 | 8 |
+| Grants.gov NSF/ST JSON | 2 | 1 | 2 | 2 | 1 | 2 | 10 |
+
+Structured/official interfaces and bounded measured paths support the higher scores. One-day inspection cannot establish feed uptime, complete employer coverage or long-term schema stability; those columns stay at 1. Bath lacks location/remote evidence, CERN's terse feed lacks doctoral detail and costs a fixed enrichment. Scores compare within missing category coverage: CERN closes types Bath cannot, and the funding API closes two legal-instrument paths. They do not rank personal relevance or justify production activation.
 
 Every evaluation records name, category/types, URL, format, method, actual observed update pattern if known, intended poll cadence, reliability estimate, authentication, parser difficulty, legal/robots/license status, duplicate risk, priority, evidence date, and remaining questions. Intended poll cadence is our decision, never a claim about source update frequency.
 
@@ -32,6 +58,31 @@ Every evaluation records name, category/types, URL, format, method, actual obser
 Important observed CCFDDL behavior: multiple deadline rounds, explicit timezone tokens, and documented defaults for missing time/zone. Store a default as source-assumed evidence rather than official precision. AI Deadlines is a candidate data format, not evidence that this researcher works in AI. The actual research profile determines which categories to fetch.
 
 ## Confirmed candidate research job and funding sources
+
+### Phase 05 current review — 2026-10-29, Checkpoint A
+
+Personal discipline/eligibility is not configured. This phase uses an explicitly nonpersonal technical subset; no source implies personal eligibility. [Bath review](docs/sources/bath-jobs.md) records permission evidence and limits. B/C remain gated on closing A.
+
+| Candidate / owner | Types / identifiers | Interface / bounds / cost | Rights / auth / cadence | Edge / eligibility fit | Decision |
+|---|---|---|---|---|---|
+| University of Bath, official employer | Assistant and evidenced postdoc; stable vacancy reference per hiring cycle | Official category-391 RSS/XML; one 512 KiB / 40-item snapshot; zero details; observed 220,190 bytes / 19 items | Explicit automatic RSS offer + personal applicant terms; robots allows path; no auth; daily proposed, no SLA | Existing bounded GET; unknown qualifications preserved; faculty/clinical/support excluded | **Selected pilot**, `bath-research`; no advert redistribution |
+| European Commission EURAXESS, employer-supplied portal | Broad positions/funding; identifiers not onboarded | Public search returned 403; documented public read API/feed not verified; publishing XML is not a read API | FAQ permits browsing; syndication exists; read/robots/reuse unresolved; no bypass | Potential broad scope, employer eligibility varies; cost unverified | **Evaluated, not selected**; no private/internal JSON |
+| University of Kent, official employer | Research category; IDs not onboarded | Official RSS directory verified; body/size/detail cost unmeasured | Public RSS offer; exact terms/robots not fully reviewed | Plausible institutional fallback; eligibility unverified | **Evaluated, not selected**; duplicates pilot purpose |
+
+The older candidate register below preserves initial hypotheses; the dated review supersedes Bath/EURAXESS access uncertainties. CERN/funding candidates are not yet approved by this checkpoint.
+
+### Phase 05 Checkpoint B review — after A closed
+
+| Candidate / owner | Types / IDs / format | Access, bounds and resource cost | Rights / auth / cadence | Eligibility / decision |
+|---|---|---|---|---|
+| CERN employer-published Job offers RSS | PhD programme editions; mixed scientific/technical internship call. CMS post ID + explicit edition/reference, XML | Exact `/jobs/feed/` plus five pagination URLs; ten items/page, 64 KiB/page, six pages/run. One fixed 256 KiB internship detail/page maximum; no arbitrary detail/ATS IO | RSS advertised in official HTML, robots permits paths. Personal factual reading only; no open-content license. No auth, daily proposed | **Selected** `cern-students`, closes doctoral/internship paths. Four current pages: 32 jobs, one STAG 2026; doctoral 2027-1 closed/absent. Personal eligibility unknown. [Review](docs/sources/cern-students.md) |
+| SmartRecruiters, CERN ATS | Documented JSON Posting API | Technically documented; no payload ingestion attempted | Platform incorporates SAP API Policy v4.2026a limiting extraction/autonomous integration; candidate terms restrict automated content access | **Not selected**; independently published CERN RSS chosen, no API-through-proxy |
+| Inria employer board | Explicit PhD + research-intern categories, year-number IDs, HTML | Public category lists; RSS/read API unverified | Terms require prior written permission for protected content reuse | **Not selected**, rights unresolved |
+| Max Planck Society central RSS | PhDs, numeric IDs, XML | 26,902 bytes / 30 items; no current internship; teaser omits detail fields | Offered RSS, copyright retained | **Not selected**, no unique gap closure after CERN |
+| CERN openlab | Computing research summer programme | Official seasonal evidence; advertised RSS returned 404 | Robots permits feed; working interface absent | **Not selected**, no fake empty success |
+| TUM / ETH Zurich / Oulu | Institutional fallbacks | TUM 403; ETH no advertised RSS in inspected HTML; Oulu bounded read failed | Rights/schema not fully onboarded | **Unresolved**, not enabled |
+
+CERN fixture wraps manually checked official doctoral facts in observed RSS structure; synthetic CMS IDs/doctoral URL are labeled. STAG comes from current RSS/detail. No fabricated live records. B closed with hosted/live evidence; the current funding evaluation above and Phase 05 report supersede this earlier candidate snapshot.
 
 | Source / category / URL | Format and access | Update frequency / proposed poll | Reliability, auth, difficulty | Legal / robots / duplicate risk | Priority |
 | --- | --- | --- | --- | --- | --- |
@@ -87,6 +138,19 @@ Primary risks are stale community deadlines, source defaults mistaken for offici
 Phase 04 starts with a bounded CCFDDL subset, then resolves workshop/standalone-call coverage without building a general crawler. Phase 05 first proves one structured institutional feed plus a relevant broad source, then closes the position/internship/grant/funding coverage matrix. Phase 06 proves one permitted publisher path for both journal types before adding a second. Stop adding sources once required coverage and utility are demonstrated. There is no requirement to integrate every candidate listed here.
 
 ## Source onboarding checklist
+
+### Phase 05 verified six-type coverage (2026-10-29)
+
+| Type | Realistic fixture | Approved live source/path | Current live example | Notes |
+| --- | --- | --- | --- | --- |
+| `phd` | CERN doctoral 2027-1 factual evidence with declared synthetic historical RSS wrapper | `cern-students`, explicit doctoral programme/edition | None in four current pages after 16 October closure | Paid doctoral research placement; unknown feed-only details; seasonal absence verified, no fake live record |
+| `postdoc` | Bath explicit title/PhD-level adverts and variants | `bath-research`, category 391 RSS | Five, including SS14039 | Associate/Fellow alone is insufficient; no personal degree inferred |
+| `research_assistant` | Historical Bath SS13911 factual fixture | Same Bath RSS | Absent from current 19 items | Approved path remains; no fake live assistant |
+| `research_internship` | Actual STAG 2026 RSS/detail facts | `cern-students` + fixed internship article | One STAG 2026 | Mixed scientific/technical/admin assignments; research assignment not guaranteed |
+| `grant` | Actual NSF 363764/20-558 JSON facts | `grants-gov-research`, G query + detail | PFE: RIEF, 10 November 2026 | Engineering PI restrictions, calendar-only deadline |
+| `research_funding` | Actual NSF 363481/26-513 CA facts | Same funding adapter, CA query + detail | AI Infrastructure Hubs, 4 November 2026 | Cooperative Agreement, US institution restrictions, not duplicate grant |
+
+All live examples were persisted only in isolated development, replayed with no duplicate canonicals and cleaned. Confidence is high for these reviewed mappings, limited for broad discovery/freshness/individual eligibility. This is Bath/CERN plus one bounded funder adapter, not maximum source count. Regional/discipline/seasonal gaps remain explicit; personal suitability and production enabling are later profile/release gates.
 
 ### Phase 04 verified coverage (2026-10-29)
 

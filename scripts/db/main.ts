@@ -310,15 +310,37 @@ async function generate(cli: string, projectRef: string): Promise<void> {
 }
 
 async function main() {
-  if (!["plan", "verify", "types", "integration", "conferences", "sources-smoke"].includes(mode)) {
+  if (
+    ![
+      "plan",
+      "verify",
+      "types",
+      "integration",
+      "conferences",
+      "positions",
+      "funding",
+      "sources-smoke",
+    ]
+      .includes(mode)
+  ) {
     throw new GuardError(
-      "Expected plan, verify, types, integration, conferences or sources-smoke mode.",
+      "Expected plan, verify, types, integration, conferences, positions, funding or sources-smoke mode.",
     );
   }
   if (
     mode === "sources-smoke" &&
     (Deno.args.length !== 3 || Deno.args[1] !== "--source" ||
-      !["ccfddl", "ccfddl-hotos", "openreview-workshop-call"].includes(Deno.args[2]))
+      ![
+        "ccfddl",
+        "ccfddl-hotos",
+        "openreview-workshop-call",
+        "bath-research",
+        "cern-students",
+        "grants-gov-research",
+      ]
+        .includes(
+          Deno.args[2],
+        ))
   ) {
     throw new GuardError(
       "An explicit approved --source slug is required; no upstream or database writes ran.",
@@ -514,7 +536,7 @@ async function main() {
         );
       }
     }
-    if (["integration", "conferences", "sources-smoke"].includes(mode)) {
+    if (["integration", "conferences", "positions", "funding", "sources-smoke"].includes(mode)) {
       stage = "Phase 03 hosted application integration";
       verificationLock = await sql.reserve();
       const [{ locked }] =
@@ -535,7 +557,10 @@ async function main() {
         await suite.verifyPipeline(sql, target, token);
       }
       stage = "Phase 04 hosted conference integration";
-      if (mode !== "sources-smoke" || Deno.args[2] === "ccfddl") {
+      if (
+        ["integration", "conferences"].includes(mode) ||
+        mode === "sources-smoke" && Deno.args[2] === "ccfddl"
+      ) {
         const conferences = await import(
           new URL("../../tests/integration/conferences.ts", import.meta.url).href
         ) as {
@@ -548,7 +573,11 @@ async function main() {
         };
         await conferences.verifyConferences(sql, target, token, mode === "sources-smoke");
       }
-      if (mode !== "sources-smoke" || Deno.args[2] !== "ccfddl") {
+      if (
+        ["integration", "conferences"].includes(mode) ||
+        mode === "sources-smoke" &&
+          ["ccfddl-hotos", "openreview-workshop-call"].includes(Deno.args[2])
+      ) {
         const coverage = await import(
           new URL("../../tests/integration/conference_coverage.ts", import.meta.url).href
         ) as {
@@ -565,6 +594,40 @@ async function main() {
           token,
           mode === "sources-smoke" ? Deno.args[2] : undefined,
         );
+      }
+      if (
+        ["integration", "positions"].includes(mode) ||
+        mode === "sources-smoke" && Deno.args[2] === "bath-research"
+      ) {
+        stage = "Phase 05 hosted position integration";
+        const positions = await import("../../tests/integration/positions.ts");
+        await positions.verifyPositions(
+          sql,
+          target,
+          token,
+          mode === "sources-smoke" ? Deno.args[2] : undefined,
+        );
+      }
+      if (
+        ["integration", "positions"].includes(mode) ||
+        mode === "sources-smoke" && Deno.args[2] === "cern-students"
+      ) {
+        stage = "Phase 05 hosted CERN integration";
+        const cern = await import("../../tests/integration/cern.ts");
+        await cern.verifyCern(sql, target, token, mode === "sources-smoke");
+      }
+      if (
+        ["integration", "funding"].includes(mode) ||
+        mode === "sources-smoke" && Deno.args[2] === "grants-gov-research"
+      ) {
+        stage = "Phase 05 hosted funding integration";
+        const funding = await import("../../tests/integration/funding.ts");
+        await funding.verifyFunding(sql, target, token, mode === "sources-smoke");
+      }
+      if (["integration", "funding"].includes(mode)) {
+        stage = "Phase 05 hosted cross-source failure isolation and disable behavior";
+        const isolation = await import("../../tests/integration/source_isolation.ts");
+        await isolation.verifySourceIsolation(sql, target, token);
       }
       await inventory(sql, local);
       return;

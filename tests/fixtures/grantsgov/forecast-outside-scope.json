@@ -1,0 +1,53 @@
+{
+    "hit":  {
+                "id":  "364150",
+                "number":  "HHS-2027-ACL-AOD-DDUC-0001",
+                "title":  "University Centers for Developmental Disabilities in Educaction, Research, and Service",
+                "agencyCode":  "HHS-ACL",
+                "agency":  "Administration for Community Living",
+                "openDate":  "10/26/2026",
+                "closeDate":  "",
+                "oppStatus":  "forecasted",
+                "docType":  "forecast",
+                "cfdaList":  [
+                                 "93.632"
+                             ]
+            },
+    "data":  {
+                 "id":  364150,
+                 "revision":  0,
+                 "opportunityNumber":  "HHS-2027-ACL-AOD-DDUC-0001",
+                 "opportunityTitle":  "University Centers for Developmental Disabilities in Educaction, Research, and Service",
+                 "owningAgencyCode":  "HHS-ACL",
+                 "docType":  "forecast",
+                 "forecast":  {
+                                  "version":  1,
+                                  "agencyCode":  "HHS-ACL",
+                                  "applicantEligibilityDesc":  "Section 151(a) of the DD Act states that appropriations authorized under section 156(a)(1) of the DD Act shall be used to make five-year grants to entities in each state designated as UCEDDs. Only UCEDD grantees awarded five-year core funds in FY 2022 may apply. Foreign entities are not eligible to compete for, or receive, awards made under this announcement.",
+                                  "applicantTypes":  [
+                                                         {
+                                                             "id":  "25",
+                                                             "description":  "Others (see text field entitled \"Additional Information on Eligibility\" for clarification)"
+                                                         }
+                                                     ],
+                                  "fundingInstruments":  [
+                                                             {
+                                                                 "id":  "G",
+                                                                 "description":  "Grant"
+                                                             }
+                                                         ],
+                                  "fundingActivityCategories":  [
+                                                                    {
+                                                                        "id":  "ISS",
+                                                                        "description":  "Income Security and Social Services"
+                                                                    }
+                                                                ],
+                                  "postingDateStr":  "2026-10-26-00-00-00",
+                                  "archiveDateStr":  "2027-08-30-00-00-00",
+                                  "estSynopsisPostingDateStr":  "2026-12-01-00-00-00",
+                                  "estApplicationResponseDateStr":  "2027-02-01-00-00-00",
+                                  "estAwardDateStr":  "2027-07-01-00-00-00",
+                                  "estProjectStartDateStr":  "2027-07-01-00-00-00"
+                              }
+             }
+}
