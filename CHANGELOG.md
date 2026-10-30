@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-30 — Phase 06 journal author calls
+
+- Added one reviewed JEACS official announcements/policy/fixed-detail HTML adapter, pinned inert HTML parser, bounded pure source mapping and attributed CC BY 4.0 factual fixtures. Both journal types have approved paths without duplicating special issues into CFP rows; current unthemed-call absence and nonpersonal humanities scope remain explicit.
+- Preserved journal/ISSN/publisher/editor/fee/restriction evidence, semantic rounds, calendar precision, lifecycle, stable call/year identity and directory/detail/reminder deduplication. Topic extraction accepts only explicitly introduced topic lists; published collections, editor proposals, dissertation lists and stale unknown calls are excluded.
+- Corrected a reproduced source-neutral reconciliation bug: incoming intrinsic date conflict must not follow the missing-value branch and leave a known deadline usable. Retained candidate/provenance is marked conflicted unless stronger reviewed prior authority applies. No schema, RPC, SourceAdapter, HTTP framework or ranking redesign.
+- Passed 86 unit, 31 contract, five guard, 100 hosted SQL, ten query-plan and 125 hosted application assertions. Real smoke passed nine checks with five journal opportunities/ten deadlines, no replay duplicates, no notifications and complete scoped cleanup. Final receipts match current code; source failures remain independent across four families.
+- Updated source/rights/coverage/resource/manual evidence, product/architecture/JSONB/testing/workflow/operations, roadmap and the [full Phase 06 report](docs/verification/phase06-journal-sources.md). Repository/documentation/credential/diff checks passed; Phase 06 complete, active phase none, Phase 07 pending. No commit, push, Telegram, Cron, LLM or production deployment.
+
 ## 2026-10-29 — Phase 05 research positions and funding
 
 - Added reviewed bounded Bath research RSS, CERN student RSS/fixed internship detail and Grants.gov NSF/ST research JSON adapters through the existing source-neutral pipeline. All four position codes plus grant/research_funding have realistic fixtures and approved paths; seasonal PhD/assistant absence and personal eligibility uncertainty remain explicit.

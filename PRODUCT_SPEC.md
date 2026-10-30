@@ -32,6 +32,8 @@ Phase 05 makes two mappings concrete. A paid doctoral research placement contrib
 
 Coverage ownership: Phase 04 handles conferences, workshops, and standalone conference CFPs; Phase 05 handles all four position types plus grants and research funding; Phase 06 handles journals. Each source phase has sequential checkpoints so missing coverage cannot be silently pushed outside the ten-phase plan.
 
+Phase 06 distinguishes an actionable unthemed journal manuscript CFP from a thematic special issue with its author call. The latter stays one special-issue opportunity. Published collections, generic journal pages, dissertation solicitations and invitations to propose/organize an issue are not author CFPs. Historical expired calls stay closed, unknown stale calls require current acceptance evidence, and future opening windows remain labeled upcoming rather than open. Date-only deadlines, abstract prerequisites, unknown eligibility and informational fees must remain explicit in later browsing/delivery; journal quality and personal fit are not inferred from ingestion coverage.
+
 ## Core user journeys
 
 | Journey | Expected behavior |

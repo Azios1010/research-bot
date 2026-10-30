@@ -72,6 +72,10 @@ Checks cover allowed lifecycle/work mode, nonempty bounded title, positive revis
 
 Do not add `source`, `source_id`, `source_url`, `fetched_at`, `deadline`, `score`, `score_reason`, `notified_at`, `saved`, or `ignored` as single shared columns. Their many-to-one/profile/channel semantics require the tables below. A read DTO may project a primary source, next deadline, current assessment and user state for Telegram.
 
+Phase 06 journal projections use existing columns only. `attributes.journal` contains bounded name/publisher/ISSN/journal URL (2 KiB domain limit). `attributes.journal_call` version 1 contains canonical announcement ID, theme, explicit edition/year, source lifecycle, opening temporal evidence, bounded scope/editors/topics/restrictions and informational fees with amount/currency/conditions/evidence URL. Root attributes remain bounded at 8 KiB; observations at 12 KiB and metadata at 2 KiB. Calendar publication evidence remains `attributes.publication_date` with null `published_at`, never a manufactured instant.
+
+Source-record metadata traces directory/detail/policy roles, announcement aliases and fetched revision; `normalized_snapshot.deadline_evidence` retains bounded conflicting round values. Canonical field provenance remains bound to real source-record IDs through the existing RPC. Journal facts, user scores and delivery state are not mixed. No new table, migration, grant, enum, RPC or generated type is needed for this source family.
+
 ### `opportunity_deadlines`
 
 `id uuid PK`, `opportunity_id FK`, `kind` (`application`, `abstract`, `submission`, `registration`, `rebuttal`, `decision`, `other`), `round_key text`, `label`, `due_at timestamptz?`, `due_date date?`, `timezone text?`, `raw_value text?`, `precision` (`instant`, `date`, `unknown`), `basis` (`explicit`, `source_default`, `unknown`), `status` (`current`, `superseded`, `conflicted`), `revision int`, `source_record_id FK?`, `created_at`, `updated_at`.

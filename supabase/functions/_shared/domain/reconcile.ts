@@ -135,7 +135,16 @@ export async function reconcile(
   let deadlineConflict = false;
   for (const next of incoming.deadlines) {
     const k = deadlineKey(next), old = deadlines.get(k), prevOrigin = provenance[k];
-    if (old?.precision !== "unknown" && next.precision === "unknown") continue;
+    if (old && old.precision !== "unknown" && next.precision === "unknown") {
+      // Contradictory evidence has unknown precision but is not an absent fact. Keep the
+      // previous candidate/provenance for inspection, while blocking precise use unless
+      // that fact has strictly stronger reviewed authority than this conflicting input.
+      if (next.status === "conflicted" && forField(k).authority >= (prevOrigin?.authority ?? 0)) {
+        old.status = "conflicted";
+        deadlineConflict = true;
+      }
+      continue;
+    }
     const wins = !old || originWins(forField(k), prevOrigin);
     const differs = old && stable(deadlineFacts(old)) !== stable(deadlineFacts(next));
     if (wins) {

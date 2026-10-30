@@ -31,6 +31,10 @@ All thresholds are initial project targets, not measured availability claims. Er
 
 ## Monitor collection runs and inspect errors
 
+For `jeacs-journal-calls`, inspect logical announcement groups rather than raw card count: reviewed reminders 190/195 alias original calls 174/175. A run has at most 32 cards, one committed page, two fixed listing/policy GETs and at most one fixed detail GET, sharing 15 seconds. No conditional requests/304 shortcut is configured. A listing/policy failure stops the page without cursor advance; fixed-detail failure or detail schema drift quarantines that call while valid siblings persist. Never convert either into an empty successful collection or add unrestricted detail retries.
+
+`excluded_published_collection`, `excluded_proposal_invitation`, `excluded_nonmanuscript_call`, `ambiguous_call_kind` and `unverified_current_call` explain intentional exclusions. A closed historical CFP is not an incident; inspect its original deadline. A source-default no-fee statement is not inferred: policy is fetched each run, evidence URL retained, and conflicting explicit fee evidence quarantined. For conflicting submission dates inspect the bounded observation evidence and configured field authority; never manually change a canonical date to make a reminder eligible. Re-review official license/robots before widening the approved URL set. Disable/re-enable uses the same existing source flag and preserves canonical history. Source decisions are in [JEACS documentation](docs/sources/jeacs-journals.md).
+
 1. Find source slug and recent `collection_runs`; compare status, timestamps, version, cursor, records_seen/accepted/rejected and capped error samples.
 2. Trace the run/task correlation ID in Edge Logs. Check fetch timeout/status, rate limiting, parser/document shape and lease expiration without logging full source bodies.
 3. Inspect quarantined/conflicting `source_records` and their bounded sanitized evidence. A malformed record should not eliminate valid siblings.

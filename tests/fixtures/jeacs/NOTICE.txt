@@ -1,0 +1,8 @@
+Factual fixture transcriptions adapted from JEACS announcements and journal policy, accessed 2026-10-29.
+Journal of the European Association for Chinese Studies; publisher European Association for Chinese Studies; University of Vienna host.
+Source: https://journals.univie.ac.at/index.php/jeacs/announcement
+Policy and license: https://journals.univie.ac.at/index.php/jeacs/about
+Licensed journal content: Creative Commons Attribution 4.0 International, https://creativecommons.org/licenses/by/4.0/
+Changes: minimal rewritten factual text retaining observed HTML structure, journal identifiers, titles, dates and public editor names. Emails, tracking links, contacts, scripts, images and full call prose removed.
+Call 174/190 is the genuine historical regular unthemed 6.2 CFP, not a currently open 2026 call. Call 175/195 is a historical thematic call. Call 230 is an actual 2027 thematic author call.
+Unit tests derive explicitly synthetic date/window/status/markup/identity variants; these are not live records or claims about actual publisher changes.

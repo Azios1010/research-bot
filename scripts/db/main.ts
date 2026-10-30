@@ -319,12 +319,13 @@ async function main() {
       "conferences",
       "positions",
       "funding",
+      "journals",
       "sources-smoke",
     ]
       .includes(mode)
   ) {
     throw new GuardError(
-      "Expected plan, verify, types, integration, conferences, positions, funding or sources-smoke mode.",
+      "Expected plan, verify, types, integration, conferences, positions, funding, journals or sources-smoke mode.",
     );
   }
   if (
@@ -337,6 +338,7 @@ async function main() {
         "bath-research",
         "cern-students",
         "grants-gov-research",
+        "jeacs-journal-calls",
       ]
         .includes(
           Deno.args[2],
@@ -536,7 +538,11 @@ async function main() {
         );
       }
     }
-    if (["integration", "conferences", "positions", "funding", "sources-smoke"].includes(mode)) {
+    if (
+      ["integration", "conferences", "positions", "funding", "journals", "sources-smoke"].includes(
+        mode,
+      )
+    ) {
       stage = "Phase 03 hosted application integration";
       verificationLock = await sql.reserve();
       const [{ locked }] =
@@ -624,8 +630,16 @@ async function main() {
         const funding = await import("../../tests/integration/funding.ts");
         await funding.verifyFunding(sql, target, token, mode === "sources-smoke");
       }
-      if (["integration", "funding"].includes(mode)) {
-        stage = "Phase 05 hosted cross-source failure isolation and disable behavior";
+      if (
+        ["integration", "journals"].includes(mode) ||
+        mode === "sources-smoke" && Deno.args[2] === "jeacs-journal-calls"
+      ) {
+        stage = "Phase 06 hosted journal author-call integration";
+        const journals = await import("../../tests/integration/journals.ts");
+        await journals.verifyJournals(sql, target, token, mode === "sources-smoke");
+      }
+      if (["integration", "funding", "journals"].includes(mode)) {
+        stage = "Phase 06 hosted cross-source failure isolation and disable behavior";
         const isolation = await import("../../tests/integration/source_isolation.ts");
         await isolation.verifySourceIsolation(sql, target, token);
       }

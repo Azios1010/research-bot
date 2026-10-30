@@ -4,7 +4,9 @@
 
 Seven immutable migrations (three Phase 02, four Phase 03) are applied on the operator's isolated hosted development project. The current suite verifies 100 SQL assertions, ten representative query plans, real concurrent clients, no-op reapply, restrictive grants/RLS and scoped cleanup; actual hosted persistence types are generated. See [database evidence](verification/phase02-database.md), [pipeline evidence](verification/phase03-pipeline.md) and PLANS.md for phase status. No production resource was changed.
 
-Git baseline: `D:/projects/research-bot`, branch `main`, commit `7c9b40c` (`first commit`), origin `https://github.com/Azios1010/research-bot.git`. Nothing is committed/pushed by this task.
+Historical Phase 02 Git baseline was `7c9b40c`. Phase 06 entered with a clean `D:/projects/research-bot`, branch/default `main`, committed/pushed Phase 05 baseline `6a55530dd9c33bd6d133dc965eab63330a14317a`, origin `https://github.com/Azios1010/research-bot.git`. Recheck these before future work; this task does not commit/push.
+
+Phase 06 reuses all seven immutable migrations and existing generated types; no schema apply is required. `deno task test:journals` runs focused JEACS fixture persistence plus four-family failure isolation. `deno task sources:smoke --source jeacs-journal-calls` performs bounded real reads and isolated temporary persistence. Both enter the existing target/history/schema/receipt/verification-lock gate, then clean owned data and restore pause. `db:verify` must run again after verification-suite inputs change. No direct/unguarded SQL runner, production target or new operator credential is introduced.
 
 ## Pinned tooling and offline checks
 

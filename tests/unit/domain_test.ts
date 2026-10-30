@@ -283,6 +283,38 @@ Deno.test("field authority/freshness/slug and null preservation are deterministi
   );
   assert(originWins(origin, { ...origin, sourceSlug: "zeta" }));
 });
+Deno.test("intrinsic conflicting evidence is not missing data and cannot leave an existing exact deadline usable", async () => {
+  const old = await opportunity({
+    ...base,
+    deadlines: [{ kind: "application", roundKey: "main", label: "Apply", value: "2031-02-01" }],
+  });
+  const incoming = await normalize({
+    ...base,
+    deadlines: [
+      { kind: "application", roundKey: "main", label: "Apply", value: "2031-02-01" },
+      { kind: "application", roundKey: "main", label: "Apply", value: "2031-02-08" },
+    ],
+  });
+  equals(incoming.deadlines[0].precision, "unknown");
+  equals(incoming.deadlines[0].status, "conflicted");
+  const candidates = { ...empty, observationOpportunityId: old.id, candidates: [old] };
+  const result = await reconcile(incoming, candidates, {
+    ...origin,
+    observedAt: "2031-01-02T00:00:00Z",
+  });
+  equals(result.canonical.deadlines[0].status, "conflicted");
+  equals(result.canonical.deadlines[0].dueDate, "2031-02-01");
+  assert(result.canonical.fields.qualityFlags.includes("conflicting_deadline"));
+  old.provenance["deadline:application:main"] = { ...origin, authority: 80 };
+  const stronger = await reconcile(incoming, candidates, {
+    ...origin,
+    sourceId: "weaker",
+    observedAt: "2031-01-02T00:00:00Z",
+  });
+  equals(stronger.canonical.deadlines[0].status, "current");
+  equals(stronger.canonical.deadlines[0].dueDate, "2031-02-01");
+  assert(!stronger.canonical.fields.qualityFlags.includes("conflicting_deadline"));
+});
 Deno.test("deadline corrections keep identity and conflicting sources pause precise use", async () => {
   const old = await opportunity({
     ...base,

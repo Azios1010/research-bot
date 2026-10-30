@@ -9,6 +9,8 @@ import { CernAdapter } from "./cern/adapter.ts";
 import { cernManifest } from "./cern/manifest.ts";
 import { GrantsAdapter } from "./grantsgov/adapter.ts";
 import { grantsManifest } from "./grantsgov/manifest.ts";
+import { JeacsAdapter } from "./jeacs/adapter.ts";
+import { jeacsManifest } from "./jeacs/manifest.ts";
 
 export const approvedEndpoints = [
   ccfddlManifest.endpoint,
@@ -19,6 +21,9 @@ export const approvedEndpoints = [
   cernManifest.internshipUrl,
   grantsManifest.search,
   grantsManifest.detail,
+  jeacsManifest.endpoint,
+  jeacsManifest.policyUrl,
+  jeacsManifest.detailUrl,
 ] as const;
 export const approvedReadPostEndpoints = [grantsManifest.search, grantsManifest.detail] as const;
 export function approvedSources(): ReadonlyMap<string, SourceAdapter> {
@@ -29,6 +34,7 @@ export function approvedSources(): ReadonlyMap<string, SourceAdapter> {
     new BathAdapter(),
     new CernAdapter(),
     new GrantsAdapter(),
+    new JeacsAdapter(),
   ];
   return new Map(adapters.map((a) => [a.slug, a]));
 }

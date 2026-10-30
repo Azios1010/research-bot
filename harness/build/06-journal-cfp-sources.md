@@ -42,12 +42,21 @@ Chosen `_shared/adapters/sources/<publisher-or-feed-slug>/`, manifest/rights rec
 deno task check
 deno task test:unit
 deno task test:contract
+deno task db:plan
 deno task db:verify
 deno task test:integration
-deno task sources:smoke --source <approved-journal-slug>
+deno task sources:smoke --source jeacs-journal-calls
+deno task sources:journals-benchmark
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/validate-docs.ps1
+deno task secrets:scan
+git diff --check
 ```
 
 Record the actual slug and exact command. Smoke is a bounded opted-in read and test-only persistence, never an implicit dependency of unit/contract tests or a notification send.
+
+Selected implementation: one JEACS official journal announcements/policy/fixed-detail HTML adapter, with current CC BY 4.0/robots evidence and explicit nonpersonal humanities test scope in [source decision](../../docs/sources/jeacs-journals.md). Springer/Elsevier were rejected at rights/access gates and MDPI remains unresolved. No second live journal adapter is needed for type coverage. `test:journals` is an additional focused hosted diagnostic, also included in full integration; it is not a substitute for `db:verify` or full regression.
+
+The single shared correction addresses explicit conflicting evidence that has unknown normalized precision: it must not be treated as a missing date and leave a previously known round usable. Preserve prior candidate/provenance, mark conflicted at equal/greater authority, retain stronger reviewed evidence and test resolution. SourceAdapter, persistence/RPC/schema boundaries remain unchanged; no new pipeline or journal-specific domain branch.
 
 ## Manual verification
 
@@ -60,3 +69,5 @@ Publisher text/data-mining restrictions, changing HTML/JS rendering, article-ver
 ## Exit criteria
 
 Both category gates, rights review, deterministic suites and hosted persistence checks pass; source/coverage/evidence current; 06 complete and active phase none. Stop before Telegram implementation.
+
+Completed 2026-10-30. [Verified handoff](../../docs/verification/phase06-journal-sources.md): 86 unit/31 contract/five guards, 100 hosted SQL/ten plans/real concurrency and 125 application assertions; final nine-assertion JEACS live smoke, five real opportunities/ten deadlines, manual comparison, replay and cleanup all pass. One-journal scope and seasonal open regular-CFP absence are disclosed. Source/fixture/resource/rights register and repository checks pass. No Phase 07 activation, commit, push or deployment.

@@ -2,6 +2,7 @@
   "lock": "deno.lock",
   "nodeModulesDir": "none",
   "imports": {
+    "parse5": "npm:parse5@8.0.0",
     "postgres": "npm:postgres@3.4.9",
     "fast-xml-parser": "npm:fast-xml-parser@5.11.2",
     "entities": "npm:entities@8.1.0",
@@ -41,6 +42,8 @@
     "test:positions": "deno run --frozen --env-file=.env --allow-read=. --allow-write=private --allow-env=RADAR_DB_TARGET_FILE,RADAR_DB_URL,SUPABASE_ACCESS_TOKEN,RADAR_SUPABASE_CLI,PATH,PGHOST,PGPORT,PGDATABASE,PGUSERNAME,PGUSER,PGPASSWORD,PGSSLMODE,PGAPPNAME,PGCONNECT_TIMEOUT,PGTARGETSESSIONATTRS,PGSSLNEGOTIATION,PGMAX_LIFETIME,PGMAX_PIPELINE,PGBACKOFF,PGKEEP_ALIVE,PGFETCH_TYPES,PGPUBLICATIONS,PGTARGET_SESSION_ATTRS --allow-net --allow-run scripts/db/main.ts positions",
     "sources:jobs-benchmark": "deno run --frozen --cached-only --allow-read=tests/fixtures scripts/sources/jobs-benchmark.ts",
     "test:funding": "deno run --frozen --env-file=.env --allow-read=. --allow-write=private --allow-env=RADAR_DB_TARGET_FILE,RADAR_DB_URL,SUPABASE_ACCESS_TOKEN,RADAR_SUPABASE_CLI,PATH,PGHOST,PGPORT,PGDATABASE,PGUSERNAME,PGUSER,PGPASSWORD,PGSSLMODE,PGAPPNAME,PGCONNECT_TIMEOUT,PGTARGETSESSIONATTRS,PGSSLNEGOTIATION,PGMAX_LIFETIME,PGMAX_PIPELINE,PGBACKOFF,PGKEEP_ALIVE,PGFETCH_TYPES,PGPUBLICATIONS,PGTARGET_SESSION_ATTRS --allow-net --allow-run scripts/db/main.ts funding",
-    "sources:funding-benchmark": "deno run --frozen --cached-only --allow-read=tests/fixtures scripts/sources/funding-benchmark.ts"
+    "sources:funding-benchmark": "deno run --frozen --cached-only --allow-read=tests/fixtures scripts/sources/funding-benchmark.ts",
+    "test:journals": "deno run --frozen --env-file=.env --allow-read=. --allow-write=private --allow-env=RADAR_DB_TARGET_FILE,RADAR_DB_URL,SUPABASE_ACCESS_TOKEN,RADAR_SUPABASE_CLI,PATH,PGHOST,PGPORT,PGDATABASE,PGUSERNAME,PGUSER,PGPASSWORD,PGSSLMODE,PGAPPNAME,PGCONNECT_TIMEOUT,PGTARGETSESSIONATTRS,PGSSLNEGOTIATION,PGMAX_LIFETIME,PGMAX_PIPELINE,PGBACKOFF,PGKEEP_ALIVE,PGFETCH_TYPES,PGPUBLICATIONS,PGTARGET_SESSION_ATTRS --allow-net --allow-run scripts/db/main.ts journals",
+    "sources:journals-benchmark": "deno run --frozen --cached-only --allow-read=tests/fixtures scripts/sources/journals-benchmark.ts"
   }
 }

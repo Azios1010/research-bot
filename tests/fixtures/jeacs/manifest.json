@@ -1,0 +1,38 @@
+{
+  "source": "JEACS / European Association for Chinese Studies / University of Vienna journal platform",
+  "parser_version": "jeacs-html-v1",
+  "accessed_at": "2026-10-29",
+  "upstream_revision": null,
+  "urls": [
+    "https://journals.univie.ac.at/index.php/jeacs/announcement",
+    "https://journals.univie.ac.at/index.php/jeacs/about",
+    "https://journals.univie.ac.at/index.php/jeacs/announcement/view/230",
+    "https://journals.univie.ac.at/index.php/jeacs/announcement/view/174",
+    "https://journals.univie.ac.at/robots.txt"
+  ],
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "notice": "NOTICE.txt",
+  "files": [
+    {
+      "path": "directory.html",
+      "sha256_canonical_string": "e7e95555dcc570639ca08309c7209012d75deb972dcd5f342fed56088d9c9849"
+    },
+    {
+      "path": "policy.html",
+      "sha256_canonical_string": "b92a415c07f70cb1230b5da95d413b5519faafe1717752a4892eb6ba276e122b"
+    },
+    {
+      "path": "detail-230.html",
+      "sha256_canonical_string": "9a6ce097f6991d6aac4f059481053ee85303f6f9ff68650259786376025d9227"
+    },
+    {
+      "path": "detail-174.html",
+      "sha256_canonical_string": "53b3ba3474f15806422e3a58a03b229d6f8251d98ff0079972b6494c12bd21ab"
+    },
+    {
+      "path": "NOTICE.txt",
+      "sha256_canonical_string": "bb4a0c49fee4978bceed8d8fd53a78cda2407fe454204c2b177c686c44e73cd7"
+    }
+  ],
+  "provenance": "Minimal rewritten factual transcriptions in actual OJS directory/detail/policy structure. Observed IDs 230,224,190,174,195,175,234; reviewed repeat-call aliases 190->174 and 195->175. Both types are real, but regular CFP is historically expired. Public editor names retained; emails, full call prose, scripts and tracking links removed. In-memory malformed/proposal/window/timezone/fee/withdrawal/recurring-cycle variants are explicitly synthetic, never live data. Publication dates are calendar evidence, not instants."
+}
