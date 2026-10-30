@@ -1,0 +1,7 @@
+{
+  "provenance": "Repository-authored synthetic Telegram data; no real user, chat, bot, profile or credentials. Cases mutate message.json through tests/telegram_support.ts.",
+  "commands": ["start", "help", "today", "deadlines", "conferences", "jobs", "journals", "saved", "profile", "refresh", "status"],
+  "ingress": ["authorized", "unknown_command", "unauthorized", "group", "mismatched_chat", "wrong_secret", "missing_secret", "duplicate", "out_of_order", "oversized", "wrong_method", "invalid_json"],
+  "callbacks": ["save", "replay", "unsave", "ignore", "unignore", "details", "page", "open_intent", "malformed", "stale", "wrong_sender", "wrong_bot", "copied_message", "cross_target"],
+  "text": ["Nghiên cứu & dữ liệu <an toàn> _đặc biệt_ 😀", "Université de Montréal · 東京大学 · Đại học Quốc gia", "A very long journal/conference title repeated synthetically"]
+}

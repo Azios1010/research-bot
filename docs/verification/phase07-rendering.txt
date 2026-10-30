@@ -1,0 +1,118 @@
+Phase 07 synthetic mobile text review
+38 columns; no live bot or screenshot
+
+Details: multilingual, date-only, score, source link
+--- message 1 ---
+Journals
+
+Synthetic narrow-screen review
+
+
+--- message 2 ---
+Nghiên cứu & dữ liệu <an toàn> _đặc bi
+ệt_ "quotes" 😀
+Université de Montréal · 東京大学
+journal special issue · open
+Location / remote status unknown
+Submission: 2027-02-28 · date only; cl
+osing time unknown
+Relevance: 65/100 · topic match
+Manuscript submission requires the ear
+lier abstract stage.
+Synthetic description
+[Details] [Save]
+[Ignore] [Track Open intent]
+[Source link]
+
+Three-item list: long title, exact, rolling, conflicting, pagination
+--- message 1 ---
+Conferences
+
+Synthetic narrow-screen review
+
+
+--- message 2 ---
+A very long conference title on multil
+ingual research & reliable systems A v
+ery long conference title on multiling
+ual research & reliable systems A very
+ long conference title on m…
+Université de Montréal · 東京大学
+conference · open
+Location / remote status unknown
+Paper submission: 2027-01-15T12:00:00Z
+ (UTC)
+Event: 2027-06-01 – 2027-06-03
+Relevance: 65/100 · topic match
+[Details] [Save]
+[Ignore] [Track Open intent]
+[Source link]
+
+--- message 3 ---
+Synthetic conference 2
+Université de Montréal · 東京大学
+conference · open
+Location / remote status unknown
+Rolling applications: rolling
+Event: 2027-06-01 – 2027-06-03
+Relevance: 65/100 · topic match
+[Details] [Save]
+[Ignore] [Track Open intent]
+[Source link]
+
+--- message 4 ---
+Synthetic conference 3
+Université de Montréal · 東京大学
+conference · open
+Location / remote status unknown
+Abstract: conflicting evidence; confir
+m with source
+Event: 2027-06-01 – 2027-06-03
+Relevance: 65/100 · topic match
+
+Page 1 · 4 items in this snapshot.
+[Details] [Save]
+[Ignore] [Track Open intent]
+[Source link]
+[Next page →]
+
+/saved: empty/setup state
+--- message 1 ---
+Saved
+
+Unpersonalized browsing; finish /profi
+le to enable relevance matching.
+
+No saved items on this page.
+
+Some source coverage is stale. See /st
+atus for freshness.
+
+
+/profile: empty/setup state
+--- message 1 ---
+Research profile
+
+Setup incomplete: timezone, topics, ty
+pes. Use /profile for setup instructio
+ns. Browsing is unpersonalized.
+
+Timezone: not set
+Topics: not set
+Types: not set
+Matching: disabled
+Digest: disabled, 08:00 local time (sc
+hedules inactive).
+
+Basic setup: /profile timezone Area/Ci
+ty
+/profile topics topic one; topic two
+/profile types conference,postdoc
+/profile enabled true
+/profile digest false
+/profile time 08:00
+Supply your own timezone and interests
+ before enabling. Full preference edit
+ing comes later.
+
+

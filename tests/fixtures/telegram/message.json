@@ -1,0 +1,9 @@
+{
+  "update_id": 9007199254740995,
+  "message": {
+    "message_id": 9007199254740997,
+    "from": { "id": 10000000000000001, "is_bot": false, "username": "synthetic_only" },
+    "chat": { "id": 10000000000000001, "type": "private" },
+    "text": "/start"
+  }
+}

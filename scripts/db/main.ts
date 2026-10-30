@@ -149,6 +149,12 @@ async function inventory(sql: postgres.Sql, local: Migration[]): Promise<History
       "rr_read_collection_context",
       "rr_read_candidates",
       "rr_read_assessment_context",
+      "rr_receive_telegram",
+      "rr_execute_interaction",
+      "rr_browse_interaction",
+      "rr_commit_interaction_reply",
+      "rr_begin_interaction_send",
+      "rr_finish_interaction_send",
     ]}))`;
     if (functions.length) {
       throw new GuardError("Target has unrelated public routines; refusing automatic mutation.");
@@ -320,6 +326,7 @@ async function main() {
       "positions",
       "funding",
       "journals",
+      "telegram",
       "sources-smoke",
     ]
       .includes(mode)
@@ -539,7 +546,15 @@ async function main() {
       }
     }
     if (
-      ["integration", "conferences", "positions", "funding", "journals", "sources-smoke"].includes(
+      [
+        "integration",
+        "conferences",
+        "positions",
+        "funding",
+        "journals",
+        "telegram",
+        "sources-smoke",
+      ].includes(
         mode,
       )
     ) {
@@ -642,6 +657,11 @@ async function main() {
         stage = "Phase 06 hosted cross-source failure isolation and disable behavior";
         const isolation = await import("../../tests/integration/source_isolation.ts");
         await isolation.verifySourceIsolation(sql, target, token);
+      }
+      if (["integration", "telegram"].includes(mode)) {
+        stage = "Phase 07 hosted Telegram interactions with mock Bot API";
+        const telegram = await import("../../tests/integration/telegram.ts");
+        await telegram.verifyTelegram(sql, target, token);
       }
       await inventory(sql, local);
       return;

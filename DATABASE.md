@@ -2,7 +2,9 @@
 
 ## Status and ownership
 
-This contract has three migrations applied and verified on an isolated hosted development project, with actual generated persistence types. Hosted evidence covers 70 SQL assertions, ten query-plan assertions, concurrency, privileges, no-op reapply and cleanup. Supabase PostgreSQL remains the durable store, with no required local database. See [verification evidence](docs/verification/phase02-database.md), [database workflow](docs/DATABASE_WORKFLOW.md) and [ADR 0007](docs/adr/0007-database-primitives-and-hosted-verification.md). No production migration occurred.
+Phase 07 adds three forward migrations, `20261030000100_telegram_interactions.sql`, `20261030000200_reply_order_and_binding.sql` and `20261030000300_projection_lifecycle.sql`, preserving all eighteen private tables and existing grants. Six backend invoker RPCs receive lossless text IDs, execute/journal one bounded interaction, browse authorized snapshots, atomically prepare a logical reply/complete its task, and begin/finish command-reply attempts. No direct table exposure, new table, broad grant or network IO is introduced. The corrections preserve ordered parts, original-account binding and explicit forecast/upcoming/submission-availability labels. See [ADR 0012](docs/adr/0012-durable-telegram-interactions.md) and [Telegram runbook](docs/TELEGRAM.md). Actual generated types come from hosted verification, never handwritten signatures.
+
+The Phase 02 baseline applied three migrations on an isolated hosted development project and generated actual persistence types. Its historical evidence covers 70 SQL assertions, ten query-plan assertions, concurrency, privileges, no-op reapply and cleanup; subsequent phase evidence extends that baseline. Supabase PostgreSQL remains the durable store, with no required local database. See [verification evidence](docs/verification/phase02-database.md), [database workflow](docs/DATABASE_WORKFLOW.md) and [ADR 0007](docs/adr/0007-database-primitives-and-hosted-verification.md). No production migration occurred.
 
 All application tables live in private schema `radar`, excluded from exposed Data API schemas. Backend-only `public.rr_*` RPCs provide a narrow API for `supabase-js`. Use UUID primary keys except stable type codes and natural settings keys. Timestamps are `timestamptz` in UTC; calendar dates remain `date`. Foreign keys default to restrict deletion for records with history. Do not cascade-delete opportunities, profiles, or sources during routine cleanup.
 
@@ -204,7 +206,7 @@ Create only indexes that serve defined queries; validate with representative hos
 | notification_items / attempts | Claim uniqueness described above; notification FK; attempt unique and unresolved-sending partial unique. |
 | job_tasks | Request and active-coalescing uniqueness; partial `(available_at, id)` for queued; partial `(lease_until)` for leased; run FK. |
 
-All foreign keys used for deletion/joins need an appropriate index unless already covered. Do not add JSONB GIN indexes to every metadata object. Full-text search and vector indexes are deferred beyond the initial roadmap; first-release command views use bounded type/date/assessment queries and keyset pagination.
+All foreign keys used for deletion/joins need an appropriate index unless already covered. Do not add JSONB GIN indexes to every metadata object. Full-text search and vector indexes are deferred beyond the initial roadmap. Phase 07 command views use bounded type/date/assessment queries and three-slot pages of a persisted, ordered snapshot capped at 100 IDs; [ADR 0012](docs/adr/0012-durable-telegram-interactions.md) supersedes the earlier planned keyset continuation for this bounded first release.
 
 ## Transaction contracts and deduplication
 

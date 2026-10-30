@@ -2,6 +2,8 @@
 
 ## Current state and target
 
+Phase 07 adds the local `telegram-webhook` composition root and per-function `verify_jwt=false`. Its independent webhook secret, numeric allowlist, private-chat binding and bot identity checks run before privileged receipt. Commands/replies recover through the existing authenticated worker when Telegram configuration is valid. No production/test bot is registered, no Telegram secrets are installed, and no function or Cron job is deployed. [Telegram configuration/runbook](docs/TELEGRAM.md) documents the exact inputs and Phase 10 boundary.
+
 Phase 03 adds a local `job-worker` composition root and `[functions.job-worker] verify_jwt=false` declaration; neither deploys anything. The handler requires `X-Radar-Job-Secret` matching `RADAR_INTERNAL_JOB_SECRET` (32-256 characters) before constructing a privileged client. Future runtime inputs are `SUPABASE_URL` and `RADAR_SUPABASE_SECRET_KEY` or platform `SUPABASE_SERVICE_ROLE_KEY`; operator PAT/SQL URL are never runtime inputs. Missing configuration fails closed. Secrets belong in Supabase Secrets during an authorized deployment, never source config/migrations. No schedule/endpoint registration is authorized by these files.
 
 Phase 01 made no deployment or remote inspection. Phase 02 applied database migrations only to the operator's new isolated development project. No production schema deployment, bot, webhook or Cron job has been created. The target remains a real production deployment in Phase 10.

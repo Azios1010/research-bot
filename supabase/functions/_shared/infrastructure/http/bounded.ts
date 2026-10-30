@@ -9,13 +9,20 @@ import { safeUrl } from "../../domain/primitives.ts";
 export async function limitedBody(
   body: ReadableStream<Uint8Array> | null,
   maximum: number,
+  signal?: AbortSignal,
 ): Promise<string> {
   if (!body) return "";
+  signal?.throwIfAborted();
   const reader = body.getReader(), chunks: Uint8Array[] = [];
+  const abort = () => {
+    void reader.cancel().catch(() => {});
+  };
+  signal?.addEventListener("abort", abort, { once: true });
   let length = 0;
   try {
     while (true) {
       const next = await reader.read();
+      signal?.throwIfAborted();
       if (next.done) break;
       length += next.value.byteLength;
       if (length > maximum) {
@@ -25,6 +32,7 @@ export async function limitedBody(
       chunks.push(next.value);
     }
   } finally {
+    signal?.removeEventListener("abort", abort);
     reader.releaseLock();
   }
   const all = new Uint8Array(length);

@@ -11,6 +11,7 @@ import { calendarEnd, localDate, validZone } from "./temporal.ts";
 
 export const rulesVersion = "deterministic-v1";
 export interface Rules {
+  enabledTypes: OpportunityType[];
   positiveTopics: { phrase: string; weight: number; aliases: string[] }[];
   blockedTopics: string[];
   ignoredTopics: string[];
@@ -54,6 +55,13 @@ export function parseRules(input: ObjectValue): Rules {
     return tags(value as string[]);
   };
   const positives = input.positive_topics ?? [];
+  const enabledTypes = input.enabled_types ?? [...opportunityTypes];
+  if (
+    !Array.isArray(enabledTypes) ||
+    enabledTypes.some((t) => !opportunityTypes.includes(t as OpportunityType))
+  ) {
+    throw new DomainError("invalid_enabled_types");
+  }
   if (!Array.isArray(positives) || positives.length > 100) {
     throw new DomainError("invalid_profile_topics");
   }
@@ -91,6 +99,7 @@ export function parseRules(input: ObjectValue): Rules {
     throw new DomainError("invalid_geography_rules");
   }
   return {
+    enabledTypes: enabledTypes as OpportunityType[],
     positiveTopics,
     blockedTopics: strings("blocked_topics"),
     ignoredTopics: strings("ignored_topics"),
@@ -121,7 +130,9 @@ export function assess(
   if (!Number.isFinite(t)) throw new DomainError("invalid_clock");
   const corpus = [f.title, f.description ?? "", ...f.topics].join(" ");
   const reasons: string[] = [], warnings: string[] = [...f.qualityFlags];
-  if (!enabledTypes.includes(f.type)) reasons.push("disabled_type");
+  if (!enabledTypes.includes(f.type) || !r.enabledTypes.includes(f.type)) {
+    reasons.push("disabled_type");
+  }
   if (!profile.enabled) reasons.push("profile_disabled");
   if (state.ignored) reasons.push("ignored");
   if (["withdrawn", "closed", "merged"].includes(f.status)) reasons.push("closed_or_withdrawn");

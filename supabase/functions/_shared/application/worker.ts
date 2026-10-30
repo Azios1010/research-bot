@@ -17,6 +17,7 @@ export interface WorkerDependencies {
   clock: Clock;
   http: HttpClient;
   logger: Logger;
+  interaction?: (lease: Lease, signal: AbortSignal) => Promise<void>;
 }
 export interface WorkerResult {
   claimed: number;
@@ -35,6 +36,11 @@ export async function executeLease(
 ): Promise<void> {
   if (lease.kind === "collect_page") {
     await collect(lease, deps, signal);
+    return;
+  }
+  if (lease.kind === "telegram_command" || lease.kind === "send_notification") {
+    if (!deps.interaction) throw new ProcessingError("interaction_not_configured");
+    await deps.interaction(lease, signal);
     return;
   }
   const context = await deps.repository.assessment(lease, signal);
@@ -77,7 +83,9 @@ export async function runWorker(
     ) {
       const lease = await deps.repository.claim(
         input.owner,
-        ["collect_page", "assess_batch"],
+        deps.interaction
+          ? ["telegram_command", "send_notification", "collect_page", "assess_batch"]
+          : ["collect_page", "assess_batch"],
         signal,
       );
       if (!lease) break;

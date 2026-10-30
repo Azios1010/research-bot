@@ -267,7 +267,9 @@ export class SupabaseRepository implements Repository {
     if (!raw || object(raw).id === null) return null;
     const row = object(raw) as unknown as Tables["job_tasks"]["Row"];
     if (
-      !["collect_page", "assess_batch"].includes(row.kind) || !row.lease_owner || !row.lease_until
+      !["collect_page", "assess_batch", "telegram_command", "send_notification"].includes(
+        row.kind,
+      ) || !row.lease_owner || !row.lease_until
     ) throw new ProcessingError("persistence_shape_invalid");
     return {
       id: row.id,

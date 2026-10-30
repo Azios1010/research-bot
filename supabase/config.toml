@@ -16,3 +16,8 @@ enabled = false
 # This declares future deployment behavior and does not deploy the function.
 [functions.job-worker]
 verify_jwt = false
+
+# Telegram supplies its independent secret header, not a Supabase user JWT.
+# The handler authenticates before constructing a privileged database client.
+[functions.telegram-webhook]
+verify_jwt = false

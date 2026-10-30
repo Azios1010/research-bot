@@ -12,8 +12,8 @@ const sql = migrations.map((entry) => Deno.readTextFileSync(`supabase/migrations
 if ((sql.match(/^create table radar\./gm) ?? []).length !== 18) {
   throw new Error("Expected all 18 contract tables.");
 }
-if ((sql.match(/^create function public\.rr_/gm) ?? []).length !== 15) {
-  throw new Error("Expected fifteen narrow backend RPCs (Phase 02 plus fenced reads).");
+if ((sql.match(/^create function public\.rr_/gm) ?? []).length !== 21) {
+  throw new Error("Expected twenty-one narrow backend RPCs (including Phase 07 interactions).");
 }
 if (/security\s+definer/i.test(sql) || /^\s*(drop|truncate)\s/im.test(sql)) {
   throw new Error("Unexpected privilege escalation/destructive migration statement.");
@@ -42,6 +42,7 @@ for (const path of modules) {
   ) throw new Error(`Application boundary violation: ${path}`);
   if (
     !path.includes("/infrastructure/supabase/") && !path.includes("/job-worker/") &&
+    !path.includes("/telegram-webhook/") &&
     /database\.types|supabase-js/.test(body)
   ) throw new Error(`Persistence DTO leaked: ${path}`);
 }
@@ -67,6 +68,7 @@ await run(Deno.execPath(), [
   "scripts/db/main.ts",
   "scripts/db/guards_test.ts",
   ...files("scripts/sources"),
+  ...files("scripts/telegram"),
   ...modules,
   ...files("tests"),
 ]);

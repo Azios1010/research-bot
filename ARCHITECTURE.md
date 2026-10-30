@@ -4,7 +4,7 @@
 
 Research Radar is a single-researcher system with shared opportunity data and profile-scoped personalization. Supabase is the only backend platform. TypeScript runs in Deno-compatible Edge Functions. PostgreSQL holds durable application state; `supabase-js` calls narrow RPCs. Telegram and external sources are adapters. No persistent worker process or local production-equivalent database is part of the design.
 
-Accepted decisions are in [docs/adr/](docs/adr/). [DATABASE.md](DATABASE.md) defines persistence contracts; [PRODUCT_SPEC.md](PRODUCT_SPEC.md) defines behavior. Persistence and the source-neutral pipeline have isolated hosted verification. Reviewed conference, position and funding adapters exist; Phase 06 adds journal calls. Telegram, scheduling and production deployment remain later-phase work. Current execution status is solely in [PLANS.md](PLANS.md).
+Accepted decisions are in [docs/adr/](docs/adr/). [DATABASE.md](DATABASE.md) defines persistence contracts; [PRODUCT_SPEC.md](PRODUCT_SPEC.md) defines behavior. Persistence and the source-neutral pipeline have isolated hosted verification. Reviewed conference, position and funding adapters exist; Phase 06 adds journal calls. The Telegram adapter now exists locally; recurring scheduling and production deployment remain later-phase work. Current execution status is solely in [PLANS.md](PLANS.md).
 
 ## High-level architecture
 
@@ -162,6 +162,8 @@ Total 0-100; initial digest threshold 40, shortlist at most 50, digest at most t
 The application decides whether an assessment is fresh; changed opportunity/profile/rules invalidate it. Time-sensitive components are recomputed at least daily and at notification preparation. An optional future `ShortlistReranker` accepts <=50 eligible summaries with a fixed timeout, version, budget, and structured explanation schema. Failure falls back to deterministic order; it cannot resurrect exclusions or mutate canonical facts. Provider selection, costs, and evaluations are deferred beyond Phase 10.
 
 ## Telegram responsibilities
+
+Phase 07 concretizes this boundary in `_shared/adapters/telegram/`, transport-neutral `application/interaction.ts`, Supabase interaction mapping and a thin `telegram-webhook` root. [ADR 0012](docs/adr/0012-durable-telegram-interactions.md) specifies text-ID ingress, inbox effect journaling, atomic reply preparation/completion, stable 100-ID/three-slot snapshot pages, message-bound opaque callbacks, ordered parts and binding revalidation. The existing notification tables carry command replies; no second outbox/token table or ingestion path is added. [Runbook](docs/TELEGRAM.md) records limits/configuration and the production prohibition.
 
 The Telegram adapter owns Bot API payloads, command routing, escaped rendering, pagination tokens, callbacks, user/chat extraction, and transport errors. Application handlers receive authorized `profileId`, action, and domain IDs. The domain never receives a Telegram Update, keyboard, or chat ID.
 

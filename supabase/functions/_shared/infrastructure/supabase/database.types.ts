@@ -48,7 +48,15 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      rr_begin_interaction_send: {
+        Args: { p_generation: number; p_owner: string; p_task: string };
+        Returns: Json;
+      };
       rr_begin_notification_attempt: {
+        Args: { p_generation: number; p_owner: string; p_task: string };
+        Returns: Json;
+      };
+      rr_browse_interaction: {
         Args: { p_generation: number; p_owner: string; p_task: string };
         Returns: Json;
       };
@@ -61,6 +69,15 @@ export type Database = {
           isOneToOne: true;
           isSetofReturn: false;
         };
+      };
+      rr_commit_interaction_reply: {
+        Args: {
+          p_generation: number;
+          p_owner: string;
+          p_parts: Json;
+          p_task: string;
+        };
+        Returns: string;
       };
       rr_commit_source_page: {
         Args: {
@@ -107,6 +124,23 @@ export type Database = {
           isOneToOne: true;
           isSetofReturn: false;
         };
+      };
+      rr_execute_interaction: {
+        Args: { p_generation: number; p_owner: string; p_task: string };
+        Returns: Json;
+      };
+      rr_finish_interaction_send: {
+        Args: {
+          p_attempt: string;
+          p_code?: string;
+          p_generation: number;
+          p_message?: string;
+          p_outcome: string;
+          p_owner: string;
+          p_retry?: number;
+          p_task: string;
+        };
+        Returns: undefined;
       };
       rr_finish_notification_attempt: {
         Args: {
@@ -183,6 +217,17 @@ export type Database = {
       };
       rr_read_collection_context: {
         Args: { p_generation: number; p_owner: string; p_task: string };
+        Returns: Json;
+      };
+      rr_receive_telegram: {
+        Args: {
+          p_action: Json;
+          p_bot: string;
+          p_chat: string;
+          p_target: string;
+          p_update: string;
+          p_user: string;
+        };
         Returns: Json;
       };
       rr_renew_task: {
@@ -1406,6 +1451,40 @@ export type Database = {
           p_url: unknown;
         };
         Returns: undefined;
+      };
+      ui_action: {
+        Args: { p_u: Database["radar"]["Tables"]["telegram_updates"]["Row"] };
+        Returns: Json;
+      };
+      ui_callback: {
+        Args: { p_action: Json; p_bot: string; p_target: string };
+        Returns: Json;
+      };
+      ui_health: { Args: never; Returns: Json };
+      ui_item: { Args: { p_id: string; p_profile: string }; Returns: Json };
+      ui_patch: { Args: { p_id: string; p_patch: Json }; Returns: boolean };
+      ui_profile: { Args: { p_id: string }; Returns: Json };
+      ui_task: {
+        Args: { p_generation: number; p_owner: string; p_task: string };
+        Returns: {
+          action: Json | null;
+          action_schema_version: number;
+          bot_id: string;
+          completed_at: string | null;
+          delivery_target_id: string;
+          error_code: string | null;
+          payload_redacted_at: string | null;
+          profile_id: string;
+          received_at: string;
+          status: string;
+          update_id: number;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "telegram_updates";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
       };
       upsert_record: {
         Args: { p_record: Json; p_run: string; p_source: string };

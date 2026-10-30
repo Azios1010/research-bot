@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-30 — Phase 07 Telegram adapter
+
+- Added bounded secret-authenticated Telegram ingress, lossless numeric IDs, configured private-chat allowlist/binding, minimal durable inbox actions and all eleven commands.
+- Added authorized message-bound callbacks, desired-state feedback, basic explicit profile setup, stable bounded list snapshots, persisted projections, throttled/coalesced refresh and redacted status.
+- Reused notification/attempt persistence for command replies with safe HTML/Unicode rendering, deterministic parts, mock Bot API classification, conservative uncertainty and original-account/part-order guards.
+- Applied three reviewed forward migrations on isolated development, regenerated actual types, and passed 102 unit, 36 contract, five guard, 140 SQL/ten query-plan and 177 hosted application assertions with final receipt/hash audit and cleanup. A reproduced 204 RPC response-body bug in the shared client is corrected with a contract regression; multilingual profile patches are byte-bounded.
+- Added preview generator/mobile review, runbook, ADR 0012 and [complete verification report](docs/verification/phase07-telegram.md). Phase 07 is complete, active phase none, Phase 08 pending. No commit, push, deployment, real bot/webhook/secret setup, Cron or Phase 08 work.
+
 ## 2026-10-30 — Phase 06 journal author calls
 
 - Added one reviewed JEACS official announcements/policy/fixed-detail HTML adapter, pinned inert HTML parser, bounded pure source mapping and attributed CC BY 4.0 factual fixtures. Both journal types have approved paths without duplicating special issues into CFP rows; current unthemed-call absence and nonpersonal humanities scope remain explicit.

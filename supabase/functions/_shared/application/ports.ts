@@ -15,7 +15,7 @@ import {
 export interface Clock {
   now(): string;
 }
-export type TaskKind = "collect_page" | "assess_batch";
+export type TaskKind = "collect_page" | "assess_batch" | "telegram_command" | "send_notification";
 export interface Lease {
   id: string;
   owner: string;

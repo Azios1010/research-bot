@@ -61,3 +61,9 @@ Gateway JWT rejection before custom auth, authorizing by username/chat alone, JS
 ## Exit criteria
 
 Command/callback/security/replay/delivery-boundary suites pass and manual adapter review is recorded; docs updated; 07 complete and active phase none. Stop before ranking calibration or production webhook registration.
+
+## Implementation evidence
+
+Implementation uses six narrow interaction RPCs and the existing inbox/task/notification/attempt entities. Callback tokens reference stored reply parts and their definite original message, with target/account/bot/profile checks, expiry and stable three-item snapshot pages capped at 100 IDs. Basic profile mutations and refresh requests journal reduced results before rendering; reply preparation/completion is atomic. Ordered parts and same-target rebinding are fenced before sending. See [ADR 0012](../../docs/adr/0012-durable-telegram-interactions.md), [runbook](../../docs/TELEGRAM.md) and [current verification status](../../docs/verification/phase07-telegram.md). The report must show all required gates passing before phase status changes; no production/test-bot registration or Phase 08 activation follows.
+
+Final evidence passes: 102 unit, 36 contract, five guard, 140 hosted SQL/ten plans and 177 actual HTTP application assertions (including 52 Telegram cases), scoped cleanup, type generation, final input/receipt audit, documentation/credentials/diff and manual 38-column rendering. All eleven commands/callback actions, ingress/replay/binding, profile/projections/refresh and definite/uncertain/crash delivery boundaries pass. Phase 07 complete; active phase none; Phase 08 pending. No production webhook, deployment, bot secrets or schedules were installed.

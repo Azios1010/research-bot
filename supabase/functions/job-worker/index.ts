@@ -9,6 +9,7 @@ import {
   approvedSources,
 } from "../_shared/adapters/sources/registry.ts";
 import { runWorker } from "../_shared/application/worker.ts";
+import { telegramRuntime } from "../_shared/infrastructure/supabase/telegram-runtime.ts";
 
 // No privileged client is constructed until the request passes internal authentication.
 Deno.serve(
@@ -21,6 +22,7 @@ Deno.serve(
           "",
       );
       return await runWorker({
+        interaction: telegramRuntime((key) => Deno.env.get(key))?.handle,
         repository: new SupabaseRepository(client),
         adapters: approvedSources(),
         clock: { now: () => new Date().toISOString() },

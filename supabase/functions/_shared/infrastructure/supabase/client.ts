@@ -24,7 +24,7 @@ export function persistenceClient(url: string, key: string, transport: typeof fe
     try {
       const response = await transport(input, { ...init, signal, redirect: "error" });
       const body = await limitedBody(response.body, 2097152);
-      return new Response(body, {
+      return new Response([204, 205, 304].includes(response.status) ? null : body, {
         status: response.status,
         headers: { "content-type": "application/json" },
       });
