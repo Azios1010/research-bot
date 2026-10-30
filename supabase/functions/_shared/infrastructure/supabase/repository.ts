@@ -453,6 +453,7 @@ export class SupabaseRepository implements Repository {
           reason_codes: a.reasonCodes,
           components: a.components,
           rules_version: a.rulesVersion,
+          evaluated_at: a.evaluatedAt,
           valid_until: a.validUntil,
         }))),
       }, signal),

@@ -122,3 +122,9 @@ Phase 09 implements bounded retention jobs: 90-day run/attempt detail, 30-day qu
 Initially redact expired details while retaining small referenced run/attempt headers, source identities and unresolved-send evidence. Do not physically delete FK targets to satisfy retention dates; archive/deletion strategy is deferred until measured volume requires it.
 
 Each release/incident record contains date, revision/version, redacted target identity, validation evidence, affected source/task/notification IDs, manual checks and unresolved limitations. Production sign-off requires seven days of observed unattended operation and disposition of every failed/uncertain required delivery; dashboard green alone is insufficient.
+
+## Profile edits and reranking
+
+Use explicit `/profile` edits described in [the ranking guide](docs/RANKING.md). Each meaningful edit advances revision and atomically queues bounded persisted-data assessment work; it never fetches a source. `/profile rerank` requests a coalesced pass for current rules/time. Backlog uses existing assessment tasks and status; rule/revision/validity mismatches hide old scores rather than reuse them. A stale worker retries under the existing capped lease policy or terminalizes a superseded chain. No schedule drives due-time work in this phase. Never delete feedback, saved state, notification history or active historical claims to rerank. An ignored-and-saved opportunity stays saved and suppressed. Do not retry an uncertain Telegram send to refresh a score.
+
+Personal calibration files stay under ignored `private/`; no exports or answers belong in logs/public evidence. Synthetic threshold comparisons do not select personal settings. Current threshold 40 is provisional until researcher review.

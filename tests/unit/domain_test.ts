@@ -384,7 +384,7 @@ Deno.test("full deterministic score is bounded and explainable; re-fetch cannot 
   });
   const a = assess(o, p, state, now);
   equals(a.score, 100);
-  equals(a.rulesVersion, "deterministic-v1");
+  equals(a.rulesVersion, "deterministic-v2");
   equals(a.components.date_only_advisory, true);
   equals(assess(o, p, state, "2031-02-15T00:00:00Z").eligible, false);
   const rolling = {

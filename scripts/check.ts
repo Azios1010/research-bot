@@ -12,8 +12,15 @@ const sql = migrations.map((entry) => Deno.readTextFileSync(`supabase/migrations
 if ((sql.match(/^create table radar\./gm) ?? []).length !== 18) {
   throw new Error("Expected all 18 contract tables.");
 }
-if ((sql.match(/^create function public\.rr_/gm) ?? []).length !== 21) {
-  throw new Error("Expected twenty-one narrow backend RPCs (including Phase 07 interactions).");
+if ((sql.match(/^create function public\.rr_/gm) ?? []).length !== 22) {
+  throw new Error("Expected twenty-two narrow backend RPCs (including bounded rerank requests).");
+}
+const domainCountries = /AD AE AF[^"\r\n]+/.exec(
+  Deno.readTextFileSync("supabase/functions/_shared/domain/primitives.ts"),
+)?.[0];
+const sqlCountries = [...sql.matchAll(/string_to_array\('(AD AE AF[^']+)'/g)].at(-1)?.[1];
+if (!domainCountries || domainCountries !== sqlCountries) {
+  throw new Error("Profile SQL/domain country catalogs differ.");
 }
 if (/security\s+definer/i.test(sql) || /^\s*(drop|truncate)\s/im.test(sql)) {
   throw new Error("Unexpected privilege escalation/destructive migration statement.");
@@ -69,6 +76,7 @@ await run(Deno.execPath(), [
   "scripts/db/guards_test.ts",
   ...files("scripts/sources"),
   ...files("scripts/telegram"),
+  ...files("scripts/ranking"),
   ...modules,
   ...files("tests"),
 ]);

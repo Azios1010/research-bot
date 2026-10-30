@@ -244,7 +244,7 @@ export async function verifyTelegram(
         configured.digest_local_time.startsWith("09:15"),
       "explicit basic profile validates and persists",
     );
-    await sql`insert into radar.opportunity_assessments(profile_id,opportunity_id,eligible,score,reason_codes,components,opportunity_revision,profile_revision,rules_version,valid_until)select ${profileId},id,true,75,array['topic_match'],'{}',content_revision,${configured.revision},'deterministic-v1',clock_timestamp()+interval '1 day' from radar.opportunities where id=any(${ids}::uuid[])`;
+    await sql`insert into radar.opportunity_assessments(profile_id,opportunity_id,eligible,score,reason_codes,components,opportunity_revision,profile_revision,rules_version,valid_until)select ${profileId},id,true,75,array['topic_match'],'{}',content_revision,${configured.revision},'deterministic-v2',clock_timestamp()+interval '1 day' from radar.opportunities where id=any(${ids}::uuid[])`;
     const today = await command("today");
     const todaySnapshot = today.parts[0].view;
     ok(
@@ -274,6 +274,13 @@ export async function verifyTelegram(
     let [state] =
       await sql`select saved,ignored from radar.user_opportunity_state where profile_id=${profileId} and opportunity_id=${savedButton.opportunityId}`;
     ok(state.saved && !state.ignored, "Save sets desired state and feedback");
+    const [exposure] =
+      await sql`select context from radar.user_feedback where profile_id=${profileId} and opportunity_id=${savedButton.opportunityId} and action='save'`;
+    ok(
+      exposure.context.rule_version === "deterministic-v2" && exposure.context.score === 75 &&
+        exposure.context.opportunity_revision === 1,
+      "feedback preserves original shown assessment exposure context",
+    );
     const replayId = String(updateId),
       priorFeedback =
         (await sql`select count(*)::int n from radar.user_feedback where profile_id=${profileId}`)[
@@ -556,7 +563,7 @@ export async function verifyTelegram(
     await sql.begin(async (tx) => {
       await tx`delete from radar.notification_attempts where notification_id in(select id from radar.notifications where profile_id=any(${profiles}::uuid[]))`;
       await tx`delete from radar.notification_items where profile_id=any(${profiles}::uuid[])`;
-      await tx`delete from radar.job_tasks where telegram_bot_id=${syntheticBot} and telegram_update_id in(select update_id from radar.telegram_updates where profile_id=any(${profiles}::uuid[])) or kind='send_notification' and payload->>'notification_id' in(select id::text from radar.notifications where profile_id=any(${profiles}::uuid[])) or collection_run_id in(select id from radar.collection_runs where source_id=${sourceId})`;
+      await tx`delete from radar.job_tasks where payload->>'profile_id'=any(${profiles}::text[]) or telegram_bot_id=${syntheticBot} and telegram_update_id in(select update_id from radar.telegram_updates where profile_id=any(${profiles}::uuid[])) or kind='send_notification' and payload->>'notification_id' in(select id::text from radar.notifications where profile_id=any(${profiles}::uuid[])) or collection_run_id in(select id from radar.collection_runs where source_id=${sourceId})`;
       await tx`delete from radar.notifications where profile_id=any(${profiles}::uuid[])`;
       await tx`delete from radar.telegram_updates where profile_id=any(${profiles}::uuid[])`;
       await tx`delete from radar.user_feedback where profile_id=any(${profiles}::uuid[])`;

@@ -59,3 +59,9 @@ Overfitting a small fixture set, inferred qualification/geography facts, phrase-
 ## Exit criteria
 
 Calibration/profile review and all validation pass; final deterministic rules and deferred LLM boundary documented; 08 complete and active phase none. Stop before activating automation.
+
+## Implementation evidence and remaining acceptance
+
+Phase 08 is explicitly active from clean main `96eb828`, matching origin/main. The existing scorer is extended as `deterministic-v2`, with validated schema-1 profile editing, exact golden/time/Unicode tests, bounded durable keyset reranking and revision/rule/time/evaluation fences. [ADR 0013](../../docs/adr/0013-versioned-profile-reranking.md), [profile contract](../../docs/RANKING.md), [synthetic review](../../docs/verification/phase08-synthetic-review.md) and [verification report](../../docs/verification/phase08-ranking.md) describe concrete behavior and validation.
+
+Actual researcher preferences/timezone and bounded human calibration are not supplied. Default threshold 40 stays provisional. Even passing mechanics checks cannot mark this phase complete. Keep Phase 08 active and Phase 09 pending until actual preferences, representative labels, threshold rationale and actual profile UI review are recorded safely. No LLM or automation is started.

@@ -40,6 +40,6 @@ begin
   update radar.research_profiles set rules='{"positive_topics":["changed fixture"]}' where id=v_profile;
   perform pg_temp.must_fail('intentional assessment conflict is PT409',format('select public.rr_store_assessments(%L,%L,%s,%L::jsonb)',
     v_assess.id,v_owner,v_assess.lease_generation,jsonb_build_array(jsonb_build_object('opportunity_id',v_opportunity,'opportunity_revision',1,
-      'profile_revision',1,'eligible',true,'score',10,'rules_version','deterministic-v1','valid_until',now()+interval '1 day'))::text),'PT409');
+      'profile_revision',1,'eligible',true,'score',10,'rules_version','deterministic-v2','valid_until',now()+interval '1 day'))::text),'PT409');
   perform pg_temp.ok(not exists(select 1 from radar.opportunity_assessments),'stale assessment leaves no partial result');
 end $$;

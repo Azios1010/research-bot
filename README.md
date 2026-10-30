@@ -6,9 +6,9 @@ The intended coverage includes research jobs and internships, conferences and wo
 
 ## Current status
 
-Phases 01-07 are complete; active phase is none and Phase 08 remains pending. Telegram commands/callbacks, private authenticated ingress, lossless IDs, persisted projections, basic setup, durable feedback/refresh/replies and deterministic mock Bot API tests are implemented locally. Final verification passed 102 unit, 36 contract, five guard, 140 hosted SQL, ten query-plan and 177 hosted application assertions, including cleanup and receipt/hash audits. No function, bot, webhook, schedule or production deployment is active. See [PLANS.md](PLANS.md), the [42-item Phase 07 report](docs/verification/phase07-telegram.md), [Telegram runbook](docs/TELEGRAM.md) and [database workflow](docs/DATABASE_WORKFLOW.md).
+Phases 01-07 are complete; Phase 08 is active and Phase 09 remains pending. The existing deterministic scorer now has strict profile editing, versioned reasons/time validity and bounded persisted-data reranking. Offline validation passes 116 unit/38 contract tests; hosted SQL passes 172 assertions/ten plans. Actual researcher preferences and human threshold calibration remain open, so Phase 08 cannot be marked complete. No function, bot, webhook, schedule or production deployment is active. See [PLANS.md](PLANS.md), [Phase 08 evidence](docs/verification/phase08-ranking.md), [profile guide](docs/RANKING.md), [Telegram runbook](docs/TELEGRAM.md) and [database workflow](docs/DATABASE_WORKFLOW.md).
 
-The repository is scoped to `D:/projects/research-bot`, branch/default branch `main`. Phase 06 was committed/pushed as `ce9e3f5` before Phase 07 entered with a clean worktree. This task does not commit, push or deploy. Phase 01's drive-level Git finding is historical.
+The repository is scoped to `D:/projects/research-bot`, branch/default branch `main`. Phase 07 was committed/pushed as `96eb828` before Phase 08 entered with a clean worktree. This task does not commit, push or deploy. Phase 01's drive-level Git finding is historical.
 
 This product uses the Grants.gov API but is not endorsed or certified by the U.S. Department of Health and Human Services.
 

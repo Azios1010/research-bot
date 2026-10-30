@@ -1,0 +1,97 @@
+Synthetic 38-column text review; no live Telegram or personal settings.
+
+VIEW command
+Research profile
+
+Profile ready.
+
+Profile revision: 1
+Timezone: UTC
+Topics: medical imaging, machine learn
+ing
+Types: phd, conference
+Matching: enabled
+Digest: disabled, 08:00 local time (sc
+hedules inactive).
+
+Topic weights/aliases: medical imaging
+ (3): mri; machine learning (1): ai
+
+Blocked topics: none supplied
+Ignored topics: none supplied
+Type weights: phd=1, conference=0.5
+
+Preferred countries: DE
+Excluded countries: US
+Require preferred country: false
+Work modes: none supplied
+Institutions: example institute
+Blocked institutions: none supplied
+
+Compatible qualification requirements:
+ none supplied
+Conflicting requirements: none supplie
+d
+Full-time student: unknown
+Nationalities: none supplied
+Unknown data: allow
+Relevance threshold: 40/100 (provision
+al until calibration)
+
+Reminders: disabled; offsets 30d, 7d, 
+1d. Scheduling inactive.
+
+Edit one field: /profile <field> <valu
+e>
+Topics: /profile topics phrase^weight|
+alias; phrase
+Types: /profile types phd,conference
+Weights: /profile weights phd=1,confer
+ence=0.5
+Geography: /profile countries DE,VN
+Institutions: /profile institutions Ex
+ample Institute
+Timezone: /profile timezone Area/City
+Digest time: /profile time 08:00
+Offsets: /profile offsets 30d,7d,1d
+Reminders: /profile reminders false
+Other fields: blocked, ignored, exclud
+ed-countries, hard-countries, work-mod
+es, blocked-institutions, qualificatio
+ns, conflicts, student, nationalities,
+ unknown, threshold, digest, enabled.
+Use clear to empty a list/map. Each co
+mmand replaces that setting. /profile 
+rerank queues a bounded pass. No sched
+ules are active.
+
+
+VIEW details
+Research Radar
+
+Some source coverage is stale. See /st
+atus for freshness.
+
+
+Nghiên cứu & dữ liệu <an toàn> _đặc bi
+ệt_ "quotes" 😀
+Université de Montréal · 東京大学
+journal special issue · open
+Location / remote status unknown
+Submission: 2027-02-28 · date only; cl
+osing time unknown
+Relevance: 82/100
+Why:
+• Topics: medical imaging
+• Preferred opportunity type
+• Useful deadline window
+• Date-only deadline; exact closing ti
+me unknown
+• Note: Work mode unknown
+Manuscript submission requires the ear
+lier abstract stage.
+Synthetic description
+[Details] [Save]
+[Ignore] [Track Open intent]
+[Source link]
+

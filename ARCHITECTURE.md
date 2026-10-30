@@ -157,7 +157,7 @@ Proposed rule version `deterministic-v1`, calibrated in Phase 08:
 | Freshness | 0-10 | First seen <=7 days: 10; <=30: 5; otherwise 0. Re-fetch does not reset freshness. |
 | Qualification match | 0-5 | Explicit compatible structured evidence; unknown: 0. |
 
-Total 0-100; initial digest threshold 40, shortlist at most 50, digest at most ten. Positive topics are required for automatic delivery; browse can still show unscored records before setup. Stable ordering is score descending, next actionable deadline ascending with nulls last, first-seen descending, UUID ascending. Each assessment stores components, matched terms, exclusions, data-quality flags, opportunity revision, profile revision, rule version, evaluated time, and next expiry/re-evaluation time. Scores are not probabilities.
+Total 0-100; provisional uncalibrated digest threshold 40, shortlist at most 50, digest at most ten. Positive topics are required for automatic delivery; browse can still show unscored records before setup. Stable ordering is score descending, next actionable deadline ascending with nulls last, first-seen descending, UUID ascending. Each assessment stores components, matched terms, exclusions, data-quality flags, opportunity revision, profile revision, rule version, evaluated time, and next expiry/re-evaluation time. Scores are not probabilities.
 
 The application decides whether an assessment is fresh; changed opportunity/profile/rules invalidate it. Time-sensitive components are recomputed at least daily and at notification preparation. An optional future `ShortlistReranker` accepts <=50 eligible summaries with a fixed timeout, version, budget, and structured explanation schema. Failure falls back to deterministic order; it cannot resurrect exclusions or mutate canonical facts. Provider selection, costs, and evaluations are deferred beyond Phase 10.
 
@@ -254,6 +254,8 @@ Reviewed repeated-announcement aliases share the original call key. Journal name
 Phase 06 exposed and corrected one source-neutral reconciliation bug: intrinsic conflicting evidence normalizes to unknown precision and previously took the missing-value preservation branch. On an existing known round this could leave the old date usable. The branch now distinguishes explicit `conflicted` evidence: preserve the previous candidate date/provenance for inspection but mark the round conflicted when incoming authority is equal or stronger. Strictly stronger reviewed prior authority remains usable. Consistent later evidence resolves through the same existing authority/freshness policy. Regression and hosted tests cover this correction; no interface, schema or new ranking rule is introduced.
 
 ## Future extension points and explicit deferrals
+
+Phase 08 extends the existing scorer as `deterministic-v2`, preserving all seven component maxima. [ADR 0013](docs/adr/0013-versioned-profile-reranking.md) and [profile/ranking contract](docs/RANKING.md) specify strict schema-1 preferences, explicit known eligibility/excluded-country evidence, Unicode matching, precise time validity, rule-pinned projections and bounded revision-scoped keyset reranking through existing assessment tasks. Profile edits enqueue work atomically; old evaluations cannot overwrite newer results, and historical claims/feedback remain intact. The future `ShortlistReranker` is an interface only. Threshold 40 remains provisional and personal calibration is open; no LLM or schedule is added.
 
 | Deferred work | Why | Resolution |
 | --- | --- | --- |

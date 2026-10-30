@@ -5,6 +5,7 @@ import {
   validateBasicPatch,
 } from "../../application/interaction.ts";
 import { ProcessingError } from "../../application/ports.ts";
+import type { ObjectValue } from "../../domain/model.ts";
 
 export function numericId(value: unknown): string {
   if (
@@ -69,7 +70,7 @@ export function decodeCallback(value: string): { code: CallbackCode; key: string
 export function parseCommand(
   text: string,
   botUsername: string,
-): { kind: "command"; command: Command | "unknown"; patch?: BasicPatch } | null {
+): { kind: "command"; command: Command | "unknown"; patch?: BasicPatch; invalid?: boolean } | null {
   if (text.length > 4096 || !text.startsWith("/")) return null;
   const match = /^\/([a-zA-Z]+)(?:@([A-Za-z0-9_]+))?(?:\s+([\s\S]*))?$/.exec(text);
   if (!match || match[2] && match[2].toLowerCase() !== botUsername.toLowerCase()) return null;
@@ -78,24 +79,88 @@ export function parseCommand(
   if (command !== "profile" || !match[3]?.trim()) {
     return { kind: "command", command: command as Command };
   }
-  const args = /^(timezone|topics|types|enabled|digest|time)\s+([\s\S]+)$/.exec(match[3].trim());
-  if (!args) return { kind: "command", command: "profile" }; // instructions; no raw text retained
+  if (match[3].trim() === "rerank") {
+    return { kind: "command", command: "profile", patch: { rerank: true } };
+  }
+  const args = /^([a-z-]+)\s+([\s\S]+)$/.exec(match[3].trim());
+  if (!args) return { kind: "command", command: "profile", invalid: true };
   try {
     const [field, input] = [args[1], args[2].trim()];
-    const patch = field === "timezone"
-      ? { timezone: input }
-      : field === "topics"
-      ? { topics: input.split(";").map((s) => s.trim()) }
-      : field === "types"
-      ? { types: input.split(",").map((s) => s.trim()) }
-      : field === "time"
-      ? { digestTime: input }
-      : /^(true|false)$/.test(input)
-      ? { [field === "digest" ? "digestEnabled" : "enabled"]: input === "true" }
-      : null;
+    const list = (separator: string) =>
+      input === "clear" ? [] : input.split(separator).map((s) => s.trim());
+    const boolean = () => {
+      if (!/^(true|false)$/.test(input)) throw new ProcessingError("profile_invalid");
+      return input === "true";
+    };
+    let patch: unknown;
+    if (field === "timezone") patch = { timezone: input };
+    else if (field === "types") patch = { types: list(",") };
+    else if (field === "topics" && !/[\^|]/.test(input)) patch = { topics: list(";") };
+    else if (field === "time") patch = { digestTime: input };
+    else if (["enabled", "digest", "reminders"].includes(field)) {
+      patch = {
+        [
+          field === "digest"
+            ? "digestEnabled"
+            : field === "reminders"
+            ? "remindersEnabled"
+            : "enabled"
+        ]: boolean(),
+      };
+    } else {
+      const preferences: ObjectValue = {};
+      const lists: Record<string, string> = {
+        blocked: "blocked_topics",
+        ignored: "ignored_topics",
+        institutions: "preferred_institutions",
+        "blocked-institutions": "blocked_institutions",
+        countries: "preferred_countries",
+        "excluded-countries": "excluded_countries",
+        "work-modes": "preferred_work_modes",
+        qualifications: "compatible_qualifications",
+        conflicts: "incompatible_qualifications",
+      };
+      if (field in lists) {
+        preferences[lists[field]] = list(
+          ["countries", "excluded-countries", "work-modes"].includes(field) ? "," : ";",
+        );
+      } else if (field === "topics") {
+        preferences.positive_topics = list(";").map((s) => {
+          const [head, ...aliases] = s.split("|").map((v) => v.trim());
+          const m = /^([^\^]+)(?:\^([\d.]+))?$/.exec(head);
+          if (!m) throw new ProcessingError("profile_invalid");
+          return { phrase: m[1].trim(), weight: m[2] === undefined ? 1 : Number(m[2]), aliases };
+        });
+      } else if (field === "weights") {
+        const weights: ObjectValue = {};
+        for (const s of list(",")) {
+          const m = /^([a-z_]+)=(0(?:\.\d+)?|1(?:\.0+)?)$/.exec(s);
+          if (!m || m[1] in weights) throw new ProcessingError("profile_invalid");
+          weights[m[1]] = Number(m[2]);
+        }
+        preferences.type_weights = weights;
+      } else if (field === "hard-countries") preferences.hard_countries = boolean();
+      else if (field === "unknown") preferences.unknown_policy = input;
+      else if (field === "threshold") {
+        if (!/^\d{1,3}(?:\.\d{1,2})?$/.test(input)) throw new ProcessingError("profile_invalid");
+        preferences.digest_threshold = Number(input);
+      } else if (field === "offsets") {
+        preferences.reminder_offsets = list(",").map((s) => {
+          if (!/^\d{1,3}d$/.test(s)) throw new ProcessingError("profile_invalid");
+          return Number(s.slice(0, -1));
+        });
+      } else if (field === "student") {
+        preferences.eligibility_facts = {
+          student_full_time: input === "unknown" ? null : boolean(),
+        };
+      } else if (field === "nationalities") {
+        preferences.eligibility_facts = { nationalities: list(",") };
+      } else throw new ProcessingError("profile_invalid");
+      patch = { preferences };
+    }
     return { kind: "command", command: "profile", patch: validateBasicPatch(patch) };
   } catch {
-    return { kind: "command", command: "profile" };
+    return { kind: "command", command: "profile", invalid: true };
   }
 }
 export interface TelegramBinding {
@@ -127,11 +192,14 @@ export function validConfig(config: TelegramConfig): boolean {
 export interface AcceptedAction {
   updateId: string;
   binding: TelegramBinding;
-  action: { kind: "command"; command: Command | "unknown"; patch?: BasicPatch } | {
-    kind: "callback";
-    token: string;
-    messageId: string;
-  } | { kind: "rejected"; reason: string };
+  action:
+    | { kind: "command"; command: Command | "unknown"; patch?: BasicPatch; invalid?: boolean }
+    | {
+      kind: "callback";
+      token: string;
+      messageId: string;
+    }
+    | { kind: "rejected"; reason: string };
 }
 export function callbackQueryId(update: Record<string, unknown>): string | null {
   try {

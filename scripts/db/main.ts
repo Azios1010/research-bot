@@ -155,6 +155,7 @@ async function inventory(sql: postgres.Sql, local: Migration[]): Promise<History
       "rr_commit_interaction_reply",
       "rr_begin_interaction_send",
       "rr_finish_interaction_send",
+      "rr_request_rerank",
     ]}))`;
     if (functions.length) {
       throw new GuardError("Target has unrelated public routines; refusing automatic mutation.");
@@ -245,7 +246,21 @@ async function apply(sql: postgres.Sql, local: Migration[]) {
       await tx.unsafe(
         "create table if not exists supabase_migrations.schema_migrations (version text primary key, statements text[], name text)",
       );
-      await tx.unsafe(migration.text).simple();
+      try {
+        await tx.unsafe(migration.text).simple();
+      } catch (error) {
+        // Only a local file coordinate; never server messages, SQL or bound values.
+        const position = Number((error as { position?: string }).position);
+        if (Number.isSafeInteger(position) && position > 0) {
+          console.error(
+            JSON.stringify({
+              migration: migration.version,
+              line: migration.text.slice(0, position - 1).split("\n").length,
+            }),
+          );
+        }
+        throw error;
+      }
       await tx`insert into supabase_migrations.schema_migrations(version,name,statements)
         values(${migration.version},${migration.name},${[migration.text]})`;
       return true;
@@ -327,6 +342,7 @@ async function main() {
       "funding",
       "journals",
       "telegram",
+      "ranking",
       "sources-smoke",
     ]
       .includes(mode)
@@ -412,7 +428,9 @@ async function main() {
     prepare: false,
     max: 4,
     connect_timeout: 10,
-    idle_timeout: 5,
+    // This operator client waits for bounded HTTPS work between assertions. Avoid
+    // rapid idle socket teardown; the invocation's finally block closes the pool.
+    idle_timeout: 60,
     connection: {
       application_name: "research-radar-phase02",
       statement_timeout: 30000,
@@ -503,6 +521,28 @@ async function main() {
           throw new RollbackPassed();
         }).catch((error) => {
           if (error instanceof RollbackPassed) return;
+          if (
+            typeof error?.constraint_name === "string" &&
+            /^[a-z0-9_]{1,100}$/.test(error.constraint_name)
+          ) {
+            console.error(
+              JSON.stringify({ sqlTest: entry.name, constraint: error.constraint_name }),
+            );
+          }
+          if (
+            [
+              "profile_rules_invalid",
+              "task_identity_immutable",
+              "task_lease_transition_invalid",
+              "terminal_task_cannot_reopen",
+              "assessment_batch_invalid",
+              "assessment_membership_invalid",
+              "assessment_batch_incomplete",
+              "task_transition_invalid",
+            ].includes(error?.message)
+          ) {
+            console.error(JSON.stringify({ sqlTest: entry.name, guard: error.message }));
+          }
           // Only fixture-authored assertion labels, never SQL/values/server details.
           if (
             error?.code === "P0001" && typeof error.message === "string" &&
@@ -553,6 +593,7 @@ async function main() {
         "funding",
         "journals",
         "telegram",
+        "ranking",
         "sources-smoke",
       ].includes(
         mode,
@@ -662,6 +703,11 @@ async function main() {
         stage = "Phase 07 hosted Telegram interactions with mock Bot API";
         const telegram = await import("../../tests/integration/telegram.ts");
         await telegram.verifyTelegram(sql, target, token);
+      }
+      if (["integration", "ranking"].includes(mode)) {
+        stage = "Phase 08 hosted profile and bounded reranking integration";
+        const ranking = await import("../../tests/integration/ranking.ts");
+        await ranking.verifyRanking(sql, target, token);
       }
       await inventory(sql, local);
       return;

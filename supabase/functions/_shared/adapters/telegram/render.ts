@@ -62,9 +62,12 @@ function itemText(item: ItemView, details: boolean): string {
     ...(item.score !== null
       ? [
         `Relevance: ${item.score}/100${
-          item.reasons.length ? ` · ${item.reasons.join(", ").replaceAll("_", " ")}` : ""
+          !details && item.explanation?.length ? ` · ${item.explanation[0]}` : ""
         }`,
       ]
+      : []),
+    ...(details && item.explanation?.length
+      ? ["Why:", ...item.explanation.map((s) => `• ${s}`)]
       : []),
     ...item.notes,
     ...(details && item.description ? [item.description] : []),
@@ -81,6 +84,9 @@ export class TelegramRenderer implements ReplyRenderer {
           buttons: index === chunks.length - 1 ? buttons : [],
           itemIds: ids,
           renderingVersion: 1,
+          assessments: Object.fromEntries(
+            model.items.filter((i) => i.assessmentContext).map((i) => [i.id, i.assessmentContext!]),
+          ),
         })
       );
     };

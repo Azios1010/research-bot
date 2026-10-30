@@ -151,7 +151,7 @@ export async function verifyConcurrency(sql: postgres.Sql): Promise<void> {
       await sql`select count(*)::integer as feedback from radar.user_feedback where profile_id = ${profile}`;
     assert(feedback === 1, "feedback event/current state are atomic under replay");
     await sql`insert into radar.opportunity_assessments(profile_id,opportunity_id,eligible,score,opportunity_revision,profile_revision,rules_version,valid_until)
-      values(${profile},${opportunity},true,75,1,1,'fixture',now()+interval '1 day')`;
+      values(${profile},${opportunity},true,75,1,1,'deterministic-v2',now()+interval '1 day')`;
 
     for (const offset of [0, 1]) {
       await role(async (tx) => {

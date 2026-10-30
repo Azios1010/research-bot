@@ -123,7 +123,7 @@ begin
   v_task := public.rr_enqueue_task('assess_batch','rrtest-assess',jsonb_build_object('profile_id',v_profile,'opportunity_ids',jsonb_build_array(v_opportunity::text)));
   v_task := public.rr_claim_task(v_owner,array['assess_batch']);
   perform public.rr_store_assessments(v_task.id,v_owner,v_task.lease_generation,jsonb_build_array(jsonb_build_object(
-    'opportunity_id',v_opportunity,'eligible',true,'score',75,'opportunity_revision',v_revision,'profile_revision',1,'rules_version','fixture','valid_until',now()+interval '1 day')));
+    'opportunity_id',v_opportunity,'eligible',true,'score',75,'opportunity_revision',v_revision,'profile_revision',1,'rules_version','deterministic-v2','valid_until',now()+interval '1 day')));
   v_snapshot := jsonb_build_array(jsonb_build_object('opportunity_id',v_opportunity,'part_index',0,'snapshot',jsonb_build_object('opportunity_revision',v_revision)));
   perform public.rr_enqueue_task('prepare_digest','rrtest-prepare-digest',jsonb_build_object('profile_id',v_profile,'local_date',current_date));
   v_other := public.rr_claim_task(v_owner,array['prepare_digest']);

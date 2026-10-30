@@ -245,6 +245,10 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      rr_request_rerank: {
+        Args: { p_profile: string; p_request_key: string };
+        Returns: string;
+      };
       rr_store_assessments: {
         Args: {
           p_assessments: Json;
@@ -1384,6 +1388,15 @@ export type Database = {
         Args: { p_keys: string[]; p_run: string; p_sequence: number };
         Returns: undefined;
       };
+      enqueue_rerank: {
+        Args: {
+          p_after?: string;
+          p_profile: string;
+          p_request: string;
+          p_upper?: string;
+        };
+        Returns: string;
+      };
       finalize_run: {
         Args: { p_run: string; p_status: string };
         Returns: undefined;
@@ -1402,6 +1415,9 @@ export type Database = {
       parts_ok: { Args: { p_parts: Json; p_states: Json }; Returns: boolean };
       paused: { Args: { p_key: string }; Returns: boolean };
       pipeline_opportunity: { Args: { p_id: string }; Returns: Json };
+      profile_country: { Args: { p: string }; Returns: boolean };
+      profile_rules_valid: { Args: { p: Json }; Returns: boolean };
+      profile_text_valid: { Args: { p: string }; Returns: boolean };
       refresh_notification: { Args: { p_id: string }; Returns: undefined };
       require_lease: {
         Args: {

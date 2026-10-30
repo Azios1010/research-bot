@@ -3,28 +3,15 @@ import {
   family,
   type ObjectValue,
   type Opportunity,
-  type OpportunityType,
   opportunityTypes,
 } from "./model.ts";
-import { compare, key, ordered, tags } from "./primitives.ts";
+import { compare, ordered, text } from "./primitives.ts";
 import { calendarEnd, localDate, validZone } from "./temporal.ts";
 
-export const rulesVersion = "deterministic-v1";
-export interface Rules {
-  enabledTypes: OpportunityType[];
-  positiveTopics: { phrase: string; weight: number; aliases: string[] }[];
-  blockedTopics: string[];
-  ignoredTopics: string[];
-  blockedInstitutions: string[];
-  preferredInstitutions: string[];
-  preferredCountries: string[];
-  hardCountries: boolean;
-  preferredWorkModes: string[];
-  compatibleQualifications: string[];
-  incompatibleQualifications: string[];
-  unknownPolicy: "allow" | "exclude";
-  typeWeights: Partial<Record<OpportunityType, number>>;
-}
+import { type Rules } from "./profile.ts";
+export { parseRules, type Rules } from "./profile.ts";
+export const rulesVersion = "deterministic-v2";
+export const provisionalThreshold = 40;
 export interface Profile {
   id: string;
   revision: number;
@@ -46,78 +33,18 @@ export interface Assessment {
   nextDeadline: string | null;
   firstSeenAt: string;
 }
-export function parseRules(input: ObjectValue): Rules {
-  const strings = (name: string): string[] => {
-    const value = input[name] ?? [];
-    if (!Array.isArray(value) || value.length > 100 || value.some((v) => typeof v !== "string")) {
-      throw new DomainError("invalid_profile_rules");
-    }
-    return tags(value as string[]);
-  };
-  const positives = input.positive_topics ?? [];
-  const enabledTypes = input.enabled_types ?? [...opportunityTypes];
-  if (
-    !Array.isArray(enabledTypes) ||
-    enabledTypes.some((t) => !opportunityTypes.includes(t as OpportunityType))
-  ) {
-    throw new DomainError("invalid_enabled_types");
-  }
-  if (!Array.isArray(positives) || positives.length > 100) {
-    throw new DomainError("invalid_profile_topics");
-  }
-  const positiveTopics = positives.map((v) => {
-    if (typeof v === "string") return { phrase: key(v), weight: 1, aliases: [] };
-    if (
-      !v || Array.isArray(v) || typeof v !== "object" || typeof v.phrase !== "string" ||
-      typeof v.weight !== "number" || !Number.isFinite(v.weight) || v.weight <= 0 || v.weight > 100
-    ) throw new DomainError("invalid_profile_topics");
-    const aliases = v.aliases ?? [];
-    if (!Array.isArray(aliases) || aliases.some((a) => typeof a !== "string")) {
-      throw new DomainError("invalid_topic_aliases");
-    }
-    return { phrase: key(v.phrase), weight: v.weight, aliases: tags(aliases as string[]) };
-  });
-  if (positiveTopics.some((t) => !t.phrase || t.phrase.length > 160)) {
-    throw new DomainError("invalid_profile_topics");
-  }
-  const rawWeights = input.type_weights ?? {};
-  if (!rawWeights || Array.isArray(rawWeights) || typeof rawWeights !== "object") {
-    throw new DomainError("invalid_type_weights");
-  }
-  const typeWeights: Partial<Record<OpportunityType, number>> = {};
-  for (const [type, weight] of Object.entries(rawWeights)) {
-    if (
-      !opportunityTypes.includes(type as OpportunityType) || typeof weight !== "number" ||
-      !Number.isFinite(weight) || weight < 0 || weight > 1
-    ) throw new DomainError("invalid_type_weights");
-    typeWeights[type as OpportunityType] = weight;
-  }
-  if (
-    input.unknown_policy != null && !["allow", "exclude"].includes(String(input.unknown_policy))
-  ) throw new DomainError("invalid_unknown_policy");
-  if (input.hard_countries != null && typeof input.hard_countries !== "boolean") {
-    throw new DomainError("invalid_geography_rules");
-  }
-  return {
-    enabledTypes: enabledTypes as OpportunityType[],
-    positiveTopics,
-    blockedTopics: strings("blocked_topics"),
-    ignoredTopics: strings("ignored_topics"),
-    blockedInstitutions: strings("blocked_institutions"),
-    preferredInstitutions: strings("preferred_institutions"),
-    preferredCountries: strings("preferred_countries").map((x) => x.toUpperCase()),
-    hardCountries: input.hard_countries === true,
-    preferredWorkModes: strings("preferred_work_modes"),
-    compatibleQualifications: strings("compatible_qualifications"),
-    incompatibleQualifications: strings("incompatible_qualifications"),
-    unknownPolicy: input.unknown_policy === "exclude" ? "exclude" : "allow",
-    typeWeights,
-  };
-}
 export function phraseMatch(haystack: string, phrase: string): boolean {
-  const escaped = key(phrase).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  // Hyphenation/punctuation separate phrase tokens; technical symbols (C++) remain literal.
+  // The bounded canonical corpus includes a 16,000-unit description plus title/topics.
+  // The general short-key limit (1,024) must never reject an otherwise valid opportunity.
+  const normalize = (s: string) =>
+    text(s.normalize("NFKC").toLowerCase(), 200000).replace(/[\p{Pd}\s,;:!?()[\]{}"“”]+/gu, " ")
+      .trim();
+  const escaped = normalize(phrase).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   return Boolean(escaped) &&
-    new RegExp(`(?<![\\p{L}\\p{N}_])${escaped}(?![\\p{L}\\p{N}_])`, "u").test(key(haystack));
+    new RegExp(`(?<![\\p{L}\\p{N}\\p{M}_])${escaped}(?![\\p{L}\\p{N}\\p{M}_])`, "u").test(
+      normalize(haystack),
+    );
 }
 export function assess(
   opportunity: Opportunity,
@@ -141,6 +68,7 @@ export function assess(
   if (f.organizationKey && r.blockedInstitutions.includes(f.organizationKey)) {
     reasons.push("blocked_institution");
   }
+  if (f.countryCodes.some((c) => r.excludedCountries.includes(c))) reasons.push("excluded_country");
   if (
     r.hardCountries && r.preferredCountries.length && f.countryCodes.length &&
     !f.countryCodes.some((x) => r.preferredCountries.includes(x))
@@ -148,10 +76,38 @@ export function assess(
   if (f.qualificationTags.some((x) => r.incompatibleQualifications.includes(x))) {
     reasons.push("qualification_conflict");
   }
-  const unknowns = !f.countryCodes.length || !f.qualificationTags.length;
+  const position = f.attributes.position;
+  const evidence = position && !Array.isArray(position) && typeof position === "object"
+    ? position.eligibility
+    : null;
+  const eligibility = evidence && !Array.isArray(evidence) && typeof evidence === "object"
+    ? evidence
+    : {};
+  if (eligibility.student_full_time === true && r.eligibilityFacts.studentFullTime === false) {
+    reasons.push("eligibility_conflict");
+  }
+  const excluded = Array.isArray(eligibility.excluded_nationalities)
+    ? eligibility.excluded_nationalities
+    : [];
+  // Multiple citizenships may permit eligibility; only all known citizenships excluded is definite.
+  if (
+    r.eligibilityFacts.nationalities.length &&
+    r.eligibilityFacts.nationalities.every((c) => excluded.includes(c))
+  ) {
+    reasons.push("eligibility_conflict");
+  }
+  if (
+    eligibility.student_full_time === true && r.eligibilityFacts.studentFullTime === null ||
+    eligibility.nationality_group || eligibility.degree_level || eligibility.degree_levels
+  ) {
+    warnings.push("eligibility_requires_confirmation");
+  }
+  const unknowns = !f.countryCodes.length || !f.qualificationTags.length ||
+    f.workMode === "unknown";
   if (r.unknownPolicy === "exclude" && unknowns) reasons.push("unknown_data_excluded");
   if (!f.countryCodes.length) warnings.push("unknown_geography");
   if (!f.qualificationTags.length) warnings.push("unknown_qualifications");
+  if (f.workMode === "unknown") warnings.push("unknown_work_mode");
   const actionable = opportunity.deadlines.filter((d) =>
     ["application", "abstract", "submission", "registration"].includes(d.kind) &&
     d.status !== "superseded"
@@ -175,6 +131,7 @@ export function assess(
     expiry(a)! - expiry(b)!
   );
   const first = available[0];
+  if (!first) warnings.push("unknown_deadline");
   const zone = profile.timezone && validZone(profile.timezone) ? profile.timezone : "UTC";
   const days = first?.precision === "date"
     ? (Date.parse(`${first.dueDate}T00:00:00Z`) - Date.parse(`${localDate(now, zone)}T00:00:00Z`)) /
@@ -184,11 +141,30 @@ export function assess(
     : null;
   const nextDeadline = first?.dueAt ??
     (first?.dueDate ? new Date(calendarEnd(first.dueDate)).toISOString() : null);
+  const changes: number[] = [];
+  for (const days of [7, 30]) {
+    changes.push(Date.parse(opportunity.firstSeenAt) + days * 86400000 + 1);
+  }
+  // floor(remaining days) crosses these score boundaries just after the exact instant.
+  if (first?.dueAt) {
+    for (const days of [3, 31, 91]) changes.push(Date.parse(first.dueAt) - days * 86400000 + 1);
+  }
+  if (first?.precision === "date") {
+    const date = localDate(now, zone);
+    let low = t, high = t + 36 * 3600000;
+    while (high - low > 1) {
+      const mid = Math.floor((low + high) / 2);
+      if (localDate(new Date(mid).toISOString(), zone) === date) low = mid;
+      else high = mid;
+    }
+    changes.push(high);
+  }
   const until = Math.min(
     t + 86400000,
+    ...changes.filter((n) => n > t),
     ...available.map((d) => expiry(d)!),
     ...(category === "event" && (f.eventEnd ?? f.eventStart)
-      ? [calendarEnd((f.eventEnd ?? f.eventStart)!)]
+      ? [calendarEnd((f.eventEnd ?? f.eventStart)!)].filter((n) => n > t)
       : []),
   );
   const base = {
@@ -197,7 +173,7 @@ export function assess(
     profileRevision: profile.revision,
     rulesVersion,
     evaluatedAt: now,
-    validUntil: new Date(Math.max(t + 1000, until)).toISOString(),
+    validUntil: new Date(until).toISOString(),
     nextDeadline,
     firstSeenAt: opportunity.firstSeenAt,
   };
@@ -245,6 +221,7 @@ export function assess(
     ) / 100,
   );
   components.matched_terms = matched.map((x) => x.phrase).sort();
+  components.deadline_days = days;
   components.quality_flags = ordered(warnings);
   components.date_only_advisory = first?.precision === "date";
   if (!total) reasons.push("profile_topics_unconfigured");

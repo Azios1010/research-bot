@@ -1,0 +1,38 @@
+{
+  "label": "Synthetic technical evaluation only; no researcher preferences or calibration claims",
+  "clock": "2031-01-01T00:00:00.000Z",
+  "profile": {
+    "positive_topics": [{"phrase":"medical imaging","weight":3,"aliases":["MRI"]},{"phrase":"machine learning","weight":1,"aliases":["AI","artificial intelligence"]}],
+    "enabled_types": ["phd","postdoc","conference","workshop","conference_cfp","journal_cfp","journal_special_issue","grant","research_funding","research_assistant","research_internship"],
+    "type_weights": {"phd":1}, "preferred_countries":["DE"], "preferred_institutions":["Example Institute"],
+    "compatible_qualifications":["masters"], "blocked_topics":["weapons"], "ignored_topics":["advertising"],
+    "excluded_countries":["US"], "incompatible_qualifications":["clinical license"],
+    "eligibility_facts":{"student_full_time":false,"nationalities":["VN"]}
+  },
+  "cases": [
+    {"name":"both topics","label":"relevant","changes":{},"eligible":true,"score":100,"topic":40},
+    {"name":"medical only alias","label":"relevant","changes":{"title":"MRI research"},"eligible":true,"score":90,"topic":30},
+    {"name":"unrelated with other preferences","label":"irrelevant","changes":{"title":"Historical pottery research"},"eligible":true,"score":60,"topic":0},
+    {"name":"substring false positive","label":"irrelevant","changes":{"title":"Malaria and chair research"},"eligible":true,"score":60,"topic":0},
+    {"name":"missing evidence","label":"uncertain","changes":{"title":"MRI","countryCodes":[],"qualificationTags":[],"workMode":"unknown","organization":null},"eligible":true,"score":65,"topic":30},
+    {"name":"blocked topic","label":"irrelevant","changes":{"title":"MRI weapons"},"eligible":false,"score":null,"reason":"blocked_topic"},
+    {"name":"ignored topic","label":"irrelevant","changes":{"title":"MRI advertising"},"eligible":false,"score":null,"reason":"ignored_topic"},
+    {"name":"hard exclusion","label":"irrelevant","changes":{"countryCodes":["US"]},"eligible":false,"score":null,"reason":"excluded_country"},
+    {"name":"known qualification conflict","label":"irrelevant","changes":{"qualificationTags":["clinical license"]},"eligible":false,"score":null,"reason":"qualification_conflict"},
+    {"name":"explicit student conflict","label":"irrelevant","changes":{"attributes":{"position":{"eligibility":{"student_full_time":true}}}},"eligible":false,"score":null,"reason":"eligibility_conflict"},
+    {"name":"unknown deadline","label":"uncertain","changes":{"deadlines":[]},"eligible":true,"score":90,"topic":40},
+    {"name":"withdrawn","label":"irrelevant","changes":{"status":"withdrawn"},"eligible":false,"score":null,"reason":"closed_or_withdrawn"},
+    {"name":"tie A at three day boundary","label":"relevant","changes":{"deadlines":[{"kind":"application","roundKey":"main","label":"Apply","value":"2031-01-04T00:00:00Z"}]},"eligible":true,"score":100,"topic":40,"validUntil":"2031-01-01T00:00:00.001Z"},
+    {"name":"tie B at three day boundary","label":"relevant","changes":{"deadlines":[{"kind":"application","roundKey":"main","label":"Apply","value":"2031-01-04T00:00:00Z"}]},"eligible":true,"score":100,"topic":40,"validUntil":"2031-01-01T00:00:00.001Z"},
+    {"name":"postdoc","label":"relevant","changes":{"type":"postdoc"},"eligible":true,"score":85,"topic":40,"typePoints":0},
+    {"name":"assistant","label":"relevant","changes":{"type":"research_assistant"},"eligible":true,"score":85,"topic":40,"typePoints":0},
+    {"name":"internship","label":"relevant","changes":{"type":"research_internship"},"eligible":true,"score":85,"topic":40,"typePoints":0},
+    {"name":"conference","label":"relevant","changes":{"type":"conference"},"eligible":true,"score":85,"topic":40,"typePoints":0},
+    {"name":"workshop","label":"relevant","changes":{"type":"workshop"},"eligible":true,"score":85,"topic":40,"typePoints":0},
+    {"name":"conference call","label":"relevant","changes":{"type":"conference_cfp"},"eligible":true,"score":85,"topic":40,"typePoints":0},
+    {"name":"journal call","label":"relevant","changes":{"type":"journal_cfp"},"eligible":true,"score":85,"topic":40,"typePoints":0},
+    {"name":"special issue","label":"relevant","changes":{"type":"journal_special_issue"},"eligible":true,"score":85,"topic":40,"typePoints":0},
+    {"name":"grant","label":"relevant","changes":{"type":"grant"},"eligible":true,"score":85,"topic":40,"typePoints":0},
+    {"name":"funding","label":"relevant","changes":{"type":"research_funding"},"eligible":true,"score":85,"topic":40,"typePoints":0}
+  ]
+}

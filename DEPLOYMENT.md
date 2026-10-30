@@ -79,3 +79,7 @@ Maintain a compatible previous function bundle/revision, migration list, setting
 Store backups and sensitive exports outside Git with appropriate access controls. Verify actual restore coverage, including private schema, data, grants, functions and operational deduplication tables. Restore can rewind notification keys after Telegram already received messages; quarantine delivery after a restore and reconcile sent evidence before resuming. Database restoration is not a reset of external side effects.
 
 Phase 10 records release date/revision, non-secret target identifier, migration/function versions, auth probes, approved source coverage, measured limits, live message evidence, Cron evidence, backup/restore drill, known limitations, daily observation results and final acceptance. Create `docs/releases/<date>-production-verification.md` at that time; no fictitious release record is created now.
+
+## Phase 08 boundary
+
+Profile/ranking code and forward migrations are validated only on the guarded isolated development target. Apply immutable migration history before using regenerated runtime types; pin runtime/SQL rule version together. [ADR 0013](docs/adr/0013-versioned-profile-reranking.md) explains rerank invalidation and the existing worker. No production migration, Edge deploy, webhook registration, secret installation or Cron activation is authorized by Phase 08. Actual supplied profile/timezone/calibration must pass before Phase 08 closes; Phase 09 remains pending.

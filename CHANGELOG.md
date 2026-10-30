@@ -55,3 +55,10 @@
 - Evaluated public source candidates with primary evidence and explicit permission/format/freshness uncertainties.
 - Added the persistent engineering contract, accepted ADRs, ten bounded build specifications and an offline documentation validator.
 - No application features, migrations, collectors, Telegram integration, schedules or deployment were implemented. Nothing was committed or pushed.
+
+## Unreleased — Phase 08 mechanics (personal calibration open)
+
+- Extend the existing deterministic scorer as v2 with strict bounded profile rules, Unicode aliases, explicit geography/eligibility conflicts, reproducible reasons and precise time validity.
+- Extend Telegram profile editing and details explanations; atomically queue bounded persisted-data reranking through existing tasks, reject stale workers and preserve feedback/notification claims.
+- Add synthetic all-type golden/review fixtures, private offline calibration workflow, hosted SQL/HTTP concurrency and invalidation tests, forward migrations and regenerated persistence types.
+- Threshold 40 remains provisional. Actual researcher profile/calibration is required before Phase 08 can close. No LLM, source additions, schedules, production activation, commit or push.

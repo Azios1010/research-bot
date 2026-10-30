@@ -17,6 +17,8 @@ import type {
 import { commands, validateBasicPatch } from "../../application/interaction.ts";
 import { type Lease, ProcessingError } from "../../application/ports.ts";
 import { type OpportunityType, opportunityTypes } from "../../domain/model.ts";
+import { parseRules } from "../../domain/profile.ts";
+import { explainAssessment } from "../../application/ranking.ts";
 
 const json = (v: unknown): Json => JSON.parse(JSON.stringify(v));
 const obj = (v: unknown): Record<string, unknown> => {
@@ -64,10 +66,15 @@ function action(v: unknown): InteractionAction {
     o.kind === "command" &&
     (commands.includes(o.command as typeof commands[number]) || o.command === "unknown")
   ) {
+    let patch;
+    try {
+      if (o.patch) patch = validateBasicPatch(o.patch);
+    } catch { /* SQL returns invalid_profile atomically. */ }
     return {
       kind: "command",
       command: o.command as typeof commands[number] | "unknown",
-      ...(o.patch ? { patch: validateBasicPatch(o.patch) } : {}),
+      ...(patch ? { patch } : {}),
+      ...(o.invalid === true ? { invalid: true } : {}),
     };
   }
   if (o.kind === "details") return { kind: "details", opportunityId: text(o.opportunityId) };
@@ -116,6 +123,8 @@ function profile(v: unknown): BasicProfile {
     digestEnabled: o.digestEnabled === true,
     digestTime: text(o.digestTime),
     revision: count(o.revision),
+    ...(o.preferences ? { preferences: parseRules(obj(o.preferences) as never) } : {}),
+    remindersEnabled: o.remindersEnabled === true,
   };
 }
 function item(v: unknown): ItemView {
@@ -139,6 +148,11 @@ function item(v: unknown): ItemView {
     score: typeof o.score === "number" && Number.isFinite(o.score) ? o.score : null,
     reasons: strings(o.reasons),
     notes: strings(o.notes),
+    explanation: explainAssessment(
+      strings(o.reasons),
+      o.components ? obj(o.components) as never : {},
+    ),
+    assessmentContext: o.assessmentContext ? obj(o.assessmentContext) as never : {},
     deadlines: array(o.deadlines).map((v) => {
       const d = obj(v);
       return {

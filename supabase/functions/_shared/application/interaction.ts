@@ -1,4 +1,5 @@
-import { type OpportunityType, opportunityTypes } from "../domain/model.ts";
+import { type ObjectValue, type OpportunityType, opportunityTypes } from "../domain/model.ts";
+import { parseRules, type Rules } from "../domain/profile.ts";
 import { validZone } from "../domain/temporal.ts";
 import { type Clock, type Lease, ProcessingError } from "./ports.ts";
 
@@ -33,6 +34,9 @@ export interface BasicPatch {
   enabled?: boolean;
   digestEnabled?: boolean;
   digestTime?: string;
+  remindersEnabled?: boolean;
+  preferences?: ObjectValue;
+  rerank?: boolean;
 }
 export interface BasicProfile {
   enabled: boolean;
@@ -42,6 +46,8 @@ export interface BasicProfile {
   digestEnabled: boolean;
   digestTime: string;
   revision: number;
+  preferences?: Rules;
+  remindersEnabled?: boolean;
 }
 export function validateBasicPatch(value: unknown): BasicPatch {
   if (!value || Array.isArray(value) || typeof value !== "object") {
@@ -56,7 +62,17 @@ export function validateBasicPatch(value: unknown): BasicPatch {
   if (
     !Object.keys(patch).length ||
     Object.keys(patch).some((k) =>
-      !["timezone", "topics", "types", "enabled", "digestEnabled", "digestTime"].includes(k)
+      ![
+        "timezone",
+        "topics",
+        "types",
+        "enabled",
+        "digestEnabled",
+        "digestTime",
+        "remindersEnabled",
+        "preferences",
+        "rerank",
+      ].includes(k)
     )
   ) throw new ProcessingError("profile_invalid");
   if (
@@ -68,12 +84,27 @@ export function validateBasicPatch(value: unknown): BasicPatch {
     (!Array.isArray(patch.topics) || patch.topics.length > 20 ||
       patch.topics.some((s) => typeof s !== "string" || !s.trim() || s.length > 160))
   ) throw new ProcessingError("profile_topics_invalid");
+  if (Array.isArray(patch.topics)) {
+    const topics = [...new Set(patch.topics.map((s: string) => s.normalize("NFC").trim()))];
+    try {
+      parseRules({ positive_topics: topics });
+    } catch {
+      throw new ProcessingError("profile_topics_invalid");
+    }
+  }
   if (
     patch.types !== undefined &&
     (!Array.isArray(patch.types) || patch.types.length > 11 ||
       patch.types.some((s) => !opportunityTypes.includes(s)))
   ) throw new ProcessingError("profile_types_invalid");
-  for (const key of ["enabled", "digestEnabled"]) {
+  if (patch.preferences !== undefined) {
+    try {
+      parseRules(patch.preferences as ObjectValue);
+    } catch {
+      throw new ProcessingError("profile_preferences_invalid");
+    }
+  }
+  for (const key of ["enabled", "digestEnabled", "remindersEnabled", "rerank"]) {
     if (patch[key] !== undefined && typeof patch[key] !== "boolean") {
       throw new ProcessingError("profile_invalid");
     }
@@ -98,7 +129,7 @@ export function profileMissing(profile: BasicProfile): string[] {
   ].filter(Boolean);
 }
 export type InteractionAction =
-  | { kind: "command"; command: Command | "unknown"; patch?: BasicPatch }
+  | { kind: "command"; command: Command | "unknown"; patch?: BasicPatch; invalid?: boolean }
   | { kind: "feedback"; desired: DesiredAction; opportunityId: string }
   | { kind: "details"; opportunityId: string }
   | { kind: "page"; view: Snapshot }
@@ -135,6 +166,8 @@ export interface ItemView {
   saved: boolean;
   ignored: boolean;
   notes: string[];
+  explanation?: string[];
+  assessmentContext?: ObjectValue;
 }
 export interface HealthView {
   staleSources: number;
@@ -164,6 +197,7 @@ export interface ReplyPart {
   view?: Snapshot;
   itemIds: string[];
   renderingVersion: number;
+  assessments?: Record<string, ObjectValue>;
 }
 export interface ReplyModel {
   title: string;
@@ -239,18 +273,22 @@ export async function handleInteraction(
       );
     } else if (cmd === "profile") {
       model.title = "Research profile";
+      if (action.patch && context.result.status === "ok") {
+        model.paragraphs.push("Settings saved. Changed configuration queues bounded re-ranking.");
+      }
       model.paragraphs.push(
         setup,
-        `Timezone: ${profile.timezone ?? "not set"}\nTopics: ${
-          profile.topics.join(", ") || "not set"
-        }\nTypes: ${profile.types.join(", ") || "not set"}\nMatching: ${
-          profile.enabled ? "enabled" : "disabled"
-        }\nDigest: ${
+        `Profile revision: ${profile.revision}\nTimezone: ${
+          profile.timezone ?? "not set"
+        }\nTopics: ${[...profile.topics.join(", ")].slice(0, 600).join("") || "not set"}\nTypes: ${
+          profile.types.join(", ") || "not set"
+        }\nMatching: ${profile.enabled ? "enabled" : "disabled"}\nDigest: ${
           profile.digestEnabled ? "enabled" : "disabled"
         }, ${profile.digestTime} local time (schedules inactive).`,
-        "Basic setup: /profile timezone Area/City\n/profile topics topic one; topic two\n/profile types conference,postdoc\n/profile enabled true\n/profile digest false\n/profile time 08:00\nSupply your own timezone and interests before enabling. Full preference editing comes later.",
+        ...profilePreferenceText(profile),
+        "Edit one field: /profile <field> <value>\nTopics: /profile topics phrase^weight|alias; phrase\nTypes: /profile types phd,conference\nWeights: /profile weights phd=1,conference=0.5\nGeography: /profile countries DE,VN\nInstitutions: /profile institutions Example Institute\nTimezone: /profile timezone Area/City\nDigest time: /profile time 08:00\nOffsets: /profile offsets 30d,7d,1d\nReminders: /profile reminders false\nOther fields: blocked, ignored, excluded-countries, hard-countries, work-modes, blocked-institutions, qualifications, conflicts, student, nationalities, unknown, threshold, digest, enabled.\nUse clear to empty a list/map. Each command replaces that setting. /profile rerank queues a bounded pass. No schedules are active.",
       );
-      if (context.result.status === "invalid_profile") {
+      if (context.result.status === "invalid_profile" || action.invalid) {
         model.paragraphs.unshift("Those settings are invalid or incomplete; no settings changed.");
       }
     } else if (cmd === "refresh") {
@@ -327,6 +365,41 @@ export async function handleInteraction(
     }
   }
   await deps.repository.commitReply(lease, deps.renderer.render(model, lease.id), signal);
+}
+
+function profilePreferenceText(profile: BasicProfile): string[] {
+  const r = profile.preferences;
+  if (!r) return [];
+  const show = (xs: string[]) => xs.join(", ") || "none supplied";
+  return [
+    `Topic weights/aliases: ${
+      r.positiveTopics.map((t) =>
+        `${t.phrase} (${t.weight})${t.aliases.length ? `: ${t.aliases.join(", ")}` : ""}`
+      ).join("; ") || "none supplied"
+    }`,
+    `Blocked topics: ${show(r.blockedTopics)}\nIgnored topics: ${
+      show(r.ignoredTopics)
+    }\nType weights: ${
+      Object.entries(r.typeWeights).map(([t, w]) => `${t}=${w}`).join(", ") || "none supplied"
+    }`,
+    `Preferred countries: ${show(r.preferredCountries)}\nExcluded countries: ${
+      show(r.excludedCountries)
+    }\nRequire preferred country: ${r.hardCountries}\nWork modes: ${
+      show(r.preferredWorkModes)
+    }\nInstitutions: ${show(r.preferredInstitutions)}\nBlocked institutions: ${
+      show(r.blockedInstitutions)
+    }`,
+    `Compatible qualification requirements: ${
+      show(r.compatibleQualifications)
+    }\nConflicting requirements: ${show(r.incompatibleQualifications)}\nFull-time student: ${
+      r.eligibilityFacts.studentFullTime ?? "unknown"
+    }\nNationalities: ${
+      show(r.eligibilityFacts.nationalities)
+    }\nUnknown data: ${r.unknownPolicy}\nRelevance threshold: ${r.threshold}/100 (provisional until calibration)`,
+    `Reminders: ${profile.remindersEnabled ? "enabled" : "disabled"}; offsets ${
+      r.reminderOffsets.map((n) => `${n}d`).join(", ") || "not set"
+    }. Scheduling inactive.`,
+  ].map((s) => [...s].length > 1000 ? [...s].slice(0, 999).join("") + "… (view excerpt)" : s);
 }
 
 export type SendOutcome = {
